@@ -24,8 +24,6 @@ class WholesaleProductController extends Controller
      */
     public function index(Request $request)
     {
-        CoreComponentRepository::instantiateShopRepository();
-
         $type = 'In House';
         $col_name = null;
         $query = null;
@@ -510,7 +508,7 @@ class WholesaleProductController extends Controller
             Cart::where('product_id', $id)->delete();
 
             flash(translate('Product has been deleted successfully'))->success();
-            
+
             Artisan::call('view:clear');
             Artisan::call('cache:clear');
 

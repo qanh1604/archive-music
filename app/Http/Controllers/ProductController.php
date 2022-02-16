@@ -30,8 +30,6 @@ class ProductController extends Controller
      */
     public function admin_products(Request $request)
     {
-        CoreComponentRepository::instantiateShopRepository();
-
         $type = 'In House';
         $col_name = null;
         $query = null;
@@ -521,7 +519,7 @@ class ProductController extends Controller
         if($request->lang == env("DEFAULT_LANGUAGE")){
             $product->name          = $request->name;
             $product->unit          = $request->unit;
-            $product->description   = $request->description;            
+            $product->description   = $request->description;
         }
 
         $slug = $request->slug? Str::slug($request->slug, '-') : Str::slug($request->name, '-');
