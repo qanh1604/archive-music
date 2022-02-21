@@ -843,18 +843,18 @@
                                 </a>
                             </li>
 
-                            <li class="aiz-side-nav-item">
+                            {{-- <li class="aiz-side-nav-item">
                                 <a href="{{route('activation.index')}}" class="aiz-side-nav-link">
                                     <span class="aiz-side-nav-text">{{translate('Features activation')}}</span>
                                 </a>
-                            </li>
+                            </li> --}}
                             <li class="aiz-side-nav-item">
                                 <a href="{{route('languages.index')}}" class="aiz-side-nav-link {{ areActiveRoutes(['languages.index', 'languages.create', 'languages.store', 'languages.show', 'languages.edit'])}}">
                                     <span class="aiz-side-nav-text">{{translate('Languages')}}</span>
                                 </a>
                             </li>
 
-                            <li class="aiz-side-nav-item">
+                            {{-- <li class="aiz-side-nav-item">
                                 <a href="{{route('currency.index')}}" class="aiz-side-nav-link">
                                     <span class="aiz-side-nav-text">{{translate('Currency')}}</span>
                                 </a>
@@ -883,7 +883,7 @@
                                 <a href="{{ route('file_system.index') }}" class="aiz-side-nav-link">
                                     <span class="aiz-side-nav-text">{{translate('File System & Cache Configuration')}}</span>
                                 </a>
-                            </li>
+                            </li> --}}
                             <li class="aiz-side-nav-item">
                                 <a href="{{ route('social_login.index') }}" class="aiz-side-nav-link">
                                     <span class="aiz-side-nav-text">{{translate('Social media Logins')}}</span>
@@ -938,10 +938,7 @@
                                 </ul>
                             </li>
 
-
-
-
-                            <li class="aiz-side-nav-item">
+                            {{-- <li class="aiz-side-nav-item">
                                 <a href="javascript:void(0);" class="aiz-side-nav-link">
                                     <span class="aiz-side-nav-text">{{translate('Shipping')}}</span>
                                     <span class="aiz-side-nav-arrow"></span>
@@ -968,7 +965,7 @@
                                         </a>
                                     </li>
                                 </ul>
-                            </li>
+                            </li> --}}
 
                         </ul>
                     </li>
@@ -1020,14 +1017,14 @@
                 @endif --}}
 
             <!-- Addon Manager -->
-                @if(Auth::user()->user_type == 'admin' || in_array('21', json_decode(Auth::user()->staff->role->permissions)))
+                {{-- @if(Auth::user()->user_type == 'admin' || in_array('21', json_decode(Auth::user()->staff->role->permissions)))
                     <li class="aiz-side-nav-item">
                         <a href="{{route('addons.index')}}" class="aiz-side-nav-link {{ areActiveRoutes(['addons.index', 'addons.create'])}}">
                             <i class="las la-wrench aiz-side-nav-icon"></i>
                             <span class="aiz-side-nav-text">{{translate('Addon Manager')}}</span>
                         </a>
                     </li>
-                @endif
+                @endif --}}
             </ul><!-- .aiz-side-nav -->
         </div><!-- .aiz-side-nav-wrap -->
     </div><!-- .aiz-sidebar -->
