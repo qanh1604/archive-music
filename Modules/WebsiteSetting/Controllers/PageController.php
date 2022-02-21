@@ -2,13 +2,13 @@
 
 namespace Modules\WebsiteSetting\Controllers;
 
-use App\Http\Controllers\BackendController;
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Page;
-use App\PageTranslation;
+// use App\Page;
+// use App\PageTranslation;
 
 
-class PageController extends BackendController
+class PageController extends Controller
 {
     /**
      * Display a listing of the resource.

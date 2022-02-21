@@ -43,6 +43,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin']], function(
 
 
     Route::resource('sellers', 'SellerController');
+    Route::get('/sellsers/create', 'SellerController@create')->name('sellsers.create');
     Route::get('sellers_ban/{id}', 'SellerController@ban')->name('sellers.ban');
     Route::get('/sellers/destroy/{id}', 'SellerController@destroy')->name('sellers.destroy');
     Route::post('/bulk-seller-delete', 'SellerController@bulk_seller_delete')->name('bulk-seller-delete');

@@ -115,7 +115,8 @@ class ProductController extends Controller
         }
 
         $products = $products->paginate(15);
-        $type = 'All';
+        // $type = 'All';
+        $type = 'Seller';
 
         return view('backend.product.products.index', compact('products','type', 'col_name', 'query', 'seller_id', 'sort_search'));
     }

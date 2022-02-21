@@ -12,6 +12,7 @@ use App\Models\OrderDetail;
 use Illuminate\Support\Facades\Hash;
 use App\Notifications\EmailVerificationNotification;
 use Cache;
+use Illuminate\Support\Str;
 
 class SellerController extends Controller
 {
@@ -88,7 +89,12 @@ class SellerController extends Controller
             if ($seller->save()) {
                 $shop = new Shop;
                 $shop->user_id = $user->id;
-                $shop->slug = 'demo-shop-' . $user->id;
+                $shop->name = $request->shop_name;
+                $shop->address = $request->address;
+                $shop->phone = $request->phone;
+                $shop->meta_title = $request->shop_name;
+                $shop->meta_description = $request->shop_name;
+                $shop->slug = Str::slug($request->shop_name) . '-' . $user->id;
                 $shop->save();
 
                 flash(translate('Seller has been inserted successfully'))->success();

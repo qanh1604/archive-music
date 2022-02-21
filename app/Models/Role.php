@@ -7,7 +7,7 @@ use App;
 
 class Role extends Model
 {
-    protected $table="ecommerce_roles";
+    // protected $table="ecommerce_roles";
     protected $with = ['role_translations'];
 
     public function getTranslation($field = '', $lang = false){

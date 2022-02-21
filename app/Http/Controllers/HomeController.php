@@ -61,7 +61,8 @@ class HomeController extends Controller
             return filter_products(Product::where('published', 1)->where('todays_deal', '1'))->get();
         });
 
-        return view('frontend.index', compact('featured_categories', 'todays_deal_products'));
+        // return view('frontend.index', compact('featured_categories', 'todays_deal_products'));
+        return redirect()->route('dashboard');
     }
 
     public function login()
@@ -320,19 +321,19 @@ class HomeController extends Controller
     public function show_product_upload_form(Request $request)
     {
         $seller = Auth::user()->seller;
-        if(addon_is_activated('seller_subscription')){
-            if($seller->seller_package && $seller->seller_package->product_upload_limit > $seller->user->products()->count()){
-                $categories = Category::where('parent_id', 0)
-                    ->where('digital', 0)
-                    ->with('childrenCategories')
-                    ->get();
-                return view('frontend.user.seller.product_upload', compact('categories'));
-            }
-            else {
-                flash(translate('Upload limit has been reached. Please upgrade your package.'))->warning();
-                return back();
-            }
-        }
+        // if(addon_is_activated('seller_subscription')){
+        //     if($seller->seller_package && $seller->seller_package->product_upload_limit > $seller->user->products()->count()){
+        //         $categories = Category::where('parent_id', 0)
+        //             ->where('digital', 0)
+        //             ->with('childrenCategories')
+        //             ->get();
+        //         return view('frontend.user.seller.product_upload', compact('categories'));
+        //     }
+        //     else {
+        //         flash(translate('Upload limit has been reached. Please upgrade your package.'))->warning();
+        //         return back();
+        //     }
+        // }
         $categories = Category::where('parent_id', 0)
             ->where('digital', 0)
             ->with('childrenCategories')
