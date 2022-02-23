@@ -367,5 +367,8 @@ if(file_exists($pathModule)) {
         if (file_exists($pathModule . '/' . $module . '/routes/Frontend.php')) {
             include $pathModule . '/' . $module . '/routes/Frontend.php';
         }
+        if (file_exists($pathModule . '/' . $module . '/routes/Backend.php')) {
+            include $pathModule . '/' . $module . '/routes/Backend.php';
+        }
     }
 }
