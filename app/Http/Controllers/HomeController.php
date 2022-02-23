@@ -62,7 +62,7 @@ class HomeController extends Controller
         });
 
         // return view('frontend.index', compact('featured_categories', 'todays_deal_products'));
-        if(Auth::user()->user_type == 'admin'){
+        if(Auth::check() && Auth::user()->user_type == 'admin'){
             return redirect()->route('admin.dashboard');
         }
         return redirect()->route('dashboard');
@@ -71,6 +71,9 @@ class HomeController extends Controller
     public function login()
     {
         if(Auth::check()){
+            if(Auth::user()->user_type == 'admin'){
+                return redirect()->route('admin.dashboard');
+            }
             return redirect()->route('home');
         }
         return view('frontend.user_login');
