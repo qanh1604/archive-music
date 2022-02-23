@@ -62,6 +62,9 @@ class HomeController extends Controller
         });
 
         // return view('frontend.index', compact('featured_categories', 'todays_deal_products'));
+        if(Auth::user()->user_type == 'admin'){
+            return redirect()->route('admin.dashboard');
+        }
         return redirect()->route('dashboard');
     }
 
