@@ -8,6 +8,7 @@ use GuzzleHttp;
 use Modules\MarketSession\Models\MarketSession;
 use Artisan;
 use Auth;
+use CoreComponentRepository;
 
 class MarketSessionController extends Controller
 {
@@ -193,9 +194,14 @@ class MarketSessionController extends Controller
         return back();
     }
 
+    public function getSettingZoomApi(Request $request){
+        CoreComponentRepository::initializeCache();
+        return view('MarketSession::ConfigZoom.index');
+    }
+
     public function generateJWTAuth(){
-        $zoomApiKey = env('ZOOM_API_KEY');
-        $zoomApiSecret = env('ZOOM_API_SECRET');
+        $zoomApiKey = get_setting('zoom_api_key');
+        $zoomApiSecret = get_setting('zoom_api_secret');
 
         $header = json_encode(['alg' => 'HS256', 'typ' => 'JWT']);
         $payload = json_encode(['iss' => $zoomApiKey, 'exp' => strtotime(date('Y-m-d H:i:s', strtotime('+1 hours')))]);

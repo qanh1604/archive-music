@@ -873,6 +873,11 @@
                                     <span class="aiz-side-nav-text">{{translate('General Settings')}}</span>
                                 </a>
                             </li>
+                            <li class="aiz-side-nav-item">
+                                <a href="{{route('market-session.update_key_get')}}" class="aiz-side-nav-link">
+                                    <span class="aiz-side-nav-text">Cài đặt Zoom API</span>
+                                </a>
+                            </li>
 
                             {{-- <li class="aiz-side-nav-item">
                                 <a href="{{route('activation.index')}}" class="aiz-side-nav-link">
