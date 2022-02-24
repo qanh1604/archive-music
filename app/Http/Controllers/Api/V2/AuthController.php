@@ -156,10 +156,7 @@ class AuthController extends Controller
             $user->email_verified_at = date('Y-m-d H:i:s');
             $user->verification_code = null;
             $user->save();
-            return response()->json([
-                'result' => true,
-                'message' => translate('Your account is now verified.Please login'),
-            ], 200);
+            return $this->loginSuccess($user);
         } else {
             return response()->json([
                 'result' => false,
@@ -230,15 +227,11 @@ class AuthController extends Controller
 
 
         if ($user != null) {
-            if ($request->otp == '0000') {
-
-                if ($user->email_verified_at == null) {
-                    return response()->json(['message' => translate('Please verify your account'), 'user' => null], 401);
-                }
-                return $this->loginSuccess($user);
-            } else {
-                return response()->json(['result' => false, 'message' => translate('Unauthorized'), 'user' => null], 401);
-            }
+            return response()->json([
+                'result' => true,
+                'message' => translate('Login success'),
+                'user_id' => $user->id
+            ], 201);
         } else {
             return response()->json(['result' => false, 'message' => translate('User not found'), 'user' => null], 401);
         }
