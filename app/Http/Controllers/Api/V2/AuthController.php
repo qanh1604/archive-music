@@ -116,10 +116,7 @@ class AuthController extends Controller
             $user->email_verified_at = date('Y-m-d H:i:s');
             $user->verification_code = null;
             $user->save();
-            return response()->json([
-                'result' => true,
-                'message' => translate('Your account is now verified.Please login'),
-            ], 200);
+            return $this->loginSuccess($user);
         } else {
             return response()->json([
                 'result' => false,
@@ -156,7 +153,10 @@ class AuthController extends Controller
             $user->email_verified_at = date('Y-m-d H:i:s');
             $user->verification_code = null;
             $user->save();
-            return $this->loginSuccess($user);
+            return response()->json([
+                'result' => true,
+                'message' => translate('Your account is now verified.Please login'),
+            ], 200);
         } else {
             return response()->json([
                 'result' => false,
