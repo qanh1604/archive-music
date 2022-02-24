@@ -73,6 +73,42 @@ class AuthController extends Controller
         ], 201);
     }
 
+    public function signupPhone(Request $request)
+    {
+        if (User::where('email', $request->email_or_phone)->orWhere('phone', $request->email_or_phone)->first() != null) {
+            return response()->json([
+                'result' => false,
+                'message' => translate('User already exists.'),
+                'user_id' => 0
+            ], 201);
+        }
+
+        $user = new User([
+            'name' => $request->name,
+            'phone' => $request->email_or_phone,
+            'password' => bcrypt($request->password),
+            'verification_code' => rand(100000, 999999)
+        ]);
+
+        // $otpController = new OTPVerificationController();
+        // $otpController->send_code($user);
+
+        $user->save();
+
+        $customer = new Customer;
+        $customer->user_id = $user->id;
+        $customer->save();
+
+        //create token
+        $user->createToken('tokens')->plainTextToken;
+
+        return response()->json([
+            'result' => true,
+            'message' => translate('Registration Successful. Please verify and log in to your account.'),
+            'user_id' => $user->id
+        ], 201);
+    }
+
     public function resendCode(Request $request)
     {
         $user = User::where('id', $request->user_id)->first();
@@ -137,15 +173,44 @@ class AuthController extends Controller
 
 
         if ($user != null) {
-            // if (Hash::check($request->password, $user->password)) {
+            if (Hash::check($request->password, $user->password)) {
 
-            //     if ($user->email_verified_at == null) {
-            //         return response()->json(['message' => translate('Please verify your account'), 'user' => null], 401);
-            //     }
-            //     return $this->loginSuccess($user);
-            // } else {
-            //     return response()->json(['result' => false, 'message' => translate('Unauthorized'), 'user' => null], 401);
-            // }
+                if ($user->email_verified_at == null) {
+                    return response()->json(['message' => translate('Please verify your account'), 'user' => null], 401);
+                }
+                return $this->loginSuccess($user);
+            } else {
+                return response()->json(['result' => false, 'message' => translate('Unauthorized'), 'user' => null], 401);
+            }
+        } else {
+            return response()->json(['result' => false, 'message' => translate('User not found'), 'user' => null], 401);
+        }
+    }
+
+    public function loginOtp(Request $request)
+    {
+        /*$request->validate([
+            'email' => 'required|string|email',
+            'password' => 'required|string',
+            'remember_me' => 'boolean'
+        ]);*/
+
+        $delivery_boy_condition = $request->has('user_type') && $request->user_type == 'delivery_boy';
+
+        if ($delivery_boy_condition) {
+            $user = User::whereIn('user_type', ['delivery_boy'])->where('email', $request->email)->orWhere('phone', $request->email)->first();
+        } else {
+            $user = User::whereIn('user_type', ['customer', 'seller'])->where('email', $request->email)->orWhere('phone', $request->email)->first();
+        }
+
+        if (!$delivery_boy_condition) {
+            if (\App\Utility\PayhereUtility::create_wallet_reference($request->identity_matrix) == false) {
+                return response()->json(['result' => false, 'message' => 'Identity matrix error', 'user' => null], 401);
+            }
+        }
+
+
+        if ($user != null) {
             if ($request->otp == '0000') {
 
                 if ($user->email_verified_at == null) {

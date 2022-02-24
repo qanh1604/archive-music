@@ -1,9 +1,10 @@
 <?php
 
-
 Route::group(['prefix' => 'v2/auth', 'middleware' => ['app_language']], function() {
     Route::post('login', 'Api\V2\AuthController@login');
+    Route::post('login_otp', 'Api\V2\AuthController@loginOtp');
     Route::post('signup', 'Api\V2\AuthController@signup');
+    Route::post('signup_phone', 'Api\V2\AuthController@signupPhone');
     Route::post('social-login', 'Api\V2\AuthController@socialLogin');
     Route::post('password/forget_request', 'Api\V2\PasswordResetController@forgetRequest');
     Route::post('password/confirm_reset', 'Api\V2\PasswordResetController@confirmReset');
@@ -238,6 +239,17 @@ Route::group(['prefix' => 'v2', 'middleware' => ['app_language']], function() {
     //Pickup Point list
     Route::get('pickup-list', 'Api\V2\ShippingController@pickup_list');
 });
+
+//add modules
+$pathModule = base_path("Modules");
+if(file_exists($pathModule)) {
+    $listModule = array_map('basename', File::directories($pathModule));
+    foreach ($listModule as $module) {
+        if (file_exists($pathModule . '/' . $module . '/routes/Api.php')) {
+            include $pathModule . '/' . $module . '/routes/Api.php';
+        }
+    }
+}
 
 Route::fallback(function() {
     return response()->json([
