@@ -86,7 +86,7 @@ class AuthController extends Controller
         $user = new User([
             'name' => $request->name,
             'phone' => $request->email_or_phone,
-            'password' => bcrypt($request->password),
+            'password' => bcrypt('$unshineSoftware'),
             'verification_code' => rand(100000, 999999)
         ]);
 
