@@ -71,8 +71,7 @@
                                     <div class="form-control file-amount">{{ translate('Choose File') }}</div>
                                     <input type="hidden" name="thumbnail_img" value="{{ $session->image }}" class="selected-files">
                                 </div>
-                                <div class="file-preview box sm">
-                                </div>
+                                <div class="file-preview box sm"></div>
                             </div>
                         </div>
                         <div class="form-group row">
@@ -117,6 +116,67 @@
             </div>
         </div>
     </form>
+
+    <br>
+    <div class="card">
+        <div class="card-header row gutters-5">
+            <div class="col">
+                <h5 class="mb-md-0 h6">Danh sách người đăng ký</h5>
+            </div>
+        </div>
+    
+        <div class="card-body">
+            <table class="table aiz-table mb-0">
+                <thead>
+                    <tr>
+                        <th>Tên quầy hàng</th>
+                        <th data-breakpoints="sm">Thời điểm tham gia</th>
+                        <th data-breakpoints="lg">Video mở đầu</th>
+                        <th data-breakpoints="lg">Video slider</th>
+                        <th data-breakpoints="lg"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach($sellers as $key => $seller)
+                    <tr>
+                        <td>
+                            <div class="row gutters-5 w-200px w-md-300px mw-100">
+                                <div class="col">
+                                    <span class="text-muted text-truncate-2">{{ $seller->sellerUser->name }}</span>
+                                </div>
+                            </div>
+                        </td>
+                        <td>{{ date('d/m/Y H:i:s', strtotime($seller->join_time)) }}</td>
+                        <td>
+                            <div class="input-group" data-toggle="aizuploader1" data-type="video" data-multiple="true">
+                                <div class="input-group-prepend">
+                                    <div class="input-group-text bg-soft-secondary font-weight-medium">{{ translate('Browse')}}</div>
+                                </div>
+                                <div class="form-control file-amount">{{ translate('Choose File') }}</div>
+                                <input type="hidden" name="open_video" value="{{ $seller->open_video }}" id="open_video_{{ $seller->id }}" class="selected-files">
+                            </div>
+                            <div class="file-preview box sm"></div>
+                        </td>
+                        <td>
+                            <div class="input-group" data-toggle="aizuploader1" data-type="video" data-multiple="true">
+                                <div class="input-group-prepend">
+                                    <div class="input-group-text bg-soft-secondary font-weight-medium">{{ translate('Browse')}}</div>
+                                </div>
+                                <div class="form-control file-amount">{{ translate('Choose File') }}</div>
+                                <input type="hidden" name="slider_video" value="{{ $seller->slider_video }}" id="slider_video_{{ $seller->id }}" class="selected-files">
+                            </div>
+                            <div class="file-preview box sm"></div>
+                        </td>
+                        <td style="text-align: right"><button class="btn btn-sm btn-primary save-video" data-id="{{ $seller->id }}">{{ translate('Save') }} Video</button></td>
+                    </tr>
+                    @endforeach
+                </tbody>
+            </table>
+            <div class="aiz-pagination">
+                {{ $sellers->appends(request()->input())->links() }}
+            </div>
+        </div>
+    </div>
 </div>
 
 @endsection
@@ -129,6 +189,13 @@
             e.preventDefault();
             copyToClipboard($(this).attr('data-value'));
             AIZ.plugins.notify('success', 'Đã sao chép vào bộ nhớ tạm');
+        });
+
+        $(document).on('ready.ft.table', function(){
+            $('[data-toggle="aizuploader1"]').each(function () {
+                $(this).attr('data-toggle', 'aizuploader');
+            });
+            AIZ.uploader.previewGenerate();
         });
 
         $('#type').on('change', function(){
@@ -185,6 +252,24 @@
                 `);
                 AIZ.plugins.dateRange();
             }
+        });
+
+        $(document).on('click', '.save-video', function(e){
+            e.preventDefault();
+            let sellerId = $(this).attr('data-id');
+            $.post('{{ route("market-session.update_video") }}', {
+                _token: "{{ csrf_token() }}",
+                id: sellerId,
+                open_video: $(`#open_video_${sellerId}`).val(),
+                slider_video: $(`#slider_video_${sellerId}`).val(),
+            }, function(data){
+                if(data == 1){
+                    AIZ.plugins.notify('success', 'Đã thêm video thành công');
+                }
+                else{
+                    AIZ.plugins.notify('danger', 'Có lỗi xảy ra');
+                }
+            });
         });
    });
 
