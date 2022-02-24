@@ -142,7 +142,7 @@
                         <td>
                             <div class="row gutters-5 w-200px w-md-300px mw-100">
                                 <div class="col">
-                                    <span class="text-muted text-truncate-2">{{ $seller->sellerUser->name }}</span>
+                                    <span class="text-muted text-truncate-2">{{ $seller->joinerUser->name }}</span>
                                 </div>
                             </div>
                         </td>

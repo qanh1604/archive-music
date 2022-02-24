@@ -5,19 +5,18 @@ namespace Modules\MarketSession\Models;
 use Illuminate\Database\Eloquent\Model;
 use \App\Models\User;
 use MarketSession;
-use Modules\MarketSession\Models\MarketSessionSellerVideo;
 
-class MarketSessionSeller extends Model
+class MarketSessionJoiner extends Model
 {
-    protected $table = "market_session_seller";
+    protected $table = "market_session_joiner";
 
     public function marketSession()
     {
         return $this->belongsTo(MarketSession::class);
     }
 
-    public function sellerUser()
+    public function joinerUser()
     {
-        return $this->belongsTo(User::class, 'seller_id');
+        return $this->belongsTo(User::class, 'user_id');
     }
 }

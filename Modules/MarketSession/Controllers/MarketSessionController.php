@@ -6,8 +6,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use GuzzleHttp;
 use Modules\MarketSession\Models\MarketSession;
-use Modules\MarketSession\Models\MarketSessionSeller;
-use Modules\MarketSession\Models\MarketSessionSellerVideo;
+use Modules\MarketSession\Models\MarketSessionJoiner;
+use Modules\MarketSession\Models\MarketSessionJoinerVideo;
 use Artisan;
 use Auth;
 use CoreComponentRepository;
@@ -136,7 +136,7 @@ class MarketSessionController extends Controller
     public function edit(Request $request){
         $session = MarketSession::find($request->id);
         $lang = $request->lang;
-        $sellers = MarketSessionSeller::with(['sellerUser'])
+        $sellers = MarketSessionJoiner::with(['joinerUser'])
             ->where('market_id', $request->id)->orderBy('join_time')->paginate(15);
 
         return view('MarketSession::edit', compact('session', 'lang', 'sellers'));
@@ -258,7 +258,7 @@ class MarketSessionController extends Controller
     }
 
     function updateVideo(Request $request){
-        $seller = MarketSessionSeller::find($request->id);
+        $seller = MarketSessionJoiner::find($request->id);
         if(!$seller){
             return 0;
         }
@@ -269,5 +269,54 @@ class MarketSessionController extends Controller
             return 1;
         }
         return 0;
+    }
+
+    
+
+    public function hotBuy(Request $request)
+    {
+
+    }
+
+    public function marketGift(Request $request)
+    {
+
+    }
+
+    public function marketStatistic(Request $request)
+    {
+
+    }
+
+    public function luckyWheel(Request $request)
+    {
+
+    }
+
+    public function attendance(Request $request)
+    {
+        /**Request body
+         * market_id: int
+         * user_id: int
+         */
+        $marketSession = new MarketSessionJoiner();
+        $marketSession->market_id = $request->market_id;
+        $marketSession->user_id = $request->user_id;
+        $marketSession->join_time = date('Y-m-d H:i:s');
+        if($marketSession->save()){
+            return response()->json([
+                'result' => true,
+                'message' => translate('Join success')
+            ], 200);
+        }
+        return response()->json([
+            'result' => true,
+            'message' => translate('Join failed')
+        ], 200);
+    }
+
+    public function coutdown(Request $request)
+    {
+
     }
 }
