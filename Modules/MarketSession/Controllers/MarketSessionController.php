@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use GuzzleHttp;
 use Modules\MarketSession\Models\MarketSession;
+use Modules\MarketSession\Models\MarketSessionSeller;
+use Modules\MarketSession\Models\MarketSessionSellerVideo;
 use Artisan;
 use Auth;
 use CoreComponentRepository;
@@ -134,8 +136,10 @@ class MarketSessionController extends Controller
     public function edit(Request $request){
         $session = MarketSession::find($request->id);
         $lang = $request->lang;
+        $sellers = MarketSessionSeller::with(['sellerUser'])
+            ->where('market_id', $request->id)->orderBy('join_time')->paginate(15);
 
-        return view('MarketSession::edit', compact('session', 'lang'));
+        return view('MarketSession::edit', compact('session', 'lang', 'sellers'));
     }
 
     public function update(Request $request){
@@ -251,5 +255,19 @@ class MarketSessionController extends Controller
             );
         }
         return $res;
+    }
+
+    function updateVideo(Request $request){
+        $seller = MarketSessionSeller::find($request->id);
+        if(!$seller){
+            return 0;
+        }
+        $seller->open_video = $request->open_video;
+        $seller->slider_video = $request->slider_video;
+
+        if($seller->save()){
+            return 1;
+        }
+        return 0;
     }
 }

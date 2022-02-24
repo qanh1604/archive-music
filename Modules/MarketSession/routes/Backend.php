@@ -11,6 +11,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin']], function(
         Route::post('/store', [MarketSessionController::class, 'store'])->name('market-session.store');
         Route::get('/{id}/edit', [MarketSessionController::class, 'edit'])->name('market-session.edit');
         Route::post('/update/{id}', [MarketSessionController::class, 'update'])->name('market-session.update');
-        Route::get('/update_key', [MarketSessionController::class, 'getSettingZoomApi'])->name('market-session.update_key_get');;
+        Route::get('/update_key', [MarketSessionController::class, 'getSettingZoomApi'])->name('market-session.update_key_get');
+        Route::post('/update_video', [MarketSessionController::class, 'updateVideo'])->name('market-session.update_video');
     });
 });

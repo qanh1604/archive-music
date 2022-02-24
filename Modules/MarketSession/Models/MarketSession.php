@@ -1,6 +1,6 @@
 <?php
 
-namespace  Modules\MarketSession\Models;
+namespace Modules\MarketSession\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use \App\Models\User;
