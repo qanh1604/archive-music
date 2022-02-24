@@ -109,6 +109,25 @@ class AuthController extends Controller
         ], 201);
     }
 
+    public function activeByOTP(Request $request){
+        $user = User::where('id', $request->user_id)->first();
+
+        if ($request->otp == "0000") {
+            $user->email_verified_at = date('Y-m-d H:i:s');
+            $user->verification_code = null;
+            $user->save();
+            return response()->json([
+                'result' => true,
+                'message' => translate('Your account is now verified.Please login'),
+            ], 200);
+        } else {
+            return response()->json([
+                'result' => false,
+                'message' => translate('Code does not match, you can request for resending the code'),
+            ], 200);
+        }
+    }
+
     public function resendCode(Request $request)
     {
         $user = User::where('id', $request->user_id)->first();
