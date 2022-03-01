@@ -26,7 +26,7 @@ class MarketSessionController extends Controller
          * Request params
          * id: int //market_id
          */
-        $listSellers = MarketSessionJoiner::with('joinerUser')->where('market_id', $request->id)
+        $listSellers = MarketSessionJoiner::with('joinerUser')->where('market_detail_id', $request->id)
                         ->whereHas('joinerUser', function($query){
                             $query->where('user_type', 'seller');
                         })->paginate(15);
@@ -101,7 +101,7 @@ class MarketSessionController extends Controller
 
             if($hotOrder->save())
             {
-                $userJoin = MarketSessionJoiner::where('market_id', $request->market_id)
+                $userJoin = MarketSessionJoiner::where('market_detail_id', $request->market_id)
                         ->where('user_id', $request->user_id)->increment('wheel_turn', 1);  
                         
                 return response()->json([
@@ -127,7 +127,7 @@ class MarketSessionController extends Controller
          * market_id: int
          * user_id: int
          */
-        $marketSession = MarketSessionJoiner::where('market_id', $request->market_id)
+        $marketSession = MarketSessionJoiner::where('market_detail_id', $request->market_id)
                         ->where('user_id', $request->user_id)->select('wheel_turn')->first();
         if(!$marketSession)
         {
@@ -155,7 +155,7 @@ class MarketSessionController extends Controller
          * market_id: int
          * user_id: int
          */
-        $marketSession = MarketSessionJoiner::where('market_id', $request->market_id)
+        $marketSession = MarketSessionJoiner::where('market_detail_id', $request->market_id)
                         ->where('user_id', $request->user_id)->first();
         if($marketSession)
         {
@@ -166,7 +166,7 @@ class MarketSessionController extends Controller
         }
 
         $marketSession = new MarketSessionJoiner();
-        $marketSession->market_id = $request->market_id;
+        $marketSession->market_detail_id = $request->market_id;
         $marketSession->user_id = $request->user_id;
         $marketSession->wheel_turn = 0;
         $marketSession->join_time = date('Y-m-d H:i:s');
