@@ -16,20 +16,31 @@ use Validator;
 use DB;
 use App\Models\User;
 use App\Models\Address;
+use App\Models\Product;
 
 class MarketSessionController extends Controller
 {
     public function getSeller(Request $request)
     {
-        $listSellers = MarketSessionJoiner::with('joinerUser')->where('market_id', $request->market_id)
-                        ->where('user_id', $request->user_id)
+        /**Method: get
+         * Request params
+         * id: int //market_id
+         */
+        $listSellers = MarketSessionJoiner::with('joinerUser')->where('market_id', $request->id)
                         ->whereHas('joinerUser', function($query){
                             $query->where('user_type', 'seller');
-                        })->get();
-        return response()->json([
-            'result' => true,
-            'data' => $listSellers
-        ], 200);
+                        })->paginate(15);
+        return response()->json($listSellers, 200);
+    }
+
+    public function getSellerProducts(Request $request){
+        /**Method: get
+         * Request params
+         * id: int //seller_id
+         */
+        $sellerProducts = Product::where('user_id', $request->id)->where('auction_product', 0)->where('approved', 1)->paginate(15);
+        
+        return response()->json($sellerProducts, 200);
     }
 
     public function hotBuy(Request $request)
@@ -179,11 +190,8 @@ class MarketSessionController extends Controller
         $marketSession = MarketSessionDetail::with('marketSession')->where('start_time', '>=', date('Y-m-d 00:00:00'))
                         ->where('start_time', '<=', date('Y-m-d 23:59:59'))->whereHas('marketSession', function($query){
                             $query->where('status', 1);
-                        })->select(DB::RAW('id as market_id'), 'start_time', 'wheel_slot')->get();
+                        })->select(DB::RAW('id as market_id'), 'start_time', 'wheel_slot')->paginate(15);
 
-        return response()->json([
-            'result' => true,
-            'data' => $marketSession
-        ], 200);
+        return response()->json($marketSession, 200);
     }
 }
