@@ -8,6 +8,7 @@ Route::group(['prefix' => 'v2', 'middleware' => ['app_language']], function()
         Route::post('attendance', [MarketSessionController::class, 'attendance']);
         Route::post('get-wheel-turn', [MarketSessionController::class, 'getLuckyWheelTurn']);
         Route::post('hot-buy', [MarketSessionController::class, 'hotBuy']);
-        Route::get('get-seller', [MarketSessionController::class, 'getSeller']);
+        Route::get('get-seller/{id}', [MarketSessionController::class, 'getSeller']);
+        Route::get('get-seller-product/{id}', [MarketSessionController::class, 'getSellerProducts']);
     });
 });
