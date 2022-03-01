@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use GuzzleHttp;
 use Modules\MarketSession\Models\MarketSession;
 use Modules\MarketSession\Models\MarketSessionJoiner;
-use Modules\MarketSession\Models\MarketSessionJoinerVideo;
+use Modules\MarketSession\Models\MarketSessionDetail;
 use Artisan;
 use Auth;
 use CoreComponentRepository;
@@ -120,7 +120,8 @@ class MarketSessionController extends Controller
             $market->date_interval = $request->type!='single'?implode(',', $request->period):'';
             $market->join_link = $responseBody->join_url;
             
-            if($market->save()){
+            if($market->save())
+            {
                 flash('Thêm mới thành công')->success();
 
                 Artisan::call('view:clear');
@@ -136,10 +137,18 @@ class MarketSessionController extends Controller
     public function edit(Request $request){
         $session = MarketSession::find($request->id);
         $lang = $request->lang;
-        $sellers = MarketSessionJoiner::with(['joinerUser'])
-            ->where('market_id', $request->id)->orderBy('join_time')->paginate(15);
+        $marketSessionLists = MarketSessionDetail::where('market_id', $request->id)->get();
 
-        return view('MarketSession::edit', compact('session', 'lang', 'sellers'));
+        $sellers = collect(new MarketSessionJoiner);
+
+        $sessionId = null;
+  
+        if($request->session_id){
+            $sessionId = $request->session_id;
+            $sellers = MarketSessionJoiner::where('market_id', $request->session_id)->paginate(15);
+        }
+
+        return view('MarketSession::edit', compact('session', 'lang', 'marketSessionLists', 'sellers', 'sessionId'));
     }
 
     public function update(Request $request){
@@ -269,14 +278,7 @@ class MarketSessionController extends Controller
             return 1;
         }
         return 0;
-    }
-
-    
-
-    public function hotBuy(Request $request)
-    {
-
-    }
+    }    
 
     public function marketGift(Request $request)
     {
@@ -284,38 +286,6 @@ class MarketSessionController extends Controller
     }
 
     public function marketStatistic(Request $request)
-    {
-
-    }
-
-    public function luckyWheel(Request $request)
-    {
-
-    }
-
-    public function attendance(Request $request)
-    {
-        /**Request body
-         * market_id: int
-         * user_id: int
-         */
-        $marketSession = new MarketSessionJoiner();
-        $marketSession->market_id = $request->market_id;
-        $marketSession->user_id = $request->user_id;
-        $marketSession->join_time = date('Y-m-d H:i:s');
-        if($marketSession->save()){
-            return response()->json([
-                'result' => true,
-                'message' => translate('Join success')
-            ], 200);
-        }
-        return response()->json([
-            'result' => true,
-            'message' => translate('Join failed')
-        ], 200);
-    }
-
-    public function coutdown(Request $request)
     {
 
     }

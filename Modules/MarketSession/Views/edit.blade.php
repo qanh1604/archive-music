@@ -41,8 +41,8 @@
                                             $periodData = [];
                                             if($session->type == 'weekly'){
                                                 $periodData = [
-                                                    'Chủ Nhật', 'Thứ 2', 'Thứ 3', 
-                                                    'Thứ 4', 'Thứ 5','Thứ 6', 'Thứ 7'
+                                                    'Thứ 2', 'Thứ 3', 'Thứ 4', 
+                                                    'Thứ 5','Thứ 6', 'Thứ 7', 'Chủ Nhật'
                                                 ];
                                             }
                                             elseif($session->type == 'monthly'){
@@ -119,63 +119,95 @@
 
     <br>
     <div class="card">
-        <div class="card-header row gutters-5">
-            <div class="col">
-                <h5 class="mb-md-0 h6">Danh sách người đăng ký</h5>
+        <form class="" id="sort_products" action="" method="GET">
+            <div class="card-header row gutters-5">
+                <div class="col">
+                    <h5 class="mb-md-0 h6">Danh sách người đăng ký</h5>
+                </div>
+                <div class="col-md-5 ml-auto">
+                    <input type="hidden" value="{{ $lang }}" name="lang">
+                    <select class="form-control form-control-sm aiz-selectpicker mb-2 mb-md-0" id="session_id" name="session_id" onchange="sort_products()">
+                        <option value="">Chọn phiên</option>
+                        @foreach($marketSessionLists as $marketSession)
+                            @php 
+                                $arrayOfWeekDays = [
+                                    'Thứ 2', 'Thứ 3', 'Thứ 4', 
+                                    'Thứ 5', 'Thứ 6', 'Thứ 6', 'Chủ Nhật'
+                                ];
+                                $weekDay = $arrayOfWeekDays[date('N', strtotime($marketSession->start_time))-1];
+                                $day = date('d', strtotime($marketSession->start_time));
+                                $month = date('m', strtotime($marketSession->start_time));
+                                $year = date('Y', strtotime($marketSession->start_time));
+                                $hour = date('H:i:s', strtotime($marketSession->start_time));
+                            @endphp
+                            <option value="{{$marketSession->id}}" @if($sessionId == $marketSession->id) selected @endif>
+                                {{
+                                    $weekDay . ' - ' . 
+                                    'ngày ' . $day . 
+                                    ' tháng ' . $month . 
+                                    ' năm ' . $year .
+                                    ' - ' . $hour
+                                }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
             </div>
-        </div>
-    
-        <div class="card-body">
-            <table class="table aiz-table mb-0">
-                <thead>
-                    <tr>
-                        <th>Tên quầy hàng</th>
-                        <th data-breakpoints="sm">Thời điểm tham gia</th>
-                        <th data-breakpoints="lg">Video mở đầu</th>
-                        <th data-breakpoints="lg">Video slider</th>
-                        <th data-breakpoints="lg"></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach($sellers as $key => $seller)
-                    <tr>
-                        <td>
-                            <div class="row gutters-5 w-200px w-md-300px mw-100">
-                                <div class="col">
-                                    <span class="text-muted text-truncate-2">{{ $seller->joinerUser->name }}</span>
+        
+            <div class="card-body">
+                <table class="table aiz-table mb-0">
+                    <thead>
+                        <tr>
+                            <th>Tên quầy hàng</th>
+                            <th data-breakpoints="sm">Loại</th>
+                            <th data-breakpoints="sm">Thời điểm tham gia</th>
+                            <th data-breakpoints="lg">Video mở đầu</th>
+                            <th data-breakpoints="lg">Video slider</th>
+                            <th data-breakpoints="lg"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach($sellers as $key => $seller)
+                        <tr>
+                            <td>
+                                <div class="row gutters-5 w-200px w-md-300px mw-100">
+                                    <div class="col">
+                                        <span class="text-muted text-truncate-2">{{ $seller->joinerUser->name }}</span>
+                                    </div>
                                 </div>
-                            </div>
-                        </td>
-                        <td>{{ date('d/m/Y H:i:s', strtotime($seller->join_time)) }}</td>
-                        <td>
-                            <div class="input-group" data-toggle="aizuploader1" data-type="video" data-multiple="true">
-                                <div class="input-group-prepend">
-                                    <div class="input-group-text bg-soft-secondary font-weight-medium">{{ translate('Browse')}}</div>
+                            </td>
+                            <td>{{ $seller->joinerUser->user_type=='seller' ? 'Quầy hàng' : 'Khách'}}</td>
+                            <td>{{ date('d/m/Y H:i:s', strtotime($seller->join_time)) }}</td>
+                            <td>
+                                <div class="input-group" data-toggle="aizuploader1" data-type="video" data-multiple="true">
+                                    <div class="input-group-prepend">
+                                        <div class="input-group-text bg-soft-secondary font-weight-medium">{{ translate('Browse')}}</div>
+                                    </div>
+                                    <div class="form-control file-amount">{{ translate('Choose File') }}</div>
+                                    <input type="hidden" name="open_video" value="{{ $seller->open_video }}" id="open_video_{{ $seller->id }}" class="selected-files">
                                 </div>
-                                <div class="form-control file-amount">{{ translate('Choose File') }}</div>
-                                <input type="hidden" name="open_video" value="{{ $seller->open_video }}" id="open_video_{{ $seller->id }}" class="selected-files">
-                            </div>
-                            <div class="file-preview box sm"></div>
-                        </td>
-                        <td>
-                            <div class="input-group" data-toggle="aizuploader1" data-type="video" data-multiple="true">
-                                <div class="input-group-prepend">
-                                    <div class="input-group-text bg-soft-secondary font-weight-medium">{{ translate('Browse')}}</div>
+                                <div class="file-preview box sm"></div>
+                            </td>
+                            <td>
+                                <div class="input-group" data-toggle="aizuploader1" data-type="video" data-multiple="true">
+                                    <div class="input-group-prepend">
+                                        <div class="input-group-text bg-soft-secondary font-weight-medium">{{ translate('Browse')}}</div>
+                                    </div>
+                                    <div class="form-control file-amount">{{ translate('Choose File') }}</div>
+                                    <input type="hidden" name="slider_video" value="{{ $seller->slider_video }}" id="slider_video_{{ $seller->id }}" class="selected-files">
                                 </div>
-                                <div class="form-control file-amount">{{ translate('Choose File') }}</div>
-                                <input type="hidden" name="slider_video" value="{{ $seller->slider_video }}" id="slider_video_{{ $seller->id }}" class="selected-files">
-                            </div>
-                            <div class="file-preview box sm"></div>
-                        </td>
-                        <td style="text-align: right"><button class="btn btn-sm btn-primary save-video" data-id="{{ $seller->id }}">{{ translate('Save') }} Video</button></td>
-                    </tr>
-                    @endforeach
-                </tbody>
-            </table>
-            <div class="aiz-pagination">
-                {{ $sellers->appends(request()->input())->links() }}
+                                <div class="file-preview box sm"></div>
+                            </td>
+                            <td style="text-align: right"><button class="btn btn-sm btn-primary save-video" data-id="{{ $seller->id }}">{{ translate('Save') }} Video</button></td>
+                        </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+                <div class="aiz-pagination">
+                    {{ !$sellers->isEmpty()?$sellers->appends(request()->input())->links():'' }}
+                </div>
             </div>
-        </div>
+        </form>
     </div>
 </div>
 
@@ -202,8 +234,8 @@
             if($(this).val() == 'weekly'){
                 $('#period-container').empty();
                 let weekDay = [
-                    'Chủ Nhật', 'Thứ 2', 'Thứ 3', 
-                    'Thứ 4', 'Thứ 5','Thứ 6', 'Thứ 7'
+                    'Thứ 2', 'Thứ 3', 'Thứ 4', 
+                    'Thứ 5','Thứ 6', 'Thứ 7', 'Chủ Nhật'
                 ];
                 let weekOption = ``;
                 weekDay.map((value, index) => {
@@ -272,6 +304,10 @@
             });
         });
    });
+
+    function sort_products(el){
+        $('#sort_products').submit();
+    }
 
    function copyToClipboard(text) {
         var sampleTextarea = document.createElement("textarea");

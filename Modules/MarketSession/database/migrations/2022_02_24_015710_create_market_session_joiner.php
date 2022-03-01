@@ -15,8 +15,9 @@ class CreateMarketSessionJoiner extends Migration
     {
         Schema::create('market_session_joiner', function (Blueprint $table) {
             $table->id();
-            $table->integer('market_id');
+            $table->integer('market_detail_id');
             $table->integer('user_id');
+            $table->integer('wheel_turn')->default(0);
             $table->text('open_video')->nullable();
             $table->text('slider_video')->nullable();
             $table->dateTime('join_time');
