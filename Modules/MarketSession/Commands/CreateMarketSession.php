@@ -56,33 +56,36 @@ class CreateMarketSession extends Command
 
         $marketSessionsMonthly = MarketSession::with('marketDetail')
                                 ->where('type', 'monthly')
-                                ->where('date_interval', 'like', '%'.date('d'))
+                                ->where('date_interval', 'like', '%'.date('j'))
                                 ->where('status', 1)->get();
 
         foreach($marketSessionsMonthly as $monthly)
         {
-            if($monthly->marketDetail->isEmpty())
+            $detail = MarketSessionDetail::where('market_id', $monthly->id)
+                    ->where('start_time', date('Y-m-d '.date('H:i:s', strtotime($monthly->start_date))))->first();
+            if(!$detail)
             {
                 $marketSessionDetail = new MarketSessionDetail();
                 $marketSessionDetail->market_id = $monthly->id;
-                $marketSessionDetail->start_time = $monthly->start_date;
+                $marketSessionDetail->start_time = date('Y-m-d '.date('H:i:s', strtotime($monthly->start_date)));
                 $marketSessionDetail->wheel_slot = 0;
                 $marketSessionDetail->save();
             }
         }
 
-        $marketSessionsWeekly = MarketSession::with('marketDetail')
-                                ->where('type', 'weekly')
+        $marketSessionsWeekly = MarketSession::where('type', 'weekly')
                                 ->where('date_interval', 'like', '%'.date('N').'%')
                                 ->where('status', 1)->get();
 
         foreach($marketSessionsWeekly as $weekly)
         {
-            if($weekly->marketDetail->isEmpty())
+            $detail = MarketSessionDetail::where('market_id', $weekly->id)
+                    ->where('start_time', date('Y-m-d '.date('H:i:s', strtotime($weekly->start_date))))->first();
+            if(!$detail)
             {
                 $marketSessionDetail = new MarketSessionDetail();
                 $marketSessionDetail->market_id = $weekly->id;
-                $marketSessionDetail->start_time = $weekly->start_date;
+                $marketSessionDetail->start_time = date('Y-m-d '.date('H:i:s', strtotime($weekly->start_date)));
                 $marketSessionDetail->wheel_slot = 0;
                 $marketSessionDetail->save();
             }
