@@ -145,7 +145,7 @@ class MarketSessionController extends Controller
   
         if($request->session_id){
             $sessionId = $request->session_id;
-            $sellers = MarketSessionJoiner::where('market_id', $request->session_id)->paginate(15);
+            $sellers = MarketSessionJoiner::where('market_detail_id', $request->session_id)->paginate(15);
         }
 
         return view('MarketSession::edit', compact('session', 'lang', 'marketSessionLists', 'sellers', 'sessionId'));
