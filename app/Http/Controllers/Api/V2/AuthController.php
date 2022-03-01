@@ -211,8 +211,12 @@ class AuthController extends Controller
             'remember_me' => 'boolean'
         ]);*/
 
-        $delivery_boy_condition = $request->has('user_type') && $request->user_type == 'delivery_boy';
+        if(!$request->email){
+            return response()->json(['result' => false, 'message' => translate('User not found'), 'user' => null], 401);
+        }
 
+        $delivery_boy_condition = $request->has('user_type') && $request->user_type == 'delivery_boy';
+        
         if ($delivery_boy_condition) {
             $user = User::whereIn('user_type', ['delivery_boy'])->where('email', $request->email)->orWhere('phone', $request->email)->first();
         } else {
@@ -224,7 +228,6 @@ class AuthController extends Controller
                 return response()->json(['result' => false, 'message' => 'Identity matrix error', 'user' => null], 401);
             }
         }
-
 
         if ($user != null) {
             return response()->json([

@@ -85,9 +85,11 @@
                         </td>
                         <td>
                             <div class="row gutters-5 w-200px w-md-300px mw-100">
-                                <div class="col-auto">
-                                    <img src="{{ uploaded_asset($session->image)}}" alt="Image" class="size-50px img-fit">
-                                </div>
+                                @if( $session->image )
+                                    <div class="col-auto">
+                                        <img src="{{ uploaded_asset($session->image)}}" alt="Image" class="size-50px img-fit">
+                                    </div>
+                                @endif
                                 <div class="col">
                                     <span class="text-muted text-truncate-2">{{ $session->name }}</span>
                                 </div>
@@ -194,7 +196,7 @@
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 },
-                url: "{{route('bulk-product-delete')}}",
+                url: "{{route('market-session.bulk-product-delete')}}",
                 type: 'POST',
                 data: data,
                 cache: false,

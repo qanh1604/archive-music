@@ -448,6 +448,11 @@
                                     <span class="aiz-side-nav-text">Tất cả phiên chợ</span>
                                 </a>
                             </li>
+                            <li class="aiz-side-nav-item">
+                                <a href="{{ route('hot-order') }}" class="aiz-side-nav-link {{ areActiveRoutes(['hot-order', 'hot-order.edit'])}}">
+                                    <span class="aiz-side-nav-text">Đơn hàng mua nóng</span>
+                                </a>
+                            </li>
                         </ul>
                     </li>
                 @endif
