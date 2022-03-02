@@ -190,7 +190,7 @@ class MarketSessionController extends Controller
         $marketSession = MarketSessionDetail::with('marketSession')->where('start_time', '>=', date('Y-m-d 00:00:00'))
                         ->where('start_time', '<=', date('Y-m-d 23:59:59'))->whereHas('marketSession', function($query){
                             $query->where('status', 1);
-                        })->select(DB::RAW('id as market_id'), 'start_time', 'wheel_slot')->paginate(15);
+                        })->select(DB::RAW('id as market_id'), 'start_time', 'wheel_slot', 'end_time')->paginate(15);
 
         return response()->json($marketSession, 200);
     }

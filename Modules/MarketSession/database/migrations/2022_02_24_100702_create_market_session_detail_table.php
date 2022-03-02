@@ -17,6 +17,7 @@ class CreateMarketSessionDetailTable extends Migration
             $table->id();
             $table->integer('market_id');
             $table->dateTime('start_time');
+            $table->dateTime('end_time');
             $table->integer('wheel_slot')->default(0);
             $table->timestamps();
         });
