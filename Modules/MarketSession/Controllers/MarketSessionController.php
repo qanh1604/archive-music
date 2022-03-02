@@ -85,7 +85,7 @@ class MarketSessionController extends Controller
         
         $postData = [
             'agenda' => $request->name,
-            'duration' => 1440,
+            'duration' => $request->duration,
             'recurrence' => [
                 'end_times' => 1,
                 "repeat_interval" => 1,
@@ -119,6 +119,8 @@ class MarketSessionController extends Controller
             $market->image = $request->thumbnail_img;
             $market->date_interval = $request->type!='single'?implode(',', $request->period):'';
             $market->join_link = $responseBody->join_url;
+            $market->duration = $request->duration;
+            $market->end_date = date("Y-m-d H:i:s", strtotime('+'.$request->duration.' minutes', strtotime($startTime)));
             
             if($market->save())
             {
@@ -162,7 +164,7 @@ class MarketSessionController extends Controller
         
         $postData = [
             'agenda' => $request->name,
-            'duration' => 1440,
+            'duration' => $request->duration,
             'recurrence' => [
                 'end_times' => 1,
                 "repeat_interval" => 1,
@@ -193,6 +195,8 @@ class MarketSessionController extends Controller
             $market->start_date = $startTime;
             $market->image = $request->thumbnail_img;
             $market->date_interval = $request->type!='single'?implode(',', $request->period):'';
+            $market->duration = $request->duration;
+            $market->end_date = date("Y-m-d H:i:s", strtotime('+'.$request->duration.' minutes', strtotime($startTime)));
             
             if($market->save()){
                 flash('Thêm mới thành công')->success();

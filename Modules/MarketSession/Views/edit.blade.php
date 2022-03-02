@@ -62,6 +62,12 @@
                             </div>
                         </div>
                         <div class="form-group row">
+                            <label class="col-lg-3 col-from-label">Thời lượng (phút)</label>
+                            <div class="col-lg-8 input-group" id="duration">
+                                <input type="number" class="form-control" name="duration" placeholder="Thời lượng phiên chợ" value="{{$session->duration}}" required>
+                            </div>
+                        </div>
+                        <div class="form-group row">
                             <label class="col-md-3 col-form-label" for="signinSrEmail">Ảnh phiên chợ <small>(290x300)</small></label>
                             <div class="col-md-8">
                                 <div class="input-group" data-toggle="aizuploader" data-type="image">

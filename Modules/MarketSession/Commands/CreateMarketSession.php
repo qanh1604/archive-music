@@ -49,6 +49,7 @@ class CreateMarketSession extends Command
                 $marketSessionDetail = new MarketSessionDetail();
                 $marketSessionDetail->market_id = $session->id;
                 $marketSessionDetail->start_time = $session->start_date;
+                $marketSessionDetail->end_time = $session->end_date;
                 $marketSessionDetail->wheel_slot = 0;
                 $marketSessionDetail->save();
             }
@@ -68,6 +69,7 @@ class CreateMarketSession extends Command
                 $marketSessionDetail = new MarketSessionDetail();
                 $marketSessionDetail->market_id = $monthly->id;
                 $marketSessionDetail->start_time = date('Y-m-d '.date('H:i:s', strtotime($monthly->start_date)));
+                $marketSessionDetail->end_time = $monthly->end_date;
                 $marketSessionDetail->wheel_slot = 0;
                 $marketSessionDetail->save();
             }
@@ -86,6 +88,7 @@ class CreateMarketSession extends Command
                 $marketSessionDetail = new MarketSessionDetail();
                 $marketSessionDetail->market_id = $weekly->id;
                 $marketSessionDetail->start_time = date('Y-m-d '.date('H:i:s', strtotime($weekly->start_date)));
+                $marketSessionDetail->end_time = $weekly->end_date;
                 $marketSessionDetail->wheel_slot = 0;
                 $marketSessionDetail->save();
             }
