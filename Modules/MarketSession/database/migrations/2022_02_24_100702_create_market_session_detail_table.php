@@ -19,6 +19,8 @@ class CreateMarketSessionDetailTable extends Migration
             $table->dateTime('start_time');
             $table->dateTime('end_time');
             $table->integer('wheel_slot')->default(0);
+            $table->longText('gift')->nullable();
+            $table->integer('total_gift')->default(0);
             $table->timestamps();
         });
     }

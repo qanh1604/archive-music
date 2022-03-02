@@ -8,13 +8,6 @@
             <h1 class="h3">Danh sách phiên chợ</h1>
         </div>
     </div>
-    @if(Auth::user()->user_type == 'admin')
-    <div class="col text-right">
-        <a href="{{ route('market-session.create') }}" class="btn btn-circle btn-info">
-            <span>Thêm phiên chợ</span>
-        </a>
-    </div>
-    @endif
 </div>
 <br>
 
@@ -25,27 +18,8 @@
                 <h5 class="mb-md-0 h6">Danh sách phiên chợ</h5>
             </div>
             
-            <div class="dropdown mb-2 mb-md-0">
-                <button class="btn border dropdown-toggle" type="button" data-toggle="dropdown">
-                    {{translate('Bulk Action')}}
-                </button>
-                <div class="dropdown-menu dropdown-menu-right">
-                    <a class="dropdown-item" href="#" onclick="bulk_delete()"> {{translate('Delete selection')}}</a>
-                </div>
-            </div>
-            
             <div class="col-md-2 ml-auto">
-                <select class="form-control form-control-sm aiz-selectpicker mb-2 mb-md-0" id="type" name="type" onchange="sort_products()">
-                    <option value="">Loại phiên</option>
-                    <option value="single" @if($type == 'single') selected @endif>1 Lần</option>
-                    <option value="weekly" @if($type == 'weekly') selected @endif>Hàng tuần</option>
-                    <option value="monthly" @if($type == 'monthly') selected @endif>Hàng tháng</option>
-                </select>
-            </div>
-            <div class="col-md-2">
-                <div class="form-group mb-0">
-                    <input type="text" class="form-control form-control-sm" id="search" name="search"@isset($sort_search) value="{{ $sort_search }}" @endisset placeholder="{{ translate('Type & Enter') }}">
-                </div>
+                <input type="text" class="form-control aiz-date-range" value="{{$searchDate?date('d/m/Y', strtotime($searchDate)):''}}" autocomplete="off" data-single="true" name="start_date" placeholder="Chọn ngày diễn ra" data-time-picker="false" data-format="DD/MM/Y">
             </div>
         </div>
     
@@ -53,7 +27,7 @@
             <table class="table aiz-table mb-0">
                 <thead>
                     <tr>
-                        <th>
+                        <!-- <th>
                             <div class="form-group">
                                 <div class="aiz-checkbox-inline">
                                     <label class="aiz-checkbox">
@@ -62,75 +36,54 @@
                                     </label>
                                 </div>
                             </div>
-                        </th>
+                        </th> -->
                         <!--<th data-breakpoints="lg">#</th>-->
-                        <th>Phiên giao dịch</th>
-                        <th data-breakpoints="lg">{{translate('Added By')}}</th>
-                        <th data-breakpoints="sm">Loại phiên</th>
-                        <th data-breakpoints="lg">{{translate('Published')}}</th>
-                        <th data-breakpoints="sm">Đường dẫn tham gia</th>
+                        <th>Ngày diễn ra</th>
+                        <th data-breakpoints="sm">Tổng số quà</th>
                         <th data-breakpoints="sm" class="text-right">{{translate('Options')}}</th>
                     </tr>
                 </thead>
                 <tbody>
                     @foreach($marketSessions as $key => $session)
                     <tr>
-                        <td>
+                        <!-- <td>
                             <div class="form-group d-inline-block">
                                 <label class="aiz-checkbox">
                                     <input type="checkbox" class="check-one" name="id[]" value="{{$session->id}}">
                                     <span class="aiz-square-check"></span>
                                 </label>
                             </div>
-                        </td>
+                        </td> -->
                         <td>
                             <div class="row gutters-5 w-200px w-md-300px mw-100">
-                                @if( $session->image )
-                                    <div class="col-auto">
-                                        <img src="{{ uploaded_asset($session->image)}}" alt="Image" class="size-50px img-fit">
-                                    </div>
-                                @endif
                                 <div class="col">
-                                    <span class="text-muted text-truncate-2">{{ $session->name }}</span>
+                                    @php 
+                                        $arrayOfWeekDays = [
+                                            'Thứ 2', 'Thứ 3', 'Thứ 4', 
+                                            'Thứ 5', 'Thứ 6', 'Thứ 6', 'Chủ Nhật'
+                                        ];
+                                        $weekDay = $arrayOfWeekDays[date('N', strtotime($session->start_time))-1];
+                                        $day = date('d', strtotime($session->start_time));
+                                        $month = date('m', strtotime($session->start_time));
+                                        $year = date('Y', strtotime($session->start_time));
+                                        $hour = date('H:i:s', strtotime($session->start_time));
+                                    @endphp
+                                    <span class="text-muted text-truncate-2">
+                                        {{
+                                            $weekDay . ' - ' . 
+                                            'ngày ' . $day . 
+                                            ' tháng ' . $month . 
+                                            ' năm ' . $year .
+                                            ' - ' . $hour
+                                        }}
+                                    </span>
                                 </div>
                             </div>
                         </td>
-                        <td>{{ $session->user->name }}</td>
-                        <td>
-                            @php 
-                                $typeText = '';
-                                switch($session->type){
-                                    case 'single':
-                                        $typeText = '1 lần';
-                                        break;
-                                    case 'weekly':
-                                        $typeText = 'Lặp lại theo tuần';
-                                        break;
-                                    case 'monthly':
-                                        $typeText = 'Lặp lại theo tháng';
-                                        break;
-                                }
-                            @endphp
-                            {{ $typeText }}
-                        </td>
-                        <td>
-                            <label class="aiz-switch aiz-switch-success mb-0">
-                                <input onchange="update_published(this)" value="{{ $session->id }}" type="checkbox" <?php if ($session->status == 1) echo "checked"; ?> >
-                                <span class="slider round"></span>
-                            </label>
-                        </td>
-                        <td>
-                            <a href="#" data-value="{{$session->join_link}}" class="copy-button">Sao chép</a>
-                        </td>
+                        <td>{{ $session->total_gift }}</td>
                         <td class="text-right">
-                            <a class="btn btn-soft-primary btn-icon btn-circle btn-sm" href="{{route('market-session.edit', ['id'=>$session->id, 'lang'=>env('DEFAULT_LANGUAGE')] )}}" title="{{ translate('View') }}">
-                                <i class="las la-eye"></i>
-                            </a>
-                            <a class="btn btn-soft-primary btn-icon btn-circle btn-sm" href="{{route('market-session.add-gift', ['id'=>$session->id, 'lang'=>env('DEFAULT_LANGUAGE')] )}}" title="{{ translate('Thêm quà') }}">
+                            <a class="btn btn-soft-primary btn-icon btn-circle btn-sm" href="{{route('market-session.get-add-gift-market', ['id'=>$session->id, 'lang'=>env('DEFAULT_LANGUAGE')] )}}" title="{{ translate('Thêm quà') }}">
                                 <i class="las la-gift"></i>
-                            </a>
-                            <a href="#" class="btn btn-soft-danger btn-icon btn-circle btn-sm confirm-delete" data-href="{{route('market-session.destroy', $session->id)}}" title="{{ translate('Delete') }}">
-                                <i class="las la-trash"></i>
                             </a>
                         </td>
                     </tr>
@@ -145,11 +98,6 @@
 </div>
 
 @endsection
-
-@section('modal')
-    @include('modals.delete_modal')
-@endsection
-
 
 @section('script')
 <script type="text/javascript">

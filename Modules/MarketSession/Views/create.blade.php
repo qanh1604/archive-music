@@ -2,7 +2,7 @@
 
 @section('content')
 <div class="aiz-titlebar text-left mt-2 mb-3">
-    <h1 class="mb-0 h6">{{ 'Chỉnh sửa phiên họp' }}</h5>
+    <h1 class="mb-0 h6">{{ 'Tạo phiên chợ' }}</h5>
 </div>
 <div class="">
     <form class="form form-horizontal mar-top" action="{{route('market-session.store')}}" method="POST" enctype="multipart/form-data" id="choice_form">
@@ -34,13 +34,19 @@
                         <div class="form-group row">
                             <label class="col-lg-3 col-from-label">Ngày diễn ra phiên chợ</label>
                             <div class="col-lg-8 input-group" id="period-container">
-                                <input type="text" class="form-control aiz-date-range" data-single="true" name="period" placeholder="Ngày diễn ra" data-time-picker="true" data-format="DD/MM/Y HH:mm:ss" required>
+                                <input type="text" class="form-control aiz-date-range" autocomplete="off" data-single="true" name="period" placeholder="Ngày diễn ra" data-time-picker="true" data-format="DD/MM/Y HH:mm:ss" required>
                             </div>
                         </div>
                         <div class="form-group row">
                             <label class="col-lg-3 col-from-label">Thời lượng (phút)</label>
                             <div class="col-lg-8 input-group" id="duration">
-                                <input type="number" class="form-control" name="duration" placeholder="Thời lượng phiên chợ" required>
+                                <input type="number" class="form-control" name="duration" autocomplete="off" placeholder="Thời lượng phiên chợ" required>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-lg-3 col-from-label">Ngày kết thúc phiên chợ</label>
+                            <div class="col-lg-8 input-group" id="end_session_date">
+                                <input type="text" class="form-control aiz-date-range" autocomplete="off" data-single="true" name="end_session_date" placeholder="Ngày kết thúc phiên chợ" data-time-picker="false" data-format="DD/MM/Y" required>
                             </div>
                         </div>
                         <div class="form-group row">
@@ -127,7 +133,7 @@
                         <option value="">Ngày diễn ra</option>
                         ${weekOption}
                     </select>
-                    <input type="text" class="form-control aiz-time-picker" name="period_time" style="margin-left: 10px" required>
+                    <input type="text" autocomplete="off" class="form-control aiz-time-picker" name="period_time" style="margin-left: 10px" required>
                 `);
                 AIZ.plugins.bootstrapSelect('refresh');
                 AIZ.plugins.timePicker();
@@ -144,7 +150,7 @@
                         <option value="">Ngày diễn ra</option>
                         ${monthOption}
                     </select>
-                    <input type="text" class="form-control aiz-time-picker" name="period_time" style="margin-left: 10px" required>
+                    <input type="text" autocomplete="off" class="form-control aiz-time-picker" name="period_time" style="margin-left: 10px" required>
                 `);
                 AIZ.plugins.bootstrapSelect('refresh');
                 AIZ.plugins.timePicker();
@@ -161,6 +167,7 @@
                         data-time-picker="true" 
                         data-format="DD/MM/Y HH:mm:ss"
                         required
+                        autocomplete="off"
                     >
                 `);
                 AIZ.plugins.dateRange();
