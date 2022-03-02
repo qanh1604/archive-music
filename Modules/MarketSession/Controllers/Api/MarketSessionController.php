@@ -26,9 +26,22 @@ class MarketSessionController extends Controller
          * Request params
          * id: int //market_id
          */
-        $listSellers = MarketSessionJoiner::with('joinerUser')->where('market_detail_id', $request->id)
+        $listSellers = MarketSessionJoiner::with(['joinerUser', 'shop'])->where('market_detail_id', $request->id)
                         ->whereHas('joinerUser', function($query){
                             $query->where('user_type', 'seller');
+                        })->paginate(15);
+        return response()->json($listSellers, 200);
+    }
+
+    public function getCustomer(Request $request)
+    {
+        /**Method: get
+         * Request params
+         * id: int //market_id
+         */
+        $listSellers = MarketSessionJoiner::with(['joinerUser'])->where('market_detail_id', $request->id)
+                        ->whereHas('joinerUser', function($query){
+                            $query->where('user_type', 'customer');
                         })->paginate(15);
         return response()->json($listSellers, 200);
     }
@@ -41,6 +54,32 @@ class MarketSessionController extends Controller
         $sellerProducts = Product::where('user_id', $request->id)->where('auction_product', 0)->where('approved', 1)->paginate(15);
         
         return response()->json($sellerProducts, 200);
+    }
+
+    public function getMarketList(Request $request)
+    {
+        /**Method: post
+         * Request body
+         * type: ['previous', 'current', 'next']
+         */
+        $type = $request->type;
+        $marketLists = new MarketSessionDetail;
+
+        if($type == 'previous')
+        {
+            $marketLists = $marketLists->whereRaw('DATE(start_time) < CURDATE()');
+        }
+        else if($type == 'next')
+        {
+            $marketLists = $marketLists->whereRaw('DATE(start_time) > CURDATE()');
+        }
+        else
+        {
+            $marketLists = $marketLists->whereRaw('DATE(start_time) = CURDATE()');
+        }
+
+        $marketLists = $marketLists->paginate(15);
+        return response()->json($marketLists, 200);
     }
 
     public function hotBuy(Request $request)
@@ -190,7 +229,7 @@ class MarketSessionController extends Controller
         $marketSession = MarketSessionDetail::with('marketSession')->where('start_time', '>=', date('Y-m-d 00:00:00'))
                         ->where('start_time', '<=', date('Y-m-d 23:59:59'))->whereHas('marketSession', function($query){
                             $query->where('status', 1);
-                        })->select(DB::RAW('id as market_id'), 'start_time', 'wheel_slot', 'end_time')->paginate(15);
+                        })->paginate(15);
 
         return response()->json($marketSession, 200);
     }

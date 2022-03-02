@@ -4,6 +4,7 @@ namespace Modules\MarketSession\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use \App\Models\User;
+use \App\Models\Shop;
 use MarketSession;
 
 class MarketSessionJoiner extends Model
@@ -18,5 +19,10 @@ class MarketSessionJoiner extends Model
     public function joinerUser()
     {
         return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function shop()
+    {
+        return $this->belongsTo(Shop::class, 'user_id');
     }
 }

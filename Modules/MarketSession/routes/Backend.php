@@ -11,6 +11,9 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin']], function(
         Route::get('/create', [MarketSessionController::class, 'create'])->name('market-session.create');
         Route::post('/store', [MarketSessionController::class, 'store'])->name('market-session.store');
         Route::get('/{id}/edit', [MarketSessionController::class, 'edit'])->name('market-session.edit');
+        Route::get('/{id}/gift', [MarketSessionController::class, 'gift'])->name('market-session.add-gift');
+        Route::get('/{id}/add_gift', [MarketSessionController::class, 'getConfigGift'])->name('market-session.get-add-gift-market');
+        Route::post('/add_gift', [MarketSessionController::class, 'postConfigGift'])->name('market-session.post-add-gift-market');
         Route::post('/update/{id}', [MarketSessionController::class, 'update'])->name('market-session.update');
         Route::get('/update_key', [MarketSessionController::class, 'getSettingZoomApi'])->name('market-session.update_key_get');
         Route::post('/update_video', [MarketSessionController::class, 'updateVideo'])->name('market-session.update_video');

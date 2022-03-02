@@ -11,6 +11,9 @@ use Modules\MarketSession\Models\MarketSessionDetail;
 use Artisan;
 use Auth;
 use CoreComponentRepository;
+use DateTime;
+use DateInterval;
+use DatePeriod;
 
 class MarketSessionController extends Controller
 {
@@ -52,7 +55,9 @@ class MarketSessionController extends Controller
 
     public function destroy($id) {
         $market = MarketSession::find($id);
-        $res = $this->executeRequest('meetings/'.$market->zoom_id, 'DELETE');
+        if($market && $market->zoom_id){
+            $res = $this->executeRequest('meetings/'.$market->zoom_id, 'DELETE');
+        }        
 
         if(MarketSession::destroy($id)){
 
@@ -74,7 +79,7 @@ class MarketSessionController extends Controller
         return view('MarketSession::create', compact('lang'));
     }
 
-    public function store(Request $request){        
+    public function store(Request $request){
         $startTime = null;
         if($request->type == 'single'){
             $startTime = date("Y-m-d H:i:s", strtotime(str_replace("/", "-", $request->period)));
@@ -82,7 +87,9 @@ class MarketSessionController extends Controller
         else{
             $startTime = date("Y-m-d H:i:s", strtotime($request->period_time));
         }
-        
+
+        $endSessionTime = date("Y-m-d", strtotime(str_replace("/", "-", $request->end_session_date)));
+
         $postData = [
             'agenda' => $request->name,
             'duration' => $request->duration,
@@ -121,9 +128,64 @@ class MarketSessionController extends Controller
             $market->join_link = $responseBody->join_url;
             $market->duration = $request->duration;
             $market->end_date = date("Y-m-d H:i:s", strtotime('+'.$request->duration.' minutes', strtotime($startTime)));
-            
+            $market->end_session_date = $endSessionTime;
+
             if($market->save())
             {
+                if($market->type == 'single')
+                {   
+                    $marketSessionDetail = new MarketSessionDetail();
+                    $marketSessionDetail->market_id = $market->id;
+                    $marketSessionDetail->start_time = $market->start_date;
+                    $marketSessionDetail->end_time = $market->end_date;
+                    $marketSessionDetail->wheel_slot = 0;
+                    $marketSessionDetail->save();
+                }
+                else if($market->type == 'weekly')
+                {
+                    $marketSessionDetail = [];
+                    $dateInterval = $request->period;
+                    for($i = 0; $i < count($dateInterval); $i++){
+                        $start    = new DateTime($startTime);
+                        $end      = new DateTime($endSessionTime);
+                        $interval = DateInterval::createFromDateString('1 day');
+                        $period   = new DatePeriod($start, $interval, $end);
+
+                        foreach ($period as $dt) {
+                            if ($dt->format("N") == $dateInterval[$i]) {
+                                $time = $dt->format("Y-m-d").' '.date('H:i:s', strtotime($startTime));
+                                $marketSessionDetail[] = [
+                                    'market_id' => $market->id,
+                                    'start_time' => $time,
+                                    'end_time' => date("Y-m-d H:i:s", strtotime('+'.$request->duration.' minutes', strtotime($time))),
+                                    'wheel_slot' => 0,
+                                    'created_at' => date('Y-m-d H:i:s'),
+                                    'updated_at' => date('Y-m-d H:i:s'),
+                                ];
+                            }
+                        }
+                    }
+                    MarketSessionDetail::insert($marketSessionDetail);
+                }
+                else if($market->type == 'monthly')
+                {
+                    $marketSessionDetail = [];
+                    for($i = 0; $i <= $this->diffMonth($startTime, $endSessionTime); $i++){
+                        $time = new DateTime( $startTime );
+                        $time = $time->modify( '+'.($i).' month' );
+                        $time = $time->format('Y-m-d H:i:s');
+                        $marketSessionDetail[] = [
+                            'market_id' => $market->id,
+                            'start_time' => $time,
+                            'end_time' => date("Y-m-d H:i:s", strtotime('+'.$request->duration.' minutes', strtotime($time))),
+                            'wheel_slot' => 0,
+                            'created_at' => date('Y-m-d H:i:s'),
+                            'updated_at' => date('Y-m-d H:i:s'),
+                        ];
+                    }
+                    MarketSessionDetail::insert($marketSessionDetail);
+                }
+
                 flash('Thêm mới thành công')->success();
 
                 Artisan::call('view:clear');
@@ -161,6 +223,7 @@ class MarketSessionController extends Controller
         else{
             $startTime = date("Y-m-d H:i:s", strtotime($request->period_time));
         }
+        $endSessionTime = date("Y-m-d", strtotime(str_replace("/", "-", $request->end_session_date)));
         
         $postData = [
             'agenda' => $request->name,
@@ -197,7 +260,8 @@ class MarketSessionController extends Controller
             $market->date_interval = $request->type!='single'?implode(',', $request->period):'';
             $market->duration = $request->duration;
             $market->end_date = date("Y-m-d H:i:s", strtotime('+'.$request->duration.' minutes', strtotime($startTime)));
-            
+            $market->end_session_date = $endSessionTime;
+
             if($market->save()){
                 flash('Thêm mới thành công')->success();
 
@@ -209,6 +273,32 @@ class MarketSessionController extends Controller
         }
         flash('Đã có lỗi xảy ra')->error();
         return back();
+    }
+
+    private function diffMonth($date1, $date2)
+    {
+        $begin = new DateTime( $date1 );
+        $end = new DateTime( $date2 );
+        $end = $end->modify( '+1 day' );
+
+        $interval = DateInterval::createFromDateString('1 month');
+
+        $period = new DatePeriod($begin, $interval, $end);
+        $counter = iterator_count($period);
+        return $counter;
+    }
+
+    private function diffWeek($date1, $date2)
+    {
+        $begin = new DateTime( $date1 );
+        $end = new DateTime( $date2 );
+        $end = $end->modify( '+1 day' );
+
+        $interval = DateInterval::createFromDateString('1 week');
+
+        $period = new DatePeriod($begin, $interval, $end);
+        $counter = iterator_count($period);
+        return $counter;
     }
 
     public function getSettingZoomApi(Request $request){
@@ -282,11 +372,55 @@ class MarketSessionController extends Controller
             return 1;
         }
         return 0;
-    }    
-
-    public function marketGift(Request $request)
+    }   
+    
+    public function gift(Request $request)
     {
+        $searchDate = null;
+        $lang = $request->lang;
+        $marketSessions = MarketSessionDetail::where('market_id', $request->id);
 
+        if($request->start_date){
+            $marketSessions = $marketSessions->whereRaw('DATE(start_date) = '.$request->start_date);
+        }
+
+        $marketSessions = $marketSessions->paginate(15);
+        return view('MarketSession::GiftConfig.index', compact('marketSessions', 'searchDate', 'lang'));
+    }
+
+    public function getConfigGift(Request $request)
+    {
+        $lang = $request->lang;
+        $marketDetail = MarketSessionDetail::find($request->id);
+        return view('MarketSession::GiftConfig.add_gift', compact('marketDetail', 'lang'));
+    }
+
+    public function postConfigGift(Request $request)
+    {
+        $dataGift = [];
+        $totalGift = 0;
+        for($i = 0; $i < count($request->gift_names); $i++){
+            $dataGift[] = [
+                'image' => $request->gift_images[$i],
+                'name' => $request->gift_names[$i],
+                'amount' => $request->gift_amounts[$i],
+            ];
+            $totalGift += $request->gift_amounts[$i]?$request->gift_amounts[$i]:0;
+        }
+        $marketDetail = MarketSessionDetail::find($request->id);
+        $marketDetail->gift = json_encode($dataGift);
+        $marketDetail->total_gift = $totalGift;
+        if($marketDetail->save())
+        {
+            flash('Cập nhật thành công')->success();
+
+            Artisan::call('view:clear');
+            Artisan::call('cache:clear');
+
+            return back();
+        }
+        flash('Đã có lỗi xảy ra')->error();
+        return back();
     }
 
     public function marketStatistic(Request $request)
