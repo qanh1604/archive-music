@@ -63,7 +63,7 @@ class MarketSessionController extends Controller
          * type: ['previous', 'current', 'next']
          */
         $type = $request->type;
-        $marketLists = new MarketSessionDetail;
+        $marketLists = MarketSessionDetail::with('marketSession:id,name,zoom_id,duration,join_link,image,type');
 
         if($type == 'previous')
         {
