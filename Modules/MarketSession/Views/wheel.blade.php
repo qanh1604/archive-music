@@ -29,7 +29,7 @@
         <title>Lucky wheel</title>
         <link rel="stylesheet" href="{{ static_asset('assets/css/wheel.css') }}" type="text/css" />
         <script type="text/javascript" src="{{ static_asset('assets/js/Winwheel.min.js') }}"></script>
-        <script src="http://cdnjs.cloudflare.com/ajax/libs/gsap/latest/TweenMax.min.js"></script>
+        <script src="{{ static_asset('assets/js/TweenMax.min.js') }}"></script>
     </head>
     <body>
         <div align="center">
