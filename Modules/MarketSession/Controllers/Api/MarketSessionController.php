@@ -310,7 +310,7 @@ class MarketSessionController extends Controller
         if($hotOrderGift){
             if($request->currentTurn > $hotOrderGift->current_turn && $request->currentTurn < $hotOrderGift->max_turn){
                 $hotOrderGift->current_turn = $request->currentTurn;
-                // $hotOrderGift->save();
+                $hotOrderGift->save();
             }
         }
         return 1;
