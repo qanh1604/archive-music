@@ -85,6 +85,9 @@
                             <a class="btn btn-soft-primary btn-icon btn-circle btn-sm" href="{{route('market-session.get-add-gift-market', ['id'=>$session->id, 'lang'=>env('DEFAULT_LANGUAGE')] )}}" title="{{ translate('Thêm quà') }}">
                                 <i class="las la-gift"></i>
                             </a>
+                            <a class="btn btn-soft-primary btn-icon btn-circle btn-sm" href="{{route('market-session.get-winning-prize', ['id'=>$session->id, 'lang'=>env('DEFAULT_LANGUAGE')] )}}" title="{{ translate('Danh sách quà đã trao') }}">
+                                <i class="las la-clipboard"></i>
+                            </a>
                         </td>
                     </tr>
                     @endforeach
