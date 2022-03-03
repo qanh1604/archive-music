@@ -30,73 +30,82 @@
         <link rel="stylesheet" href="{{ static_asset('assets/css/wheel.css') }}" type="text/css" />
         <script type="text/javascript" src="{{ static_asset('assets/js/Winwheel.min.js') }}"></script>
         <script src="{{ static_asset('assets/js/TweenMax.min.js') }}"></script>
+        <script src="{{ static_asset('assets/js/vendors.js') }}"></script>
     </head>
     <body>
         <div align="center">
             <table cellpadding="0" cellspacing="0" border="0">
-            <tr>
-                <td width="438" height="582" class="the_wheel" align="center" valign="center">
-                    <canvas id="canvas" width="800" height="800"
-                        data-responsiveMinWidth="180"
-                        data-responsiveScaleHeight="true"
-                        data-responsiveMargin="0"
-                        onClick="startSpin();"
-                    >
-                        <p style="{color: white}" align="center">Sorry, your browser doesn't support canvas. Please try another.</p>
-                    </canvas>
-                </td>
-            </tr>
-        </table>
-        
+                <tr>
+                    <td width="438" height="582" class="the_wheel" align="center" valign="center">
+                        <canvas id="canvas" width="800" height="800"
+                            data-responsiveMinWidth="180"
+                            data-responsiveScaleHeight="true"
+                            data-responsiveMargin="0"
+                        >
+                            <p style="{color: white}" align="center">Sorry, your browser doesn't support canvas. Please try another.</p>
+                        </canvas>
+                    </td>
+                </tr>
+            </table>
+            
+            <table class="winning_prize" id="winning_prize">
+                <tr>
+                    <th>Quà tặng</th>
+                    <th>Người trúng thưởng</th>
+                </tr>
+                @php
+                    $giftWheelDecode = json_decode($giftWheel);
+                    $wheelResultDecode = json_decode($wheelResult);
+                @endphp
+                @foreach($giftWheelDecode as $gift)
+                    @php
+                        $giftUser = '';
+                        for($i=0; $i<$current_turn; $i++){
+                            if($gift->uuid == $wheelResultDecode[$i]->uuid){
+                                $giftUser = $wheelResultDecode[$i]->user->name;
+                            }
+                        }
+                    @endphp
+                    <?php 
+                    ?>
+                    <tr>
+                        <td> {{ $gift->name }} </td>
+                        <td id="{{ $gift->uuid }}"> {{ $giftUser }}</td>
+                    </tr>
+                @endforeach
+                
+            </table>
+        </div>
         <script>
+            let userInWheel = '{!! $userInWheel !!}';
+            let giftWheel = '{!! $giftWheel !!}';
+            let numberOfPin = '{!! $numberOfPin !!}';
+            let wheelResult = '{!! $wheelResult !!}';
+            let current_turn = '{!! $current_turn !!}';
+            let max_turn = '{!! $max_turn !!}';
+            let duration = 10;
             // Create new wheel object specifying the parameters at creation time.
             let theWheel = new Winwheel({
-                'outerRadius'     : 400,        // Set outer radius so wheel fits inside the background.
-                'innerRadius'     : 75,         // Make wheel hollow so segments don't go all way to center.
-                'textFontSize'    : 24,         // Set default font size for the segments.
+                'outerRadius'     : 400,
+                'innerRadius'     : 75,
+                'textFontSize'    : 24,
                 'responsive'   : true, 
-                'textOrientation' : 'vertical', // Make text vertial so goes down from the outside of wheel.
-                'textAlignment'   : 'outer',    // Align text to outside of wheel.
-                'numSegments'     : 24,         // Specify number of segments.
-                'segments'        :             // Define segments including colour and text.
-                [                               // font size and test colour overridden on backrupt segments.
-                   {'fillStyle' : '#ee1c24', 'text' : '300'},
-                   {'fillStyle' : '#3cb878', 'text' : '450'},
-                   {'fillStyle' : '#f6989d', 'text' : '600'},
-                   {'fillStyle' : '#00aef0', 'text' : '750'},
-                   {'fillStyle' : '#f26522', 'text' : '500'},
-                   {'fillStyle' : '#000000', 'text' : 'BANKRUPT', 'textFontSize' : 16, 'textFillStyle' : '#ffffff'},
-                   {'fillStyle' : '#e70697', 'text' : '3000'},
-                   {'fillStyle' : '#fff200', 'text' : '600'},
-                   {'fillStyle' : '#f6989d', 'text' : '700'},
-                   {'fillStyle' : '#ee1c24', 'text' : '350'},
-                   {'fillStyle' : '#3cb878', 'text' : '500'},
-                   {'fillStyle' : '#f26522', 'text' : '800'},
-                   {'fillStyle' : '#a186be', 'text' : '300'},
-                   {'fillStyle' : '#fff200', 'text' : '400'},
-                   {'fillStyle' : '#00aef0', 'text' : '650'},
-                   {'fillStyle' : '#ee1c24', 'text' : '1000'},
-                   {'fillStyle' : '#f6989d', 'text' : '500'},
-                   {'fillStyle' : '#f26522', 'text' : '400'},
-                   {'fillStyle' : '#3cb878', 'text' : '900'},
-                   {'fillStyle' : '#000000', 'text' : 'BANKRUPT', 'textFontSize' : 16, 'textFillStyle' : '#ffffff'},
-                   {'fillStyle' : '#a186be', 'text' : '600'},
-                   {'fillStyle' : '#fff200', 'text' : '700'},
-                   {'fillStyle' : '#00aef0', 'text' : '800'},
-                   {'fillStyle' : '#ffffff', 'text' : 'LOOSE TURN', 'textFontSize' : 12}
-                ],
-                'animation' :           // Specify the animation to use.
+                'textOrientation' : 'vertical', 
+                'textAlignment'   : 'outer',
+                'numSegments'     : numberOfPin,
+                'segments': JSON.parse(userInWheel),
+                'animation' : 
                 {
                     'type'     : 'spinToStop',
-                    'duration' : 10,    // Duration in seconds.
-                    'spins'    : 3,     // Default number of complete spins.
-                    'callbackFinished' : alertPrize,
-                    'callbackSound'    : playSound,   // Function to call when the tick sound is to be triggered.
-                    'soundTrigger'     : 'pin'        // Specify pins are to trigger the sound, the other option is 'segment'.
+                    'duration' : duration,
+                    'spins'    : 3,
+                    'callbackFinished' : resetWheel,
+                    'callbackSound'    : playSound,
+                    'soundTrigger'     : 'pin'
                 },
-                'pins' :				// Turn pins on.
+                'pins' :
                 {
-                    'number'     : 24,
+                    'number'     : numberOfPin,
                     'fillStyle'  : 'silver',
                     'outerRadius': 4,
                     'responsive' : true,
@@ -109,27 +118,18 @@
             // This function is called when the sound is to be played.
             function playSound()
             {
-                // Stop and rewind the sound if it already happens to be playing.
                 audio.pause();
                 audio.currentTime = 0;
-
-                // Play the sound.
                 audio.play();
             }
 
-            // Vars used by the code in this page to do power controls.
+
             let wheelPower    = 1;
             let wheelSpinning = false;
 
-            // -------------------------------------------------------
-            // Click handler for spin button.
-            // -------------------------------------------------------
-            function startSpin()
+            function startSpin(position)
             {
-                // Ensure that spinning can't be clicked again while already running.
                 if (wheelSpinning == false) {
-                    // Based on the power level selected adjust the number of spins for the wheel, the more times is has
-                    // to rotate with the duration of the animation the quicker the wheel spins.
                     if (wheelPower == 1) {
                         theWheel.animation.spins = 3;
                     } else if (wheelPower == 2) {
@@ -137,51 +137,58 @@
                     } else if (wheelPower == 3) {
                         theWheel.animation.spins = 10;
                     }
+                    calculatePrize(position);
 
-                    // Disable the spin button so can't click again while wheel is spinning.
-                    // document.getElementById('spin_button').src       = "spin_off.png";
-                    // document.getElementById('spin_button').className = "";
-
-                    // Begin the spin animation by calling startAnimation on the wheel object.
                     theWheel.startAnimation();
 
-                    // Set to true so that power can't be changed and spin button re-enabled during
-                    // the current animation. The user will have to reset before spinning again.
                     wheelSpinning = true;
                 }
             }
 
-            // -------------------------------------------------------
-            // Function for reset button.
-            // -------------------------------------------------------
+            function calculatePrize(position) {
+                var stopAt = theWheel.getRandomForSegment(position);
+                theWheel.animation.stopAngle = stopAt;
+                theWheel.startAnimation();
+            }
+
             function resetWheel()
             {
-                theWheel.stopAnimation(false);  // Stop the animation, false as param so does not call callback function.
-                theWheel.rotationAngle = 0;     // Re-set the wheel angle to 0 degrees.
-                theWheel.draw();                // Call draw to render changes to the wheel.
+                let angle = theWheel.getRotationPosition();
+                theWheel.stopAnimation(false);
+                theWheel.rotationAngle = angle;
+                theWheel.draw();
 
-                document.getElementById('pw1').className = "";  // Remove all colours from the power level indicators.
-                document.getElementById('pw2').className = "";
-                document.getElementById('pw3').className = "";
-
-                wheelSpinning = false;          // Reset to false to power buttons and spin can be clicked again.
+                wheelSpinning = false;
             }
 
-            // -------------------------------------------------------
-            // Called when the spin animation has finished by the callback feature of the wheel because I specified callback in the parameters.
-            // -------------------------------------------------------
-            function alertPrize(indicatedSegment)
-            {
-                // Just alert to the user what happened.
-                // In a real project probably want to do something more interesting than this with the result.
-                if (indicatedSegment.text == 'LOOSE TURN') {
-                    alert('Sorry but you loose a turn.');
-                } else if (indicatedSegment.text == 'BANKRUPT') {
-                    alert('Oh no, you have gone BANKRUPT!');
-                } else {
-                    alert("You have won " + indicatedSegment.text);
+            function timer(ms) { return new Promise(res => setTimeout(res, ms)); }
+
+            async function task(i, time) {
+                $.ajax({
+                    url: '{{route("lucky_wheel.sync_wheel_turn")}}',
+                    method: 'POST',
+                    data: {
+                        _token: '{{ csrf_token() }}',
+                        market_id: "{{ $marketId }}",
+                        currentTurn: parseInt(i)+1
+                    },
+                    success: function(data){
+
+                    }
+                });
+                await startSpin((wheelResult[i].position)+1);
+                await timer(time);
+                $(`#${wheelResult[i].uuid}`).html(wheelResult[i].user.name);
+            }
+
+            $(document).ready(async function(){
+                wheelResult = JSON.parse(wheelResult);
+                var intervalTime = (duration+4)*1000;
+                await timer(4000);
+                for (var i = current_turn; i < max_turn; i++) {
+                    await task(i, intervalTime);
                 }
-            }
+            });
         </script>
     </body>
 </html>

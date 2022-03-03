@@ -79,3 +79,12 @@ td.pw3
 {
     margin-bottom: 5px;
 }
+
+table.winning_prize {
+    margin-top: 20px;
+}
+
+table.winning_prize th, table.winning_prize td
+{
+    border:1px solid #333333;
+}
