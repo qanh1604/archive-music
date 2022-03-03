@@ -9,6 +9,7 @@ use Modules\MarketSession\Models\MarketSession;
 use Modules\MarketSession\Models\MarketSessionJoiner;
 use Modules\MarketSession\Models\MarketSessionDetail;
 use Modules\MarketSession\Models\HotOrder;
+use Modules\MarketSession\Models\HotOrderGift;
 use Artisan;
 use Auth;
 use CoreComponentRepository;
@@ -17,6 +18,7 @@ use DB;
 use App\Models\User;
 use App\Models\Address;
 use App\Models\Product;
+use Illuminate\Support\Str;
 
 class MarketSessionController extends Controller
 {
@@ -188,8 +190,130 @@ class MarketSessionController extends Controller
          * Request body
          * market_id: int
          */
-        $attendance = HotOrder::where('market_id', $request->market_id)->pluck('user_id');
-        return view('MarketSession::wheel');
+
+        $hotOrderGift = HotOrderGift::where('market_id', $request->id)->first();
+        if(!$hotOrderGift)
+        {
+            $attendances = HotOrder::with('user')->where('market_id', $request->id)->get();
+            $giftData = MarketSessionDetail::find($request->id);
+            
+            $colors = ['#ee1c24', '#3cb878', '#f6989d', '#00aef0', '#f26522', '#000000', '#e70697', '#fff200'];
+    
+            $userInWheel = [];
+            $giftWheel = [];
+    
+            if($giftData && $giftData->gift)
+            {
+                $gifts = json_decode($giftData->gift);
+                foreach($gifts as $gift){
+                    for($i = 0; $i < $gift->amount; $i++){
+                        $giftWheel[] = [
+                            'image' => $gift->image,
+                            'name' => $gift->name,
+                            'uuid' => str_replace('-', '_', (string) Str::uuid())
+                        ];
+                    }
+                }
+            }
+            shuffle($giftWheel);
+            
+            $colorKey = 0;
+            foreach($attendances as $value){
+                $userInWheel[] = [
+                    'fillStyle' => $colors[$colorKey],
+                    'text' => $value->user->name,
+                    'textFontSize' => 16,
+                    'data-id' => $value->user->id,
+                    'textFillStyle' => '#ffffff'
+                ];
+                $colorKey++;
+                if($colorKey > count($colors)-1){
+                    $colorKey = 0;
+                }
+            }
+    
+            shuffle($userInWheel);
+    
+            $numberOfPin = count($userInWheel);
+
+            $wheelResult = [];
+
+            $arrayOfWheelSet = [];
+
+            for($i = 0; $i < count($giftWheel); $i++){
+                if(empty($userInWheel)){
+                    break;
+                }
+                $rand = rand(0, count($userInWheel)-1);
+                
+                while(true){
+                    if(in_array($rand, $arrayOfWheelSet)){
+                        $rand = rand(0, count($userInWheel)-1);
+                    }
+                    else{
+                        $arrayOfWheelSet[] = $rand;
+                        $wheelResult[] = [
+                            'image' => $giftWheel[$i]['image'],
+                            'name' => $giftWheel[$i]['name'],
+                            'uuid' => $giftWheel[$i]['uuid'],
+                            'user' => [
+                                'name' => $userInWheel[$rand]['text'],
+                                'id' => $userInWheel[$rand]['data-id']
+                            ],
+                            'position' => $rand
+                        ];
+                        break;
+                    }
+                }
+            }
+
+            $userInWheel = json_encode($userInWheel);
+
+            $current_turn = 0;
+            $max_turn = count($giftWheel);
+
+            $giftWheel = json_encode($giftWheel);
+
+            $hotOrderGift = new HotOrderGift();
+            $hotOrderGift->market_id = $request->id;
+            $hotOrderGift->gift = $giftWheel;
+            $hotOrderGift->user = $userInWheel;
+            $hotOrderGift->wheel = json_encode($wheelResult);
+            $hotOrderGift->current_turn = $current_turn;
+            $hotOrderGift->max_turn = $max_turn;
+            $hotOrderGift->save();
+        }
+        else{
+            $userInWheel = $hotOrderGift->user;
+            $wheelResult = $hotOrderGift->wheel;
+            $current_turn = $hotOrderGift->current_turn;
+            $max_turn = $hotOrderGift->max_turn;
+            $giftWheel = $hotOrderGift->gift;
+            $numberOfPin = count(json_decode($userInWheel));
+        }   
+
+        $marketId = $request->id;
+
+        return view('MarketSession::wheel', compact(
+            'marketId',
+            'numberOfPin', 
+            'userInWheel', 
+            'wheelResult', 
+            'current_turn', 
+            'max_turn', 
+            'giftWheel'
+        ));
+    }
+
+    public function syncWheelTurn(Request $request){
+        $hotOrderGift = HotOrderGift::where('market_id', $request->market_id)->first();
+        if($hotOrderGift){
+            if($request->currentTurn > $hotOrderGift->current_turn && $request->currentTurn < $hotOrderGift->max_turn){
+                $hotOrderGift->current_turn = $request->currentTurn;
+                $hotOrderGift->save();
+            }
+        }
+        return 1;
     }
 
     public function attendance(Request $request)
