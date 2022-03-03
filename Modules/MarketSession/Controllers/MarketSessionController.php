@@ -8,12 +8,15 @@ use GuzzleHttp;
 use Modules\MarketSession\Models\MarketSession;
 use Modules\MarketSession\Models\MarketSessionJoiner;
 use Modules\MarketSession\Models\MarketSessionDetail;
+use Modules\MarketSession\Models\HotOrderGift;
 use Artisan;
 use Auth;
 use CoreComponentRepository;
 use DateTime;
 use DateInterval;
 use DatePeriod;
+use Illuminate\Pagination\Paginator;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class MarketSessionController extends Controller
 {
@@ -421,6 +424,55 @@ class MarketSessionController extends Controller
         }
         flash('Đã có lỗi xảy ra')->error();
         return back();
+    }
+
+    public function getWinningPrize(Request $request, $id){
+        $hotOrderGift = HotOrderGift::where('market_id', $id)->first();
+        $gifts = [];
+        if($hotOrderGift){
+            if($hotOrderGift->wheel){
+                $gifts = json_decode($hotOrderGift->wheel, true);
+            }
+        }
+        $total = count($gifts);
+        $perPage = 15;
+        $gifts = array_chunk($gifts, $perPage);
+
+        $giftData = collect([]);
+        if(!empty($gifts)){
+            if(!$request->page){
+                $giftData = collect($gifts[0]);
+            }
+            else{
+                if(isset($gifts[$request->page - 1])){
+                    $giftData = collect($gifts[$request->page - 1]);
+                }
+                elseif(isset($gifts[0])){
+                    $giftData = collect($gifts[0]);
+                }
+                else{
+                    $giftData = collect([]);
+                }
+            }
+        }
+
+        $links = $this->makeLengthAware($giftData, $total, $perPage);
+        return view('MarketSession::GiftConfig.gift_send', compact('giftData', 'links', 'total', 'perPage'));
+    }
+
+    public function makeLengthAware($collection, $total, $perPage, $appends = null)
+    {
+        $paginator = new LengthAwarePaginator(
+            $collection, 
+            $total, 
+            $perPage, 
+            Paginator::resolveCurrentPage(), 
+            ['path' => Paginator::resolveCurrentPath()]
+        );
+
+        if($appends) $paginator->appends($appends);
+
+        return $paginator->render();
     }
 
     public function marketStatistic(Request $request)
