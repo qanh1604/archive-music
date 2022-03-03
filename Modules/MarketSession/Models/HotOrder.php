@@ -28,7 +28,7 @@ class HotOrder extends Model
 
     public function marketDetail()
     {
-        return $this->hasMany(MarketSessionDetail::class, 'market_id');
+        return $this->belongsTo(MarketSessionDetail::class, 'market_id');
     }
 
     public function orderDetails()

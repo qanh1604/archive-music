@@ -57,7 +57,7 @@ class MarketSessionController extends Controller
     }
 
     public function getMarketList(Request $request)
-    {
+    {   
         /**Method: post
          * Request body
          * type: ['previous', 'current', 'next']
@@ -184,7 +184,12 @@ class MarketSessionController extends Controller
 
     public function luckyWheel(Request $request)
     {
-
+        /**Method: post
+         * Request body
+         * market_id: int
+         */
+        $attendance = HotOrder::where('market_id', $request->market_id)->pluck('user_id');
+        return view('MarketSession::wheel');
     }
 
     public function attendance(Request $request)
