@@ -9,252 +9,382 @@
         </div>
     </div>
 @endif
-@if(Auth::user()->user_type == 'admin' || in_array('1', json_decode(Auth::user()->staff->role->permissions)))
-<div class="row gutters-10">
-    <div class="col-lg-6">
-        <div class="row gutters-10">
-            <div class="col-6">
-                <div class="bg-grad-2 text-white rounded-lg mb-4 overflow-hidden">
-                    <div class="px-3 pt-3">
-                        <div class="opacity-50">
-                            <span class="fs-12 d-block">{{ translate('Total') }}</span>
-                            {{ translate('Customer') }}
-                        </div>
-                        <div class="h3 fw-700 mb-3">
-                            {{ \App\Models\User::where('user_type', 'customer')->where('email_verified_at', '!=', null)->count() }}
-                        </div>
-                    </div>
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320">
-                        <path fill="rgba(255,255,255,0.3)" fill-opacity="1" d="M0,128L34.3,112C68.6,96,137,64,206,96C274.3,128,343,224,411,250.7C480,277,549,235,617,213.3C685.7,192,754,192,823,181.3C891.4,171,960,149,1029,117.3C1097.1,85,1166,43,1234,58.7C1302.9,75,1371,149,1406,186.7L1440,224L1440,320L1405.7,320C1371.4,320,1303,320,1234,320C1165.7,320,1097,320,1029,320C960,320,891,320,823,320C754.3,320,686,320,617,320C548.6,320,480,320,411,320C342.9,320,274,320,206,320C137.1,320,69,320,34,320L0,320Z"></path>
-                    </svg>
-                </div>
-            </div>
-            <div class="col-6">
-                <div class="bg-grad-3 text-white rounded-lg mb-4 overflow-hidden">
-                    <div class="px-3 pt-3">
-                        <div class="opacity-50">
-                            <span class="fs-12 d-block">{{ translate('Total') }}</span>
-                            {{ translate('Order') }}
-                        </div>
-                        <div class="h3 fw-700 mb-3">{{ \App\Models\Order::count() }}</div>
-                    </div>
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320">
-                        <path fill="rgba(255,255,255,0.3)" fill-opacity="1" d="M0,128L34.3,112C68.6,96,137,64,206,96C274.3,128,343,224,411,250.7C480,277,549,235,617,213.3C685.7,192,754,192,823,181.3C891.4,171,960,149,1029,117.3C1097.1,85,1166,43,1234,58.7C1302.9,75,1371,149,1406,186.7L1440,224L1440,320L1405.7,320C1371.4,320,1303,320,1234,320C1165.7,320,1097,320,1029,320C960,320,891,320,823,320C754.3,320,686,320,617,320C548.6,320,480,320,411,320C342.9,320,274,320,206,320C137.1,320,69,320,34,320L0,320Z"></path>
-                    </svg>
-                </div>
-            </div>
-            <div class="col-6">
-                <div class="bg-grad-1 text-white rounded-lg mb-4 overflow-hidden">
-                    <div class="px-3 pt-3">
-                        <div class="opacity-50">
-                            <span class="fs-12 d-block">{{ translate('Total') }}</span>
-                            {{ translate('Product category') }}
-                        </div>
-                        <div class="h3 fw-700 mb-3">{{ \App\Models\Category::count() }}</div>
-                    </div>
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320">
-                        <path fill="rgba(255,255,255,0.3)" fill-opacity="1" d="M0,128L34.3,112C68.6,96,137,64,206,96C274.3,128,343,224,411,250.7C480,277,549,235,617,213.3C685.7,192,754,192,823,181.3C891.4,171,960,149,1029,117.3C1097.1,85,1166,43,1234,58.7C1302.9,75,1371,149,1406,186.7L1440,224L1440,320L1405.7,320C1371.4,320,1303,320,1234,320C1165.7,320,1097,320,1029,320C960,320,891,320,823,320C754.3,320,686,320,617,320C548.6,320,480,320,411,320C342.9,320,274,320,206,320C137.1,320,69,320,34,320L0,320Z"></path>
-                    </svg>
-                </div>
-            </div>
-            <div class="col-6">
-                <div class="bg-grad-4 text-white rounded-lg mb-4 overflow-hidden">
-                    <div class="px-3 pt-3">
-                        <div class="opacity-50">
-                            <span class="fs-12 d-block">{{ translate('Total') }}</span>
-                            {{ translate('Product brand') }}
-                        </div>
-                        <div class="h3 fw-700 mb-3">{{ \App\Models\Brand::count() }}</div>
-                    </div>
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320">
-                        <path fill="rgba(255,255,255,0.3)" fill-opacity="1" d="M0,128L34.3,112C68.6,96,137,64,206,96C274.3,128,343,224,411,250.7C480,277,549,235,617,213.3C685.7,192,754,192,823,181.3C891.4,171,960,149,1029,117.3C1097.1,85,1166,43,1234,58.7C1302.9,75,1371,149,1406,186.7L1440,224L1440,320L1405.7,320C1371.4,320,1303,320,1234,320C1165.7,320,1097,320,1029,320C960,320,891,320,823,320C754.3,320,686,320,617,320C548.6,320,480,320,411,320C342.9,320,274,320,206,320C137.1,320,69,320,34,320L0,320Z"></path>
-                    </svg>
-                </div>
-            </div>
-        </div>
-    </div>
 
-    <div class="col-lg-6">
-        <div class="row gutters-10">
-            <div class="col-6">
-                <div class="card">
-                    <div class="card-header">
-                        <h6 class="mb-0 fs-14">{{ translate('Products') }}</h6>
-                    </div>
-                    <div class="card-body">
-                        <canvas id="pie-1" class="w-100" height="305"></canvas>
-                    </div>
-                </div>
-            </div>
-            <div class="col-6">
-                <div class="card">
-                    <div class="card-header">
-                        <h6 class="mb-0 fs-14">{{ translate('Sellers') }}</h6>
-                    </div>
-                    <div class="card-body">
-                        <canvas id="pie-2" class="w-100" height="305"></canvas>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-@endif
-
-
-@if(Auth::user()->user_type == 'admin' || in_array('1', json_decode(Auth::user()->staff->role->permissions)))
-    <div class="row gutters-10">
-        <div class="col-md-6">
-            <div class="card">
-                <div class="card-header">
-                    <h6 class="mb-0 fs-14">{{ translate('Category wise product sale') }}</h6>
-                </div>
-                <div class="card-body">
-                    <canvas id="graph-1" class="w-100" height="500"></canvas>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-6">
-            <div class="card">
-                <div class="card-header">
-                    <h6 class="mb-0 fs-14">{{ translate('Category wise product stock') }}</h6>
-                </div>
-                <div class="card-body">
-                    <canvas id="graph-2" class="w-100" height="500"></canvas>
-                </div>
-            </div>
-        </div>
-    </div>
-@endif
-
-<div class="card">
+<div class="card general-statistic">
     <div class="card-header">
-        <h6 class="mb-0">{{ translate('Top 12 Products') }}</h6>
+        <h6 class="mb-0">THỐNG KÊ TỔNG QUAN</h6>
     </div>
     <div class="card-body">
-        <div class="aiz-carousel gutters-10 half-outside-arrow" data-items="6" data-xl-items="5" data-lg-items="4" data-md-items="3" data-sm-items="2" data-arrows='true'>
-            @foreach (filter_products(\App\Models\Product::where('published', 1)->orderBy('num_of_sale', 'desc'))->limit(12)->get() as $key => $product)
-                <div class="carousel-box">
-                    <div class="aiz-card-box border border-light rounded shadow-sm hov-shadow-md mb-2 has-transition bg-white">
-                        <div class="position-relative">
-                            <a href="{{ route('product', $product->slug) }}" class="d-block">
-                                <img
-                                    class="img-fit lazyload mx-auto h-210px"
-                                    src="{{ static_asset('assets/img/placeholder.jpg') }}"
-                                    data-src="{{ uploaded_asset($product->thumbnail_img) }}"
-                                    alt="{{  $product->getTranslation('name')  }}"
-                                    onerror="this.onerror=null;this.src='{{ static_asset('assets/img/placeholder.jpg') }}';"
+        <div class="col-md-3 d-flex align-items-center justify-content-center">
+            <img src="{{ static_asset('assets/img/phien-giao-dich.svg') }}">
+            <div class="d-flex flex-column ml-3">
+                <span class="title">{{numberWithSymbol($totalSession)}}</span>
+                <span class="sub_title">Phiên giao dịch</span>
+            </div>
+        </div>
+        <div class="col-md-3 d-flex align-items-center justify-content-center">
+            <img src="{{ static_asset('assets/img/khach-hang.svg') }}">
+            <div class="d-flex flex-column ml-3">
+                <span class="title">{{numberWithSymbol($totalCustomer)}}</span>
+                <span class="sub_title">Khách hàng</span>
+            </div>
+        </div>
+        <div class="col-md-3 d-flex align-items-center justify-content-center">
+            <img src="{{ static_asset('assets/img/san-pham.svg') }}">
+            <div class="d-flex flex-column ml-3">
+                <span class="title">{{numberWithSymbol($totalProduct)}}</span>
+                <span class="sub_title">Sản phẩm</span>
+            </div>
+        </div>
+        <div class="col-md-3 d-flex align-items-center justify-content-center">
+            <img src="{{ static_asset('assets/img/doanh-thu.svg') }}">
+            <div class="d-flex flex-column ml-3">
+                <span class="title">{{numberWithSymbol($totalRevenue)}}</span>
+                <span class="sub_title">Doanh thu</span>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="statistic_cfdn">
+    <div class="card card-with-background">
+        <div class="card-header mb-3 card-header-with-background" id="headingOne">
+            <h5 class="mb-0">
+                <button class="btn btn-link card-collapse-button" data-toggle="collapse" data-target="#collapseCFDN" aria-expanded="true" aria-controls="collapseCFDN">
+                    <span class="accicon mr-1"><i class="las la-chevron-down rotate-icon"></i></span>Thống kê CFDN
+                </button>
+            </h5>
+        </div>
+
+        <div id="collapseCFDN" class="collapse show" aria-labelledby="headingOne" data-parent="#statistic_cfdn">
+            <div class="row gutters-5">
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header row">
+                            <div class="col-md-6">
+                                <h6 class="mb-0">Biểu đồ Đơn hàng mua gói</h6>
+                            </div>
+                            <div class="col-md-6">
+                                <input 
+                                    type="text" 
+                                    class="form-control aiz-date-range input-border-none" 
+                                    style="color: #7367F0" 
+                                    id="date_range_package" 
+                                    data-format="DD/MM/Y" 
+                                    data-separator=" - " 
+                                    autocomplete="off"
+                                    value=" {{ date('01/m/Y') }} - {{ date('t/m/Y') }} "
                                 >
-                            </a>
+                            </div>
                         </div>
-                        <div class="p-md-3 p-2 text-left">
-                            <div class="fs-15">
-                                @if(home_base_price($product) != home_discounted_base_price($product))
-                                    <del class="fw-600 opacity-50 mr-1">{{ home_base_price($product) }}</del>
-                                @endif
-                                <span class="fw-700 text-primary">{{ home_discounted_base_price($product) }}</span>
-                            </div>
-                            <div class="rating rating-sm mt-1">
-                                {{ renderStarRating($product->rating) }}
-                            </div>
-                            <h3 class="fw-600 fs-13 text-truncate-2 lh-1-4 mb-0">
-                                <a href="{{ route('product', $product->slug) }}" class="d-block text-reset">{{ $product->getTranslation('name') }}</a>
-                            </h3>
+                        <div class="card-body">
+                            <canvas id="chart-package" class="w-100" height="200"></canvas>
                         </div>
                     </div>
                 </div>
-            @endforeach
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header row">
+                            <div class="col-md-6">
+                                <h6 class="mb-0">Biểu đồ Doanh thu từ gói thành viên/quầy hàng</h6>
+                            </div>
+                            <div class="col-md-6">
+                                <input 
+                                    type="text" 
+                                    class="form-control aiz-date-range input-border-none" 
+                                    style="color: #7367F0" 
+                                    id="date_range_revenue" 
+                                    data-format="DD/MM/Y" 
+                                    data-separator=" - " 
+                                    autocomplete="off"
+                                    value=" {{ date('01/m/Y') }} - {{ date('t/m/Y') }} "
+                                >
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <canvas id="chart-revenue" class="w-100" height="200"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row gutters-5">
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-header row">
+                            <div class="col">
+                                <h6 class="mb-0">Gói bán chạy</h6>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="row align-items-center">
+                                <div class="col-md-2">
+                                    <img class="statistic-image" src="{{ static_asset('assets/img/doanh-thu.svg') }}">
+                                </div>
+                                <div class="col d-flex flex-column">
+                                    <strong>Tên gói</strong>
+                                    <span>Gói thành viên</span>
+                                </div>
+                                <div class="col-md-3 statistic-number">
+                                    100
+                                </div>
+                            </div>
+                            <br>
+                            <div class="row align-items-center">
+                                <div class="col-md-2">
+                                    <img class="statistic-image" src="{{ static_asset('assets/img/doanh-thu.svg') }}">
+                                </div>
+                                <div class="col d-flex flex-column">
+                                    <strong>Tên gói</strong>
+                                    <span>Gói thành viên</span>
+                                </div>
+                                <div class="col-md-3 statistic-number">
+                                    100
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-header row">
+                            <div class="col">
+                                <h6 class="mb-0">Danh mục được quan tâm</h6>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-header row">
+                            <div class="col">
+                                <h6 class="mb-0">Ngành hàng được quan tâm</h6>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
 
+<div id="statistic_seller">
+    <div class="card card-with-background">
+        <div class="card-header mb-3 card-header-with-background" id="headingOne">
+            <h5 class="mb-0">
+                <button class="btn btn-link card-collapse-button" data-toggle="collapse" data-target="#collapseSeller" aria-expanded="true" aria-controls="collapseSeller">
+                    <span class="accicon mr-1"><i class="las la-chevron-down rotate-icon"></i></span>Thống kê Quầy hàng
+                </button>
+            </h5>
+        </div>
+
+        <div id="collapseSeller" class="collapse show" aria-labelledby="headingOne" data-parent="#statistic_seller">
+            <div class="row gutters-5">
+                <div class="col-md-12">
+                    <div class="aiz-titlebar text-left mt-2 mb-3">
+                        <div class="col-md-12 mb-2">
+                            <h5 class="mb-0 h6">Quầy hàng</h5>
+                        </div>
+                        <div class="col-md-4">
+                            <select class="form-control aiz-selectpicker" data-name="select_value" data-group="seller" data-chart="chart" name="select_seller" id="select_seller" data-live-search="true">
+                                <option value=""></option>
+                                @foreach($sellers as $seller)
+                                    <option value="{{ $seller->user_id }}">{{ $seller->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header row">
+                            <div class="col-md-6">
+                                <h6 class="mb-0">Biểu đồ Đơn hàng</h6>
+                            </div>
+                            <div class="col-md-6">
+                                <input 
+                                    type="text" 
+                                    class="form-control aiz-date-range input-border-none" 
+                                    style="color: #7367F0" 
+                                    id="date_range_seller_package" 
+                                    data-format="DD/MM/Y" 
+                                    data-separator=" - " 
+                                    autocomplete="off"
+                                    data-group="seller"
+                                    data-chart="chart"
+                                    data-name="date_package"
+                                    value=" {{ date('01/m/Y') }} - {{ date('t/m/Y') }} "
+                                >
+                            </div>
+                        </div>
+                        <div class="card-body" style="height: 240px">
+                            <canvas id="chart-seller-package" class="w-100" height="200"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header row">
+                            <div class="col-md-6">
+                                <h6 class="mb-0">Biểu đồ Doanh thu</h6>
+                            </div>
+                            <div class="col-md-6">
+                                <input 
+                                    type="text" 
+                                    class="form-control aiz-date-range input-border-none" 
+                                    style="color: #7367F0" 
+                                    id="date_range_seller_revenue" 
+                                    data-format="DD/MM/Y" 
+                                    data-separator=" - " 
+                                    autocomplete="off"
+                                    data-group="seller"
+                                    data-chart="chart"
+                                    data-name="date_revenue"
+                                    value=" {{ date('01/m/Y') }} - {{ date('t/m/Y') }} "
+                                >
+                            </div>
+                        </div>
+                        <div class="card-body" style="height: 240px">
+                            <canvas id="chart-seller-revenue" class="w-100" height="200"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row gutters-5">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-header row">
+                            <div class="col">
+                                <h6 class="mb-0">Sản phẩm bán chạy</h6>
+                            </div>
+                        </div>
+                        <div class="card-body" id="top_product">
+                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="statistic_market">
+    <div class="card card-with-background">
+        <div class="card-header mb-3 card-header-with-background" id="headingOne">
+            <h5 class="mb-0">
+                <button class="btn btn-link card-collapse-button" data-toggle="collapse" data-target="#collapseMarket" aria-expanded="true" aria-controls="collapseMarket">
+                    <span class="accicon mr-1"><i class="las la-chevron-down rotate-icon"></i></span>Thống kê Phiên giao dịch
+                </button>
+            </h5>
+        </div>
+
+        <div id="collapseMarket" class="collapse show" aria-labelledby="headingOne" data-parent="#statistic_market">
+            <div class="row gutters-5">
+                <div class="col-md-12">
+                    <div class="aiz-titlebar text-left mt-2 mb-3">
+                        <div class="col-md-12 mb-2">
+                            <h5 class="mb-0 h6">Phiên giao dịch</h5>
+                        </div>
+                        <div class="col-md-4">
+                            <select class="form-control aiz-selectpicker" data-name="select_value" data-group="market" data-chart="chart" name="select_market" id="select_market" data-live-search="true">
+                                <option value=""></option>
+                                @foreach($marketSessions as $session)
+                                    @php 
+                                        $arrayOfWeekDays = [
+                                            'Thứ 2', 'Thứ 3', 'Thứ 4', 
+                                            'Thứ 5', 'Thứ 6', 'Thứ 6', 'Chủ Nhật'
+                                        ];
+                                        $weekDay = $arrayOfWeekDays[date('N', strtotime($session->start_time))-1];
+                                        $day = date('d', strtotime($session->start_time));
+                                        $month = date('m', strtotime($session->start_time));
+                                        $year = date('Y', strtotime($session->start_time));
+                                        $hour = date('H:i:s', strtotime($session->start_time));
+                                    @endphp    
+                                    <option value="{{ $session->id }}">
+                                        {{
+                                            $weekDay . ' - ' . 
+                                            'ngày ' . $day . 
+                                            ' tháng ' . $month . 
+                                            ' năm ' . $year .
+                                            ' - ' . $hour
+                                        }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header row">
+                            <div class="col-md-6">
+                                <h6 class="mb-0">Biểu đồ Đơn hàng</h6>
+                            </div>
+                            <div class="col-md-6">
+                                <input 
+                                    type="text" 
+                                    class="form-control aiz-date-range input-border-none" 
+                                    style="color: #7367F0" 
+                                    id="date_range_market_package" 
+                                    data-group="market"
+                                    data-chart="chart"
+                                    data-format="DD/MM/Y" 
+                                    data-separator=" - " 
+                                    autocomplete="off"
+                                    data-name="date_package"
+                                    value=" {{ date('01/m/Y') }} - {{ date('t/m/Y') }} "
+                                >
+                            </div>
+                        </div>
+                        <div class="card-body" style="height: 240px">
+                            <canvas id="chart-market-package" class="w-100" height="200"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header row">
+                            <div class="col-md-6">
+                                <h6 class="mb-0">Biểu đồ Doanh thu</h6>
+                            </div>
+                            <div class="col-md-6">
+                                <input 
+                                    type="text" 
+                                    class="form-control aiz-date-range input-border-none" 
+                                    style="color: #7367F0" 
+                                    id="date_range_market_revenue" 
+                                    data-group="market"
+                                    data-chart="chart"
+                                    data-format="DD/MM/Y" 
+                                    data-separator=" - " 
+                                    autocomplete="off"
+                                    data-name="date_revenue"
+                                    value=" {{ date('01/m/Y') }} - {{ date('t/m/Y') }} "
+                                >
+                            </div>
+                        </div>
+                        <div class="card-body" style="height: 240px">
+                            <canvas id="chart-market-revenue" class="w-100" height="200"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
 @endsection
 @section('script')
 <script type="text/javascript">
-    AIZ.plugins.chart('#pie-1',{
-        type: 'doughnut',
-        data: {
-            labels: [
-                '{{translate('Total published products')}}',
-                '{{translate('Total sellers products')}}',
-                '{{translate('Total admin products')}}'
-            ],
-            datasets: [
-                {
-                    data: [
-                        {{ \App\Models\Product::where('published', 1)->count() }},
-                        {{ \App\Models\Product::where('published', 1)->where('added_by', 'seller')->count() }},
-                        {{ \App\Models\Product::where('published', 1)->where('added_by', 'admin')->count() }}
-                    ],
-                    backgroundColor: [
-                        "#fd3995",
-                        "#34bfa3",
-                        "#5d78ff",
-                        '#fdcb6e',
-                        '#d35400',
-                        '#8e44ad',
-                        '#006442',
-                        '#4D8FAC',
-                        '#CA6924',
-                        '#C91F37'
-                    ]
-                }
-            ]
-        },
+    var chartConfig = {
         options: {
-            cutoutPercentage: 70,
-            legend: {
-                labels: {
-                    fontFamily: 'Poppins',
-                    boxWidth: 10,
-                    usePointStyle: true
-                },
-                onClick: function () {
-                    return '';
-                },
-                position: 'bottom'
-            }
-        }
-    });
-
-    AIZ.plugins.chart('#pie-2',{
-        type: 'doughnut',
-        data: {
-            labels: [
-                '{{translate('Total sellers')}}',
-                '{{translate('Total approved sellers')}}',
-                '{{translate('Total pending sellers')}}'
-            ],
-            datasets: [
-                {
-                    data: [
-                        {{ \App\Models\Seller::count() }},
-                        {{ \App\Models\Seller::where('verification_status', 1)->count() }},
-                        {{ \App\Models\Seller::where('verification_status', 0)->count() }}
-                    ],
-                    backgroundColor: [
-                        "#fd3995",
-                        "#34bfa3",
-                        "#5d78ff",
-                        '#fdcb6e',
-                        '#d35400',
-                        '#8e44ad',
-                        '#006442',
-                        '#4D8FAC',
-                        '#CA6924',
-                        '#C91F37'
-                    ]
-                }
-            ]
-        },
-        options: {
-            cutoutPercentage: 70,
             legend: {
                 labels: {
                     fontFamily: 'Montserrat',
                     boxWidth: 10,
-                    usePointStyle: true
+                    usePointStyle: true,
                 },
                 onClick: function () {
                     return '';
@@ -262,130 +392,190 @@
                 position: 'bottom'
             }
         }
-    });
-    AIZ.plugins.chart('#graph-1',{
-        type: 'bar',
+    }
+
+    AIZ.plugins.chart('#chart-package',{
+        type: 'line',
         data: {
-            labels: [
-                @foreach ($root_categories as $key => $category)
-                '{{ $category->getTranslation('name') }}',
-                @endforeach
-            ],
-            datasets: [{
-                label: '{{ translate('Number of sale') }}',
-                data: [
-                    {{ $cached_graph_data['num_of_sale_data'] }}
-                ],
-                backgroundColor: [
-                    @foreach ($root_categories as $key => $category)
-                        'rgba(55, 125, 255, 0.4)',
-                    @endforeach
-                ],
-                borderColor: [
-                    @foreach ($root_categories as $key => $category)
-                        'rgba(55, 125, 255, 1)',
-                    @endforeach
-                ],
-                borderWidth: 1
-            }]
+            labels: ['t1','t2','t3','t4','t5','t6','t7','t8'],
+            datasets: [
+                {
+                    label: 'Hủy',
+                    data: [1,2,3,4,5],
+                    borderColor: '#F46A6A',
+                    backgroundColor: '#F46A6A', 
+                },
+                {
+                    label: 'Hoàn thành',
+                    data: [2,3,4,5,6],
+                    borderColor: '#28C76F',
+                    backgroundColor: '#28C76F', 
+                }
+            ]
         },
-        options: {
-            scales: {
-                yAxes: [{
-                    gridLines: {
-                        color: '#f2f3f8',
-                        zeroLineColor: '#f2f3f8'
-                    },
-                    ticks: {
-                        fontColor: "#8b8b8b",
-                        fontFamily: 'Poppins',
-                        fontSize: 10,
-                        beginAtZero: true
-                    }
-                }],
-                xAxes: [{
-                    gridLines: {
-                        color: '#f2f3f8'
-                    },
-                    ticks: {
-                        fontColor: "#8b8b8b",
-                        fontFamily: 'Poppins',
-                        fontSize: 10
-                    }
-                }]
-            },
-            legend:{
-                labels: {
-                    fontFamily: 'Poppins',
-                    boxWidth: 10,
-                    usePointStyle: true
+        ...chartConfig,
+    });
+
+    AIZ.plugins.chart('#chart-revenue',{
+        type: 'line',
+        data: {
+            labels: ['t1','t2','t3','t4','t5','t6','t7','t8'],
+            datasets: [
+                {
+                    label: 'Doanh thu từ gói thành viên/quầy hàng',
+                    data: [1,2,3,4,5,3,2,1],
+                    borderColor: '#FF5A00',
+                    backgroundColor: '#FF5A00', 
+                }
+            ]
+        },
+        ...chartConfig,
+    });
+
+    var initPackageChart = {
+        type: 'line',
+        data: {
+            labels: [],
+            datasets: [
+                {
+                    label: 'Hủy',
+                    data: [],
+                    borderColor: '#F46A6A',
+                    backgroundColor: '#F46A6A', 
                 },
-                onClick: function () {
-                    return '';
-                },
+                {
+                    label: 'Hoàn thành',
+                    data: [],
+                    borderColor: '#28C76F',
+                    backgroundColor: '#28C76F', 
+                }
+            ]
+        },
+        ...chartConfig,
+    };
+
+    var initRevenueChart = {
+        type: 'line',
+        data: {
+            labels: [],
+            datasets: [
+                {
+                    label: 'Doanh thu từ gói thành viên/quầy hàng',
+                    data: [],
+                    borderColor: '#FF5A00',
+                    backgroundColor: '#FF5A00', 
+                }
+            ]
+        },
+        ...chartConfig
+    }
+
+    new Chart($('#chart-seller-package'), initPackageChart);
+    new Chart($('#chart-seller-revenue'), initRevenueChart);
+
+    new Chart($('#chart-market-package'), initPackageChart);
+    new Chart($('#chart-market-revenue'), initRevenueChart);
+
+    $(document).ready(function(){
+        $('[data-chart="chart"]').change(function(){
+            getData($(this).attr('data-group'));
+        });
+
+        $('.aiz-date-range').on('apply.daterangepicker', function(){
+            getData($(this).attr('data-group'));
+        });
+
+        function getData(group){
+            let data = {
+                _token: "{{ csrf_token() }}",
+                group: group
+            };
+            $(`[data-group="${group}"]`).each(function(){
+                data[$(this).attr('data-name')] = $(this).val();
+            });
+            
+            if(data.select_value){
+                $.ajax({
+                    url: '{{ route("admin.get-chart") }}',
+                    method: 'POST',
+                    data: data,
+                    success: function(response){
+                        initPackageChart.data.labels = response.data.package.labels;
+                        initPackageChart.data.datasets[0].data = response.data.package.data.paid;
+                        initPackageChart.data.datasets[1].data = response.data.package.data.unpaid;
+
+                        initRevenueChart.data.labels = response.data.revenue.labels;
+                        initRevenueChart.data.datasets[0].data = response.data.revenue.data;
+
+                        if(group == 'seller'){
+                            new Chart($('#chart-seller-package'), initPackageChart);
+                            new Chart($('#chart-seller-revenue'), initRevenueChart);
+
+                            if(response.data.top_product){
+                                let topProduct = response.data.top_product;
+                                let append = ``;
+                                let tmpAppend = ``;
+
+                                let i,j,temporary = [], chunk = 3;
+
+                                for (i = 0,j = topProduct.length; i < j; i += chunk) {
+                                    temporary = topProduct.slice(i, i + chunk);
+                                    // do whatever
+                                    
+                                    temporary.map(value => {
+                                        let img = ``;
+                                        if(value.thumbnail_image){
+                                            img = `<img class="statistic-image" src="/public/${value.thumbnail_image.file_name}">`;
+                                        }
+                                        tmpAppend += `
+                                            <div class="col-md-4">
+                                                <div class="row align-items-center">
+                                                    <div class="col-md-2">
+                                                        ${img}
+                                                    </div>
+                                                    <div class="col d-flex flex-column">
+                                                        <strong>${value.name}</strong>
+                                                        <span>${value.category.name}</span>
+                                                    </div>
+                                                    <div class="col-md-3 statistic-number">
+                                                        ${value.num_of_sale}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        `;
+                                    });
+                                    append += `<div class="row">` + tmpAppend + `</div><br>`;
+                                    tmpAppend = ``;
+                                } 
+                                
+                                
+                                $('#top_product').html(append);
+                            }
+                        }
+                        else if(group == 'market'){
+                            new Chart($('#chart-market-package'), initPackageChart);
+                            new Chart($('#chart-market-revenue'), initRevenueChart);
+                            $('#top_product').empty();
+                        }
+                    }
+                });
             }
-        }
-    });
-    AIZ.plugins.chart('#graph-2',{
-        type: 'bar',
-        data: {
-            labels: [
-                @foreach ($root_categories as $key => $category)
-                '{{ $category->getTranslation('name') }}',
-                @endforeach
-            ],
-            datasets: [{
-                label: '{{ translate('Number of Stock') }}',
-                data: [
-                    {{ $cached_graph_data['qty_data'] }}
-                ],
-                backgroundColor: [
-                    @foreach ($root_categories as $key => $category)
-                        'rgba(253, 57, 149, 0.4)',
-                    @endforeach
-                ],
-                borderColor: [
-                    @foreach ($root_categories as $key => $category)
-                        'rgba(253, 57, 149, 1)',
-                    @endforeach
-                ],
-                borderWidth: 1
-            }]
-        },
-        options: {
-            scales: {
-                yAxes: [{
-                    gridLines: {
-                        color: '#f2f3f8',
-                        zeroLineColor: '#f2f3f8'
-                    },
-                    ticks: {
-                        fontColor: "#8b8b8b",
-                        fontFamily: 'Poppins',
-                        fontSize: 10,
-                        beginAtZero: true
-                    }
-                }],
-                xAxes: [{
-                    gridLines: {
-                        color: '#f2f3f8'
-                    },
-                    ticks: {
-                        fontColor: "#8b8b8b",
-                        fontFamily: 'Poppins',
-                        fontSize: 10
-                    }
-                }]
-            },
-            legend:{
-                labels: {
-                    fontFamily: 'Poppins',
-                    boxWidth: 10,
-                    usePointStyle: true
-                },
-                onClick: function () {
-                    return '';
-                },
+            else{
+                initPackageChart.data.labels = [];
+                initPackageChart.data.datasets[0].data = [];
+                initPackageChart.data.datasets[1].data = [];
+
+                initRevenueChart.data.labels = [];
+                initRevenueChart.data.datasets[0].data = [];
+
+                if(group == 'seller'){
+                    new Chart($('#chart-seller-package'), initPackageChart);
+                    new Chart($('#chart-seller-revenue'), initRevenueChart);
+                }
+                else if(group == 'market'){
+                    new Chart($('#chart-market-package'), initPackageChart);
+                    new Chart($('#chart-market-revenue'), initRevenueChart);
+                }
             }
         }
     });

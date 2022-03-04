@@ -81,4 +81,9 @@ class Product extends Model
     {
         return $query->where('digital', 0);
     }
+
+    public function thumbnailImage()
+    {
+        return $this->belongsTo(Upload::class, 'thumbnail_img');
+    }
 }

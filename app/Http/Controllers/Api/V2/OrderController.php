@@ -80,6 +80,7 @@ class OrderController extends Controller
             $order->payment_status_viewed = '0';
             $order->code = date('Ymd-His') . rand(10, 99);
             $order->date = strtotime('now');
+            $order->market_id = $request->market_id;
             if($set_paid){
                 $order->payment_status = 'paid';
             }else{
