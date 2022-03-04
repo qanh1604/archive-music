@@ -857,3 +857,19 @@ if (!function_exists('addon_is_activated')) {
         return $activation == null ? false : true;
     }
 }
+
+//Convert to K number
+if (!function_exists('numberWithSymbol')) {
+    function numberWithSymbol($number){
+        if($number >= 1000){
+            $number = round($number/1000);
+            if (get_setting('decimal_separator') == 1) {
+                $number = number_format($number, 0);
+            } else {
+                $number = number_format($number, 0, ',', ' ');
+            }
+            $number = $number.'K';
+        }
+        return $number;
+    }
+}

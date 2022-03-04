@@ -453,6 +453,11 @@
                                     <span class="aiz-side-nav-text">Đơn hàng mua nóng</span>
                                 </a>
                             </li>
+                            {{-- <li class="aiz-side-nav-item">
+                                <a href="{{ route('market-session.statistic') }}" class="aiz-side-nav-link {{ areActiveRoutes(['market-session.statistic'])}}">
+                                    <span class="aiz-side-nav-text">Thống kê đơn hàng</span>
+                                </a>
+                            </li> --}}
                         </ul>
                     </li>
                 @endif

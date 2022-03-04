@@ -80,7 +80,7 @@ class MarketSessionController extends Controller
             $marketLists = $marketLists->whereRaw('DATE(start_time) = CURDATE()');
         }
 
-        $marketLists = $marketLists->paginate(15);
+        $marketLists = $marketLists->orderBy('start_time')->paginate(15);
         return response()->json($marketLists, 200);
     }
 

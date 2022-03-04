@@ -1,1 +1,83 @@
 /*your custom css goes here*/
+.general-statistic .card-body {
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+}
+
+.general-statistic .title {
+    font-family: Montserrat;
+    font-size: 18px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 22px;
+    letter-spacing: 0px;
+    text-align: left;
+    color: #5E5873
+}
+
+.general-statistic .sub_title {
+    font-family: Montserrat;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 18px;
+    letter-spacing: 0px;
+    text-align: left;
+    color: #6E6B7B
+}
+
+.general-statistic img{
+    width: 48px;
+    height: 48px
+}
+
+.statistic-number {
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 21px;
+    letter-spacing: 0px;
+    text-align: right;
+    color: #FF5A00;
+}
+
+.statistic-image {
+    width: 42px;
+    height: 42px
+}
+
+.card-with-background {
+    background-color: #F8F8F8;
+}
+
+.card-header-with-background {
+    background-color: #fff !important;
+}
+
+.card-collapse-button {
+    font-family: Montserrat;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 24px;
+    letter-spacing: 0px;
+    text-align: left;
+    color: #000000
+}
+
+.rotate-icon {
+    transition: transform .3s ease-in-out; 
+}
+
+.card-collapse-button:not(.collapsed) .rotate-icon {
+    transform: rotate(180deg);
+}
+
+.input-border-none {
+    border: none
+}
+
+.input-border-none:hover {
+    cursor: pointer;
+}
