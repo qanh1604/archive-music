@@ -11,7 +11,7 @@ class ShopDetailsCollection extends ResourceCollection
     {
         return [
             'data' => $this->collection->map(function($data) {
-                return [
+                $tmpData = [
                     'id' => $data->id,
                     'user_id' => intval($data->user_id) ,
                     'name' => $data->name,
@@ -22,8 +22,27 @@ class ShopDetailsCollection extends ResourceCollection
                     'google' => $data->google,
                     'twitter' => $data->twitter,
                     'true_rating' => (double) $data->user->seller->rating,
-                    'rating' => (double) $data->user->seller->rating
+                    'rating' => (double) $data->user->seller->rating,
+                    'meta_description' => $data->meta_description,
+                    'background_img' => $data->background_img,
+                    'virtual_assistant' => $data->virtual_assistant,
                 ];
+
+                $products = Product::with('category')->where('user_id', intval($data->user_id))->get();
+                $productCategory = [];
+                $productCategoryId = [];
+        
+                foreach($products as $product){
+                    if($product->category){
+                        if(!in_array($product->category->id, $productCategoryId)){
+                            $productCategory[] = $product->category->name;
+                            $productCategoryId[] = $product->category->id;
+                        }
+                    }
+                }
+        
+                $tmpData['category'] = implode(', ', $productCategory);
+                return $tmpData;
             })
         ];
     }
