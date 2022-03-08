@@ -13,6 +13,9 @@ use Modules\MarketSession\Models\HotOrder;
 use App\Models\User;
 use App\Models\Order;
 use App\Models\Shop;
+use App\Models\SellerPackage;
+use App\Models\SellerPackagePayment;
+use App\Models\Seller;
 use DB;
 use DatePeriod;
 use DateTime;
@@ -68,13 +71,114 @@ class AdminController extends Controller
 
         $sellers = Shop::select('user_id', 'name')->get();
 
+        $startDate = date('Y-m-01');
+        $endDate = date('Y-m-t');
+
+        $sellerPackagePayment = DB::SELECT("
+            SELECT id, created_at, seller_package_id, approval
+            FROM seller_package_payments
+            WHERE DATE(created_at) >= '".$startDate."' AND DATE(created_at) <= '".$endDate."'
+        ");
+        
+        $sellerPackage = SellerPackage::get()->pluck('amount', 'id')->toArray();
+
+        $chartData = [];
+
+        $orderPeriod = new DatePeriod(
+            new DateTime($startDate),
+            new DateInterval('P1D'),
+            new DateTime($endDate)
+        );
+
+        foreach($orderPeriod as $period){
+            $date = $period->format('Y-m-d');
+            $dateFormated = $period->format('d/m/Y');
+            $chartData['admin_package']['labels'][] = $dateFormated;
+            $chartData['revenue']['labels'][] = $dateFormated;
+            foreach($sellerPackagePayment as $order){
+                $orderDate = new DateTime($order->created_at);
+                $orderDateFormat = $orderDate->format('Y-m-d');
+
+                if(!isset($chartData['admin_package']['data'][$order->approval][strtotime($date)])){
+                    $chartData['admin_package']['data'][$order->approval][strtotime($date)] = 0;
+                }
+                if(!isset($chartData['revenue']['data'][strtotime($date)])){
+                    $chartData['revenue']['data'][strtotime($date)] = 0;
+                }
+                
+                if($orderDateFormat == $date){
+                    $chartData['admin_package']['data'][$order->approval][strtotime($date)] += 1;
+                    $chartData['revenue']['data'][strtotime($date)] += $sellerPackage[$order->seller_package_id];
+                }
+                else{
+                    $chartData['admin_package']['data'][$order->approval][strtotime($date)] += 0;
+                    $chartData['revenue']['data'][strtotime($date)] += 0;
+                }
+            }
+        }
+
+        if(!isset($chartData['admin_package']['data'][1])){
+            $chartData['admin_package']['data'][1] = [];
+        }
+        if(!isset($chartData['admin_package']['data'][0])){
+            $chartData['admin_package']['data'][0] = [];
+        }
+
+        $chartData = json_encode($chartData);
+
+        $topSellPackage = DB::SELECT("
+            SELECT
+                COUNT(*) AS total, logo, name, file_name
+            FROM
+                seller_package_payments
+            LEFT JOIN seller_packages ON seller_packages.id = seller_package_payments.seller_package_id
+            LEFT JOIN uploads ON uploads.id = seller_packages.logo
+            WHERE
+                approval = 1
+            GROUP BY seller_package_id
+            ORDER BY total DESC
+            LIMIT 6
+        ");
+
+        $topSellCategory = DB::SELECT("
+            SELECT
+                COUNT(*) AS total, products.category_id, uploads.file_name, categories.name
+            FROM
+                order_details
+            LEFT JOIN products ON products.id = order_details.product_id
+            LEFT JOIN categories ON categories.id = products.category_id
+            LEFT JOIN uploads ON uploads.id = categories.icon
+            WHERE auction_product = 0 AND wholesale_product = 0
+            GROUP BY products.category_id
+            ORDER BY total DESC
+            LIMIT 6
+        ");
+
+        $topSellBrand = DB::SELECT("
+            SELECT
+                COUNT(*) AS total, products.brand_id, uploads.file_name, brands.name
+            FROM
+                order_details
+            LEFT JOIN products ON products.id = order_details.product_id
+            LEFT JOIN brands ON brands.id = products.brand_id
+            LEFT JOIN uploads ON uploads.id = brands.logo
+            WHERE brand_id IS NOT NULL
+            GROUP BY products.category_id
+            ORDER BY total DESC
+            LIMIT 6
+        ");
+
         return view('backend.dashboard', compact(
             'totalSession', 
             'totalCustomer', 
             'totalProduct',
             'totalRevenue',
             'sellers',
-            'marketSessions'
+            'marketSessions',
+            'chartData',
+            'topSellPackage',
+            'topSellCategory',
+            'topSellBrand'
         ));
     }
 
@@ -193,6 +297,66 @@ class AdminController extends Controller
                     $chartData['revenue']['data'][] = 0;
                 }
             }
+        }
+
+        return response()->json(['data' => $chartData]);
+    }
+
+    public function getAdminChart(Request $request)
+    {
+
+        $adminDate = explode(' - ',$request->date);
+        $startDate = date("Y-m-d", strtotime(str_replace("/", "-", $adminDate[0])));
+        $endDate = date("Y-m-d", strtotime(str_replace("/", "-", $adminDate[1])));
+
+        $sellerPackagePayment = DB::SELECT("
+            SELECT id, created_at, seller_package_id, approval
+            FROM seller_package_payments
+            WHERE DATE(created_at) >= '".$startDate."' AND DATE(created_at) <= '".$endDate."'
+        ");
+        
+        $sellerPackage = SellerPackage::get()->pluck('amount', 'id')->toArray();
+
+        $chartData = [];
+
+        $orderPeriod = new DatePeriod(
+            new DateTime($startDate),
+            new DateInterval('P1D'),
+            new DateTime($endDate)
+        );
+
+        foreach($orderPeriod as $period){
+            $date = $period->format('Y-m-d');
+            $dateFormated = $period->format('d/m/Y');
+            $chartData['admin_package']['labels'][] = $dateFormated;
+            $chartData['revenue']['labels'][] = $dateFormated;
+            foreach($sellerPackagePayment as $order){
+                $orderDate = new DateTime($order->created_at);
+                $orderDateFormat = $orderDate->format('Y-m-d');
+
+                if(!isset($chartData['admin_package']['data'][$order->approval][strtotime($date)])){
+                    $chartData['admin_package']['data'][$order->approval][strtotime($date)] = 0;
+                }
+                if(!isset($chartData['revenue']['data'][strtotime($date)])){
+                    $chartData['revenue']['data'][strtotime($date)] = 0;
+                }
+                
+                if($orderDateFormat == $date){
+                    $chartData['admin_package']['data'][$order->approval][strtotime($date)] += 1;
+                    $chartData['revenue']['data'][strtotime($date)] += $sellerPackage[$order->seller_package_id];
+                }
+                else{
+                    $chartData['admin_package']['data'][$order->approval][strtotime($date)] += 0;
+                    $chartData['revenue']['data'][strtotime($date)] += 0;
+                }
+            }
+        }
+
+        if(!isset($chartData['admin_package']['data'][1])){
+            $chartData['admin_package']['data'][1] = [];
+        }
+        if(!isset($chartData['admin_package']['data'][0])){
+            $chartData['admin_package']['data'][0] = [];
         }
 
         return response()->json(['data' => $chartData]);

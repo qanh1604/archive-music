@@ -44,6 +44,24 @@ class SellerController extends Controller
             $sellers = $sellers->where('verification_status', $approved);
         }
         $sellers = $sellers->paginate(15);
+
+        foreach($sellers as &$seller){
+            $products = Product::with('category')->where('user_id', $seller->user_id)->get();
+            $productCategory = [];
+            $productCategoryId = [];
+    
+            foreach($products as $product){
+                if($product->category){
+                    if(!in_array($product->category->id, $productCategoryId)){
+                        $productCategory[] = $product->category->name;
+                        $productCategoryId[] = $product->category->id;
+                    }
+                }
+            }
+    
+            $seller->category = implode(', ', $productCategory);
+        }        
+
         return view('backend.sellers.index', compact('sellers', 'sort_search', 'approved'));
     }
 
@@ -93,7 +111,7 @@ class SellerController extends Controller
                 $shop->address = $request->address;
                 $shop->phone = $request->phone;
                 $shop->meta_title = $request->shop_name;
-                $shop->meta_description = $request->shop_name;
+                $shop->meta_description = $request->meta_description;
                 $shop->slug = Str::slug($request->shop_name) . '-' . $user->id;
                 $shop->save();
 
@@ -141,10 +159,14 @@ class SellerController extends Controller
         $user = $seller->user;
         $user->name = $request->name;
         $user->email = $request->email;
+        $user->shop->meta_description = $request->meta_description;
+        $user->shop->background_img = $request->background_img;
+        $user->shop->virtual_assistant = $request->virtual_assistant;
         if (strlen($request->password) > 0) {
             $user->password = Hash::make($request->password);
         }
         if ($user->save()) {
+            $user->shop->save();
             if ($seller->save()) {
                 flash(translate('Seller has been updated successfully'))->success();
                 return redirect()->route('sellers.index');

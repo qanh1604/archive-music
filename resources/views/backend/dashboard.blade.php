@@ -73,6 +73,8 @@
                                     data-separator=" - " 
                                     autocomplete="off"
                                     value=" {{ date('01/m/Y') }} - {{ date('t/m/Y') }} "
+                                    data-group="admin"
+                                    data-name="package"
                                 >
                             </div>
                         </div>
@@ -97,6 +99,8 @@
                                     data-separator=" - " 
                                     autocomplete="off"
                                     value=" {{ date('01/m/Y') }} - {{ date('t/m/Y') }} "
+                                    data-group="admin"
+                                    data-name="revenue"
                                 >
                             </div>
                         </div>
@@ -115,31 +119,25 @@
                             </div>
                         </div>
                         <div class="card-body">
-                            <div class="row align-items-center">
-                                <div class="col-md-2">
-                                    <img class="statistic-image" src="{{ static_asset('assets/img/doanh-thu.svg') }}">
+                            @foreach($topSellPackage as $topSell)
+                                <div class="row align-items-center">
+                                    <div class="col-md-2">
+                                        @if($topSell->file_name)
+                                            <img class="statistic-image" src="/public/{{ $topSell->file_name }}" onerror="this.onerror=null;this.src='{{ static_asset('assets/img/san-pham-2.svg') }}';">
+                                        @else
+                                            <img class="statistic-image" src="{{ static_asset('assets/img/san-pham-2.svg') }}">
+                                        @endif 
+                                    </div>
+                                    <div class="col d-flex flex-column">
+                                        <strong>{{ $topSell->name }}</strong>
+                                        <!-- <span>Gói thành viên</span> -->
+                                    </div>
+                                    <div class="col-md-3 statistic-number">
+                                        {{ $topSell->total }}
+                                    </div>
                                 </div>
-                                <div class="col d-flex flex-column">
-                                    <strong>Tên gói</strong>
-                                    <span>Gói thành viên</span>
-                                </div>
-                                <div class="col-md-3 statistic-number">
-                                    100
-                                </div>
-                            </div>
-                            <br>
-                            <div class="row align-items-center">
-                                <div class="col-md-2">
-                                    <img class="statistic-image" src="{{ static_asset('assets/img/doanh-thu.svg') }}">
-                                </div>
-                                <div class="col d-flex flex-column">
-                                    <strong>Tên gói</strong>
-                                    <span>Gói thành viên</span>
-                                </div>
-                                <div class="col-md-3 statistic-number">
-                                    100
-                                </div>
-                            </div>
+                                <br>
+                            @endforeach
                         </div>
                     </div>
                 </div>
@@ -147,10 +145,29 @@
                     <div class="card">
                         <div class="card-header row">
                             <div class="col">
-                                <h6 class="mb-0">Danh mục được quan tâm</h6>
+                                <h6 class="mb-0">Thương hiệu được quan tâm</h6>
                             </div>
                         </div>
                         <div class="card-body">
+                            @foreach($topSellBrand as $topSell)
+                                <div class="row align-items-center">
+                                    <div class="col-md-2">
+                                        @if($topSell->file_name)
+                                            <img class="statistic-image" src="/public/{{ $topSell->file_name }}" onerror="this.onerror=null;this.src='{{ static_asset('assets/img/san-pham-2.svg') }}';">
+                                        @else
+                                            <img class="statistic-image" src="{{ static_asset('assets/img/san-pham-2.svg') }}">
+                                        @endif   
+                                    </div>
+                                    <div class="col d-flex flex-column">
+                                        <strong>{{ $topSell->name }}</strong>
+                                        <!-- <span>Gói thành viên</span> -->
+                                    </div>
+                                    <div class="col-md-3 statistic-number">
+                                        {{ $topSell->total }}
+                                    </div>
+                                </div>
+                                <br>
+                            @endforeach
                         </div>
                     </div>
                 </div>
@@ -162,6 +179,25 @@
                             </div>
                         </div>
                         <div class="card-body">
+                            @foreach($topSellCategory as $topSell)
+                                <div class="row align-items-center">
+                                    <div class="col-md-2">
+                                        @if($topSell->file_name)
+                                            <img class="statistic-image" src="/public/{{ $topSell->file_name }}" onerror="this.onerror=null;this.src='{{ static_asset('assets/img/san-pham-2.svg') }}';">
+                                        @else
+                                            <img class="statistic-image" src="{{ static_asset('assets/img/san-pham-2.svg') }}">
+                                        @endif     
+                                    </div>
+                                    <div class="col d-flex flex-column">
+                                        <strong>{{ $topSell->name }}</strong>
+                                        <!-- <span>Gói thành viên</span> -->
+                                    </div>
+                                    <div class="col-md-3 statistic-number">
+                                        {{ $topSell->total }}
+                                    </div>
+                                </div>
+                                <br>
+                            @endforeach
                         </div>
                     </div>
                 </div>
@@ -378,6 +414,9 @@
 @endsection
 @section('script')
 <script type="text/javascript">
+    var chartValue = '{!! $chartData !!}';
+    var jsonChartValue = JSON.parse(chartValue);
+
     var chartConfig = {
         options: {
             legend: {
@@ -394,20 +433,20 @@
         }
     }
 
-    AIZ.plugins.chart('#chart-package',{
+    var adminChartPackage = new Chart($('#chart-package'),{
         type: 'line',
         data: {
-            labels: ['t1','t2','t3','t4','t5','t6','t7','t8'],
+            labels: Object.values(jsonChartValue.admin_package.labels),
             datasets: [
                 {
                     label: 'Hủy',
-                    data: [1,2,3,4,5],
+                    data: Object.values(jsonChartValue.admin_package.data[0]),
                     borderColor: '#F46A6A',
                     backgroundColor: '#F46A6A', 
                 },
                 {
                     label: 'Hoàn thành',
-                    data: [2,3,4,5,6],
+                    data: Object.values(jsonChartValue.admin_package.data[1]),
                     borderColor: '#28C76F',
                     backgroundColor: '#28C76F', 
                 }
@@ -416,14 +455,14 @@
         ...chartConfig,
     });
 
-    AIZ.plugins.chart('#chart-revenue',{
+    var adminChartRevenue = new Chart($('#chart-revenue'),{
         type: 'line',
         data: {
-            labels: ['t1','t2','t3','t4','t5','t6','t7','t8'],
+            labels: Object.values(jsonChartValue.revenue.labels),
             datasets: [
                 {
                     label: 'Doanh thu từ gói thành viên/quầy hàng',
-                    data: [1,2,3,4,5,3,2,1],
+                    data: Object.values(jsonChartValue.revenue.data),
                     borderColor: '#FF5A00',
                     backgroundColor: '#FF5A00', 
                 }
@@ -470,11 +509,11 @@
         ...chartConfig
     }
 
-    new Chart($('#chart-seller-package'), initPackageChart);
-    new Chart($('#chart-seller-revenue'), initRevenueChart);
+    var sellerChartPackage = new Chart($('#chart-seller-package'), initPackageChart);
+    var sellerChartRevenue = new Chart($('#chart-seller-revenue'), initRevenueChart);
 
-    new Chart($('#chart-market-package'), initPackageChart);
-    new Chart($('#chart-market-revenue'), initRevenueChart);
+    var marketChartPackage = new Chart($('#chart-market-package'), initPackageChart);
+    var marketChartRevenue = new Chart($('#chart-market-revenue'), initRevenueChart);
 
     $(document).ready(function(){
         $('[data-chart="chart"]').change(function(){
@@ -482,7 +521,12 @@
         });
 
         $('.aiz-date-range').on('apply.daterangepicker', function(){
-            getData($(this).attr('data-group'));
+            if($(this).attr('data-group') == 'admin'){
+                getAdminChart($(this));
+            }
+            else{
+                getData($(this).attr('data-group'));
+            }
         });
 
         function getData(group){
@@ -508,8 +552,11 @@
                         initRevenueChart.data.datasets[0].data = response.data.revenue.data;
 
                         if(group == 'seller'){
-                            new Chart($('#chart-seller-package'), initPackageChart);
-                            new Chart($('#chart-seller-revenue'), initRevenueChart);
+                            sellerChartPackage.destroy();
+                            sellerChartRevenue.destroy();
+
+                            sellerChartPackage = new Chart($('#chart-seller-package'), initPackageChart);
+                            sellerChartRevenue = new Chart($('#chart-seller-revenue'), initRevenueChart);
 
                             if(response.data.top_product){
                                 let topProduct = response.data.top_product;
@@ -525,7 +572,10 @@
                                     temporary.map(value => {
                                         let img = ``;
                                         if(value.thumbnail_image){
-                                            img = `<img class="statistic-image" src="/public/${value.thumbnail_image.file_name}">`;
+                                            img = `<img class="statistic-image" src="/public/${value.thumbnail_image.file_name}" onerror="this.onerror=null;this.src='/public/assets/img/san-pham-2.svg';">`;
+                                        }
+                                        else{
+                                            img = `<img class="statistic-image" src="/public/assets/img/san-pham-2.svg">`;
                                         }
                                         tmpAppend += `
                                             <div class="col-md-4">
@@ -553,8 +603,11 @@
                             }
                         }
                         else if(group == 'market'){
-                            new Chart($('#chart-market-package'), initPackageChart);
-                            new Chart($('#chart-market-revenue'), initRevenueChart);
+                            marketChartPackage.destroy();
+                            marketChartRevenue.destroy();
+
+                            marketChartPackage = new Chart($('#chart-market-package'), initPackageChart);
+                            marketChartRevenue = new Chart($('#chart-market-revenue'), initRevenueChart);
                             $('#top_product').empty();
                         }
                     }
@@ -576,6 +629,65 @@
                     new Chart($('#chart-market-package'), initPackageChart);
                     new Chart($('#chart-market-revenue'), initRevenueChart);
                 }
+            }
+        }
+
+        function getAdminChart(element){
+            if(element.val()){
+                let value = element.val();
+                let $this = element;
+                $.ajax({
+                    url: '{{ route("admin.get-admin-chart") }}',
+                    method: 'POST',
+                    data: {
+                        _token: "{{ csrf_token() }}",
+                        date: value
+                    },
+                    success: function(response){
+                        if($this.attr('data-name') == 'package'){
+                            adminChartPackage.destroy();
+                            adminChartPackage = new Chart($('#chart-package'),{
+                                type: 'line',
+                                data: {
+                                    labels: Object.values(response.data.admin_package.labels),
+                                    datasets: [
+                                        {
+                                            label: 'Hủy',
+                                            data: Object.values(response.data.admin_package.data[0]),
+                                            borderColor: '#F46A6A',
+                                            backgroundColor: '#F46A6A', 
+                                        },
+                                        {
+                                            label: 'Hoàn thành',
+                                            data: Object.values(response.data.admin_package.data[1]),
+                                            borderColor: '#28C76F',
+                                            backgroundColor: '#28C76F', 
+                                        }
+                                    ]
+                                },
+                                ...chartConfig,
+                            });
+                        }
+                        else if($this.attr('data-name') == 'revenue'){
+                            adminChartRevenue.destroy();
+                            adminChartRevenue = new Chart($('#chart-revenue'),{
+                                type: 'line',
+                                data: {
+                                    labels: Object.values(response.data.revenue.labels),
+                                    datasets: [
+                                        {
+                                            label: 'Doanh thu từ gói thành viên/quầy hàng',
+                                            data: Object.values(response.data.revenue.data),
+                                            borderColor: '#FF5A00',
+                                            backgroundColor: '#FF5A00', 
+                                        }
+                                    ]
+                                },
+                                ...chartConfig,
+                            });
+                        }
+                    }
+                });
             }
         }
     });

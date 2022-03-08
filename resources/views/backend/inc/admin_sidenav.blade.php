@@ -386,6 +386,17 @@
                                     @if($sellers > 0)<span class="badge badge-info">{{ $sellers }}</span> @endif
                                 </a>
                             </li>
+
+                            @if (addon_is_activated('seller_subscription'))
+                                <li class="aiz-side-nav-item">
+                                    <a href="{{ route('seller_packages.index') }}" class="aiz-side-nav-link {{ areActiveRoutes(['seller_packages.index', 'seller_packages.create', 'seller_packages.edit'])}}">
+                                        <span class="aiz-side-nav-text">{{ translate('Seller Packages') }}</span>
+                                        @if (env("DEMO_MODE") == "On")
+                                            <span class="badge badge-inline badge-danger">Addon</span>
+                                        @endif
+                                    </a>
+                                </li>
+                            @endif
                             {{-- <li class="aiz-side-nav-item">
                                 <a href="{{ route('sellers.payment_histories') }}" class="aiz-side-nav-link">
                                     <span class="aiz-side-nav-text">{{ translate('Payouts') }}</span>
@@ -401,17 +412,6 @@
                                     <span class="aiz-side-nav-text">{{ translate('Seller Commission') }}</span>
                                 </a>
                             </li>
-
-                            @if (addon_is_activated('seller_subscription'))
-                                <li class="aiz-side-nav-item">
-                                    <a href="{{ route('seller_packages.index') }}" class="aiz-side-nav-link {{ areActiveRoutes(['seller_packages.index', 'seller_packages.create', 'seller_packages.edit'])}}">
-                                        <span class="aiz-side-nav-text">{{ translate('Seller Packages') }}</span>
-                                        @if (env("DEMO_MODE") == "On")
-                                            <span class="badge badge-inline badge-danger">Addon</span>
-                                        @endif
-                                    </a>
-                                </li>
-                            @endif
                             <li class="aiz-side-nav-item">
                                 <a href="{{ route('seller_verification_form.index') }}" class="aiz-side-nav-link">
                                     <span class="aiz-side-nav-text">{{ translate('Seller Verification Form') }}</span>
@@ -459,14 +459,6 @@
                                 </a>
                             </li> --}}
                         </ul>
-                    </li>
-                @endif
-                @if(Auth::user()->user_type == 'admin' || in_array('22', json_decode(Auth::user()->staff->role->permissions)))
-                    <li class="aiz-side-nav-item">
-                        <a href="{{ route('uploaded-files.index') }}" class="aiz-side-nav-link {{ areActiveRoutes(['uploaded-files.create'])}}">
-                            <i class="las la-folder-open aiz-side-nav-icon"></i>
-                            <span class="aiz-side-nav-text">{{ translate('Uploaded Files') }}</span>
-                        </a>
                     </li>
                 @endif
             <!-- Reports -->
@@ -899,6 +891,11 @@
                                     <span class="aiz-side-nav-text">{{translate('Languages')}}</span>
                                 </a>
                             </li>
+                            <li class="aiz-side-nav-item">
+                                <a href="{{ route('payment_method.index') }}" class="aiz-side-nav-link">
+                                    <span class="aiz-side-nav-text">{{translate('Payment Methods')}}</span>
+                                </a>
+                            </li>
 
                             {{-- <li class="aiz-side-nav-item">
                                 <a href="{{route('currency.index')}}" class="aiz-side-nav-link">
@@ -918,11 +915,6 @@
                             <li class="aiz-side-nav-item">
                                 <a href="{{ route('smtp_settings.index') }}" class="aiz-side-nav-link">
                                     <span class="aiz-side-nav-text">{{translate('SMTP Settings')}}</span>
-                                </a>
-                            </li>
-                            <li class="aiz-side-nav-item">
-                                <a href="{{ route('payment_method.index') }}" class="aiz-side-nav-link">
-                                    <span class="aiz-side-nav-text">{{translate('Payment Methods')}}</span>
                                 </a>
                             </li>
                             <li class="aiz-side-nav-item">

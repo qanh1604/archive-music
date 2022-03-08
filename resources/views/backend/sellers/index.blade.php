@@ -61,7 +61,8 @@
                     <th data-breakpoints="lg">{{translate('Verification Info')}}</th>
                     <th data-breakpoints="lg">{{translate('Approval')}}</th>
                     <th data-breakpoints="lg">{{ translate('Num. of Products') }}</th>
-                    <th data-breakpoints="lg">{{ translate('Due to seller') }}</th>
+                    {{-- <th data-breakpoints="lg">{{ translate('Due to seller') }}</th> --}}
+                    <th data-breakpoints="lg">Ngành hàng</th>
                     <th width="10%">{{translate('Options')}}</th>
                 </tr>
                 </thead>
@@ -97,20 +98,21 @@
                                 </label>
                             </td>
                             <td>{{ \App\Models\Product::where('user_id', $seller->user->id)->count() }}</td>
-                            <td>
+                            {{-- <td>
                                 @if ($seller->admin_to_pay >= 0)
                                     {{ single_price($seller->admin_to_pay) }}
                                 @else
                                     {{ single_price(abs($seller->admin_to_pay)) }} (Due to Admin)
                                 @endif
-                            </td>
+                            </td> --}}
+                            <td>{{ $seller->category }}</td>
                             <td>
                                 <div class="dropdown">
                                     <button type="button" class="btn btn-sm btn-circle btn-soft-primary btn-icon dropdown-toggle no-arrow" data-toggle="dropdown" href="javascript:void(0);" role="button" aria-haspopup="false" aria-expanded="false">
                                       <i class="las la-ellipsis-v"></i>
                                     </button>
                                     <div class="dropdown-menu dropdown-menu-right dropdown-menu-xs">
-                                        <a href="#" onclick="show_seller_profile('{{$seller->id}}');"  class="dropdown-item">
+                                        {{-- <a href="#" onclick="show_seller_profile('{{$seller->id}}');"  class="dropdown-item">
                                           {{translate('Profile')}}
                                         </a>
                                         <a href="{{route('sellers.login', encrypt($seller->id))}}" class="dropdown-item">
@@ -121,7 +123,7 @@
                                         </a>
                                         <a href="{{route('sellers.payment_history', encrypt($seller->id))}}" class="dropdown-item">
                                           {{translate('Payment History')}}
-                                        </a>
+                                        </a> --}}
                                         <a href="{{route('sellers.edit', encrypt($seller->id))}}" class="dropdown-item">
                                           {{translate('Edit')}}
                                         </a>

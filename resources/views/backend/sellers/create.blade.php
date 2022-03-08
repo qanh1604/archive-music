@@ -57,6 +57,12 @@
                         <input type="text" placeholder="{{translate('Phone')}}" id="phone" name="phone" class="form-control" required>
                     </div>
                 </div>
+                <div class="form-group row">
+                    <label class="col-sm-3 col-from-label" for="meta_description">{{translate('Meta description')}}</label>
+                    <div class="col-sm-9">
+                    <textarea class="form-control" placeholder="{{translate('Meta description')}}" id="meta_description" name="meta_description"></textarea>
+                    </div>
+                </div>
                 <div class="form-group mb-0 text-right">
                     <button type="submit" class="btn btn-primary">{{translate('Save')}}</button>
                 </div>
