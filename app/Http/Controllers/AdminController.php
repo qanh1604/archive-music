@@ -250,7 +250,7 @@ class AdminController extends Controller
             $chartData['package']['labels'][] = $dateFormated;
             foreach($orders as $order){
                 if($order->order_date == $date){
-                    $chartData['package']['data'][$order->payment_status][] = $order->total;
+                    $chartData['package']['data'][$order->payment_status][] = intval($order->total);
                 }
                 else{
                     $chartData['package']['data'][$order->payment_status][] = 0;

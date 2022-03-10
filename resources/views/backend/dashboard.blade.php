@@ -255,7 +255,7 @@
                                 >
                             </div>
                         </div>
-                        <div class="card-body" style="height: 240px">
+                        <div class="card-body" style="min-height: 240px; height: auto">
                             <canvas id="chart-seller-package" class="w-100" height="200"></canvas>
                         </div>
                     </div>
@@ -282,7 +282,7 @@
                                 >
                             </div>
                         </div>
-                        <div class="card-body" style="height: 240px">
+                        <div class="card-body" style="min-height: 240px; height: auto">
                             <canvas id="chart-seller-revenue" class="w-100" height="200"></canvas>
                         </div>
                     </div>
@@ -374,7 +374,7 @@
                                 >
                             </div>
                         </div>
-                        <div class="card-body" style="height: 240px">
+                        <div class="card-body" style="min-height: 240px; height: auto">
                             <canvas id="chart-market-package" class="w-100" height="200"></canvas>
                         </div>
                     </div>
@@ -401,7 +401,7 @@
                                 >
                             </div>
                         </div>
-                        <div class="card-body" style="height: 240px">
+                        <div class="card-body" style="min-height: 240px; height: auto">
                             <canvas id="chart-market-revenue" class="w-100" height="200"></canvas>
                         </div>
                     </div>
@@ -605,7 +605,7 @@
                         else if(group == 'market'){
                             marketChartPackage.destroy();
                             marketChartRevenue.destroy();
-
+                            
                             marketChartPackage = new Chart($('#chart-market-package'), initPackageChart);
                             marketChartRevenue = new Chart($('#chart-market-revenue'), initRevenueChart);
                             $('#top_product').empty();
