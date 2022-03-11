@@ -123,6 +123,9 @@ class AdminController extends Controller
         if(!isset($chartData['admin_package']['data'][0])){
             $chartData['admin_package']['data'][0] = [];
         }
+        if(!isset($chartData['revenue']['data'][0])){
+            $chartData['revenue']['data'][0] = [];
+        }
 
         $chartData = json_encode($chartData);
 
