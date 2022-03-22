@@ -23,6 +23,6 @@ class MarketSessionJoiner extends Model
 
     public function shop()
     {
-        return $this->belongsTo(Shop::class, 'user_id');
+        return $this->belongsTo(Shop::class, 'user_id', 'user_id');
     }
 }

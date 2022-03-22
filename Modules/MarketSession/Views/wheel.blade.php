@@ -61,8 +61,10 @@
                     @php
                         $giftUser = '';
                         for($i=0; $i<$current_turn; $i++){
-                            if($gift->uuid == $wheelResultDecode[$i]->uuid){
-                                $giftUser = $wheelResultDecode[$i]->user->name;
+                            if(isset($wheelResultDecode[$i])){
+                                if($gift->uuid == $wheelResultDecode[$i]->uuid){
+                                    $giftUser = $wheelResultDecode[$i]->user->name;
+                                }
                             }
                         }
                     @endphp

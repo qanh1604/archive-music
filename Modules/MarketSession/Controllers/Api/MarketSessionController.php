@@ -28,7 +28,10 @@ class MarketSessionController extends Controller
          * Request params
          * id: int //market_id
          */
-        $listSellers = MarketSessionJoiner::with(['joinerUser', 'shop'])->where('market_detail_id', $request->id)
+        $listSellers = MarketSessionJoiner::with([
+                    'joinerUser:id,name,email,avatar', 
+                    'shop:id,user_id,name,logo,sliders,phone,address,meta_title,meta_description,background_img,virtual_assistant'
+                ])->where('market_detail_id', $request->id)
                         ->whereHas('joinerUser', function($query){
                             $query->where('user_type', 'seller');
                         })->paginate(15);
@@ -41,7 +44,7 @@ class MarketSessionController extends Controller
          * Request params
          * id: int //market_id
          */
-        $listSellers = MarketSessionJoiner::with(['joinerUser'])->where('market_detail_id', $request->id)
+        $listSellers = MarketSessionJoiner::with(['joinerUser:id,name,email,avatar'])->where('market_detail_id', $request->id)
                         ->whereHas('joinerUser', function($query){
                             $query->where('user_type', 'customer');
                         })->paginate(15);
@@ -65,7 +68,12 @@ class MarketSessionController extends Controller
          * type: ['previous', 'current', 'next']
          */
         $type = $request->type;
-        $marketLists = MarketSessionDetail::with('marketSession:id,name,zoom_id,duration,join_link,image,type');
+        $marketLists = MarketSessionDetail::with([
+            'marketSession:id,name,zoom_id,duration,join_link,image,type',
+            'attended:market_detail_id,user_id,open_video,slider_video',
+            'attended.joinerUser:id,name,email,avatar', 
+            'attended.shop:id,user_id,name,logo,sliders,phone,address,meta_title,meta_description,background_img,virtual_assistant'
+        ]);
 
         if($type == 'previous')
         {
@@ -80,7 +88,7 @@ class MarketSessionController extends Controller
             $marketLists = $marketLists->whereRaw('DATE(start_time) = CURDATE()');
         }
 
-        $marketLists = $marketLists->orderBy('start_time')->paginate(15);
+        $marketLists = $marketLists->where('id', 5)->orderBy('start_time')->paginate(15);
         return response()->json($marketLists, 200);
     }
 
@@ -329,7 +337,8 @@ class MarketSessionController extends Controller
         {
             return response()->json([
                 'result' => true,
-                'message' => translate('User already joined')
+                'isAttended' => true,
+                'alreadyAttended' => true,
             ], 200);
         }
 
@@ -343,13 +352,14 @@ class MarketSessionController extends Controller
         {
             return response()->json([
                 'result' => true,
-                'message' => translate('Join success')
+                'isAttended' => true,
+                'alreadyAttended' => false
             ], 200);
         }
 
         return response()->json([
             'result' => true,
-            'message' => translate('Join failed')
+            'isAttended' => false
         ], 200);
     }
 
