@@ -287,4 +287,59 @@ class SellerPackageController extends Controller
         flash(translate('Offline payment has been done. Please wait for response.'))->success();
         return redirect()->route('seller.products');
     }
+
+    //Api
+    //@index
+    public function seller_packages_list_api()
+    {
+        $seller_packages = SellerPackage::paginate(15);
+        return response()->json($seller_packages);
+    }
+
+    public function purchase_package_api(Request $request)
+    {   
+        $data['seller_package_id'] = $request->seller_package_id;
+        // $data['payment_method'] = $request->payment_option;
+
+        $seller_package = SellerPackage::findOrFail($data['seller_package_id']);
+
+        if (Auth::user()->seller->seller_package != null && $seller_package->product_upload_limit < Auth::user()->seller->seller_package->product_upload_limit){
+            return response()->json([
+                'success' => false,
+                'message' => translate('You have more uploaded products than this package limit. You need to remove excessive products to downgrade.')
+            ]); 
+        }
+
+        if(strtotime(Auth::user()->seller->invalid_at) > strtotime(date('Y-m-d'))){
+            return response()->json([
+                'success' => false,
+                'message' => 'Already purchase'
+            ]);
+        }
+
+        return $this->purchase_payment_done_api($data, null);
+    }
+
+    public function purchase_payment_done_api($payment_data, $payment){
+        $seller = Auth::user()->seller;
+        $seller->seller_package_id = $payment_data['seller_package_id'];
+        $seller_package = SellerPackage::findOrFail($payment_data['seller_package_id']);
+        $seller->invalid_at = date('Y-m-d', strtotime( $seller->invalid_at. ' +'. $seller_package->duration .'days'));
+        $seller->save();
+
+        $seller_package = new SellerPackagePayment;
+        $seller_package->user_id = Auth::user()->id;
+        $seller_package->seller_package_id = $payment_data['seller_package_id'];
+        $seller_package->payment_method = null;
+        $seller_package->payment_details = null;
+        $seller_package->approval = 1;
+        $seller_package->offline_payment = 0;
+        $seller_package->reciept = null;
+        $seller_package->save();
+
+        return response()->json([
+            'success' => true,
+            'message' => translate('Package purchasing successful')
+        ]); 
+    }
 }

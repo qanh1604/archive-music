@@ -239,6 +239,12 @@ Route::group(['prefix' => 'v2', 'middleware' => ['app_language']], function() {
     Route::post('business-settings', 'Api\V2\ConfigController@business_settings');
     //Pickup Point list
     Route::get('pickup-list', 'Api\V2\ShippingController@pickup_list');
+
+    Route::get('/seller-packages', 'SellerPackageController@seller_packages_list_api')->name('seller_packages_list_api');
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::post('/seller_packages/purchase', 'SellerPackageController@purchase_package_api')->name('seller_packages.purchase_api');
+    });
+    
 });
 
 //add modules
