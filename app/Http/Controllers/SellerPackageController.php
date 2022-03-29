@@ -8,10 +8,14 @@ use App\Models\SellerPackageTranslation;
 use App\Models\SellerPackagePayment;
 use App\Models\Seller;
 use App\Models\Order;
+use App\Models\Upload;
+use App\Models\User;
+use Illuminate\Support\Facades\DB;
 use App\Utility\PayfastUtility;
 use Auth;
 use Session;
 use Carbon\Carbon;
+use Validator;
 
 class SellerPackageController extends Controller
 {
@@ -298,18 +302,76 @@ class SellerPackageController extends Controller
 
     public function purchase_package_api(Request $request)
     {   
-        $data['seller_package_id'] = $request->seller_package_id;
         // $data['payment_method'] = $request->payment_option;
+        $type = [
+            "jpg"=>"image",
+            "jpeg"=>"image",
+            "png"=>"image",
+            "svg"=>"image",
+            "webp"=>"image",
+            "gif"=>"image",
+        ];
+        
+        $data['name'] = $request->name;
+        $data['phone'] = $request->phone;
+        $data['email'] = $request->email;
+        $data['seller_package_id'] = $request->seller_package_id;
 
+        $validator = Validator::make($request->all(), [
+            'name' => 'required',
+            'phone' => 'required',
+            'email' => 'required',
+            'seller_package_id' => 'required',
+            'identity_card' => 'required|mimes:jpeg,jpg,png,gif|max:100000',
+            'business_license' => 'mimes:jpeg,jpg,png,gif|max:100000',
+        ]);
+        
+        if($validator->fails()){
+            return response()->json([
+                'success' => false,
+                'message' => $validator->errors()
+            ], 401);
+        }else{
+            if($request->file('identity_card')){
+                $extension_ = strtolower($request->file('identity_card')->getClientOriginalExtension());
+                $identity_card = $request->file('identity_card')->store('uploads/all');
+                $identity_card_size = $request->file('identity_card')->getSize();
+                $original_name_ = $request->file('identity_card')->getClientOriginalName();
+
+                $upload_identity_card = new Upload;
+                $upload_identity_card->extension = $extension_;
+                $upload_identity_card->file_original_name = $original_name_;
+                $upload_identity_card->file_name = $identity_card;
+                $upload_identity_card->user_id = Auth::user()->id;
+                $upload_identity_card->type = $type[$upload_identity_card->extension];
+                $upload_identity_card->file_size = $identity_card_size;
+            }
+            if($request->file('business_license')){
+                $extension__ = strtolower($request->file('business_license')->getClientOriginalExtension());
+                $business_license = $request->file('business_license')->store('uploads/all');
+                $business_license_size = $request->file('business_license')->getSize();
+                $original_name__ = $request->file('business_license')->getClientOriginalName();
+
+                $upload_business_license = new Upload;
+                
+                $upload_business_license->extension = $extension__;
+                $upload_business_license->file_original_name = $original_name__;
+                $upload_business_license->file_name = $business_license;
+                $upload_business_license->user_id = Auth::user()->id;
+                $upload_business_license->type = $type[$upload_business_license->extension];
+                $upload_business_license->file_size = $business_license_size;
+            }
+        }
+        
         $seller_package = SellerPackage::findOrFail($data['seller_package_id']);
-
+        
         if (Auth::user()->seller->seller_package != null && $seller_package->product_upload_limit < Auth::user()->seller->seller_package->product_upload_limit){
             return response()->json([
                 'success' => false,
                 'message' => translate('You have more uploaded products than this package limit. You need to remove excessive products to downgrade.')
             ]); 
         }
-
+        
         if(strtotime(Auth::user()->seller->invalid_at) > strtotime(date('Y-m-d'))){
             return response()->json([
                 'success' => false,
@@ -317,6 +379,19 @@ class SellerPackageController extends Controller
             ]);
         }
 
+        $upload_identity_card->save();
+        $upload_business_license->save();
+
+        $data['identity_card'] = $upload_identity_card->id;
+        $data['business_license'] = $upload_business_license->id;
+
+        DB::table('users')
+            ->where('id', Auth::user()->id)
+            ->update([
+                'identity_card' => $upload_identity_card->id,
+                'business_license' => $upload_business_license->id,
+            ]);
+            
         return $this->purchase_payment_done_api($data, null);
     }
 
@@ -336,7 +411,7 @@ class SellerPackageController extends Controller
         $seller_package->offline_payment = 0;
         $seller_package->reciept = null;
         $seller_package->save();
-
+        
         return response()->json([
             'success' => true,
             'message' => translate('Package purchasing successful')

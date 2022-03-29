@@ -8,6 +8,9 @@ use App\Http\Resources\V2\PurchaseHistoryItemsCollection;
 use App\Models\Order;
 use App\Models\OrderDetail;
 use Illuminate\Http\Request;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
+use Modules\MarketSession\Models\HotOrder;
 
 class PurchaseHistoryController extends Controller
 {
@@ -26,8 +29,37 @@ class PurchaseHistoryController extends Controller
             });
         }
 
+        $orders = DB::table('orders')
+            ->select("id", "code", "user_id", "delivery_status", "payment_type", "payment_status", "grand_total", "date", DB::RAW("'order' AS type"))
+            ->where("user_id", $id);
 
-        return new PurchaseHistoryMiniCollection($order_query->where('user_id', $id)->latest()->paginate(5));
+        $hot_orders = DB::table('hot_orders')
+            ->select("id", DB::RAW('"NULL" AS code'), "user_id", "delivery_status", DB::RAW('"NULL" AS payment_type'), "payment_status", "grand_total", DB::RAW('"NULL" AS date'), DB::RAW("'hot_order' AS type"))
+            ->where("user_id", $id)
+            ->union($orders)
+            ->paginate(5);
+
+        // return new PurchaseHistoryMiniCollection($order_query->where('user_id', $id)->latest()->paginate(5));
+        return response()->json($this->ordersdata($hot_orders));
+    }
+
+    public function ordersdata($data_order){
+
+        foreach ($data_order->items() as &$data){
+            $data->id = $data->id;
+            $data->code = $data->code;
+            $data->user_id = intval($data->user_id);
+            $data->payment_type = ucwords(str_replace('_', ' ', $data->payment_type));
+            $data->payment_status = $data->delivery_status;
+            $data->payment_status_string = $data->delivery_status == 'pending'? "Order Placed" : ucwords(str_replace('_', ' ',  $data->delivery_status));
+            $data->grand_total = format_price($data->grand_total);
+            $data->date = Carbon::createFromTimestamp($data->date)->format('d-m-Y');
+            $data->links = [
+                'details' => ''
+            ];
+        }
+
+        return $data_order;
     }
 
     public function details($id)

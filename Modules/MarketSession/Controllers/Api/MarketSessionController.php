@@ -18,6 +18,7 @@ use DB;
 use App\Models\User;
 use App\Models\Address;
 use App\Models\Product;
+use App\Models\Category;
 use Illuminate\Support\Str;
 
 class MarketSessionController extends Controller
@@ -35,6 +36,18 @@ class MarketSessionController extends Controller
                         ->whereHas('joinerUser', function($query){
                             $query->where('user_type', 'seller');
                         })->paginate(15);
+                        
+        foreach($listSellers as $listSeller){
+            $products = Product::where('user_id', $listSeller->user_id)->where('approved', 1)->get();
+            if(!$products->isEmpty()){
+                foreach($products as $product){
+                    $category = Category::where('id', $product->category_id)->get();
+                };
+                $listSeller->category = $category[0]->name;
+            }else{
+                $listSeller->category = null;
+            }
+        }
         return response()->json($listSellers, 200);
     }
 
@@ -48,6 +61,7 @@ class MarketSessionController extends Controller
                         ->whereHas('joinerUser', function($query){
                             $query->where('user_type', 'customer');
                         })->paginate(15);
+                       
         return response()->json($listSellers, 200);
     }
 
@@ -130,7 +144,7 @@ class MarketSessionController extends Controller
             
             $address = Address::where('id', $request->address_id)->first();
             $userInfo = User::where('id', $request->user_id)->first();
-
+            
             $shippingAddress = [];
             if ($address != null) {
                 $shippingAddress['name']        = $userInfo->name;
