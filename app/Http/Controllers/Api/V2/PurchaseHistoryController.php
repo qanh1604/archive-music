@@ -46,7 +46,7 @@ class PurchaseHistoryController extends Controller
     public function ordersdata($data_order){
 
         foreach ($data_order->items() as &$data){
-            $data->id = $data->id;
+            $data->id = intval($data->id);
             $data->code = $data->code;
             $data->user_id = intval($data->user_id);
             $data->payment_type = ucwords(str_replace('_', ' ', $data->payment_type));
