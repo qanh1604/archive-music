@@ -241,6 +241,7 @@ Route::group(['prefix' => 'v2', 'middleware' => ['app_language']], function() {
     Route::get('pickup-list', 'Api\V2\ShippingController@pickup_list');
 
     Route::get('/seller-packages', 'SellerPackageController@seller_packages_list_api')->name('seller_packages_list_api');
+    Route::get('/get_seller_user', 'Api\V2\SellerController@index');
     Route::middleware('auth:sanctum')->group(function () {
         Route::post('/seller_packages/purchase', 'SellerPackageController@purchase_package_api')->name('seller_packages.purchase_api');
     });

@@ -87,7 +87,7 @@ class MarketSessionController extends Controller
             'attended:market_detail_id,user_id,open_video,slider_video',
             'attended.joinerUser:id,name,email,avatar', 
             'attended.shop:id,user_id,name,logo,sliders,phone,address,meta_title,meta_description,background_img,virtual_assistant'
-        ]);
+        ])->has('marketSession');
 
         if($type == 'previous')
         {
