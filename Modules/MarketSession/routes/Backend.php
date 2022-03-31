@@ -1,6 +1,7 @@
 <?php 
 use \Modules\MarketSession\Controllers\MarketSessionController as MarketSessionController;
 use \Modules\MarketSession\Controllers\HotOrderController as HotOrderController;
+use \Modules\MarketSession\Controllers\CharterInformationController as CharterInformationController;
 
 Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin']], function() {
     Route::group(['prefix' => 'market-session'], function(){
@@ -32,5 +33,15 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin']], function(
         Route::post('/update_delivery_status', [HotOrderController::class, 'update_delivery_status'])->name('hot-order.update_delivery_status');
         Route::post('/update_payment_status', [HotOrderController::class, 'update_payment_status'])->name('hot-order.update_payment_status');
         Route::post('/update_tracking_code', [HotOrderController::class, 'update_tracking_code'])->name('hot-order.update_tracking_code');
+    });
+
+    Route::group(['prefix' => 'charter_information'], function(){
+        Route::resource('/', CharterInformationController::class);
+        Route::get('/', [CharterInformationController::class, 'index'])->name('charter_information');
+        Route::get('/create', [CharterInformationController::class, 'create'])->name('charter_information.create');
+        Route::post('/create', [CharterInformationController::class, 'save'])->name('charter_information.save');
+        Route::get('/edit/{id}', [CharterInformationController::class, 'edit'])->name('charter_information.edit');
+        Route::post('/edit/{id}', [CharterInformationController::class, 'saveEdit'])->name('charter_information.saveEdit');
+        Route::get('/delete/{id}', [CharterInformationController::class, 'delete'])->name('charter_information.delete');
     });
 });

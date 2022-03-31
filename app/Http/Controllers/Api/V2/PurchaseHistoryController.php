@@ -7,6 +7,9 @@ use App\Http\Resources\V2\PurchaseHistoryCollection;
 use App\Http\Resources\V2\PurchaseHistoryItemsCollection;
 use App\Models\Order;
 use App\Models\OrderDetail;
+use App\Models\Shop;
+use \Modules\MarketSession\Models\MarketSession;
+use \Modules\MarketSession\Models\MarketSessionDetail;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
@@ -57,8 +60,21 @@ class PurchaseHistoryController extends Controller
             $data->links = [
                 'details' => ''
             ];
-        }
 
+            if($data->type == 'hot_order'){
+                $hot_order = HotOrder::where('id', $data->id)->first();
+                $market_detail = MarketSessionDetail::where('id', $hot_order->market_id)->first();
+                $market = MarketSession::where('id', $market_detail->market_id)->first();
+                $shop = Shop::where('user_id', $data->user_id)->first();
+                
+                $data->type_details = [
+                    'market_name' => $market->name,
+                    'shop_name' => $shop->name,
+                    'order_description' => $hot_order->product_name,
+                    'address_id' => $hot_order->shipping_address,
+                ];
+            }
+        }
         return $data_order;
     }
 

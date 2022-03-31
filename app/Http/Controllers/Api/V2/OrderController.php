@@ -8,6 +8,8 @@ use App\Models\Order;
 use App\Models\Cart;
 use App\Models\Product;
 use App\Models\OrderDetail;
+use App\Models\Seller;
+use App\Models\SellerPackage;
 use App\Models\Coupon;
 use App\Models\CouponUsage;
 use App\Models\BusinessSetting;
@@ -32,7 +34,6 @@ class OrderController extends Controller
         }
 
         $user = User::find($request->user_id);
-
 
         $address = Address::where('id', $cartItems->first()->address_id)->first();
         $shippingAddress = [];
@@ -97,7 +98,6 @@ class OrderController extends Controller
             //Order Details Storing
             foreach ($seller_product as $cartItem) {
                 $product = Product::find($cartItem['product_id']);
-
                 $subtotal += $cartItem['price'] * $cartItem['quantity'];
                 $tax += $cartItem['tax'] * $cartItem['quantity'];
                 $coupon_discount += $cartItem['discount'];

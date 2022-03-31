@@ -54,6 +54,8 @@ class SellerPackageController extends Controller
         $seller_package->product_upload_limit = $request->product_upload_limit;
         $seller_package->duration = $request->duration;
         $seller_package->logo = $request->logo;
+        $seller_package->discount = $request->discount;
+        $seller_package->discount_type = $request->discount_type;
         if($seller_package->save()){
 
             $seller_package_translation = SellerPackageTranslation::firstOrNew(['lang' => env('DEFAULT_LANGUAGE'), 'seller_package_id' => $seller_package->id]);
@@ -110,8 +112,9 @@ class SellerPackageController extends Controller
         $seller_package->product_upload_limit = $request->product_upload_limit;
         $seller_package->duration = $request->duration;
         $seller_package->logo = $request->logo;
+        $seller_package->discount = $request->discount;
+        $seller_package->discount_type = $request->discount_type;
         if($seller_package->save()){
-
             $seller_package_translation = SellerPackageTranslation::firstOrNew(['lang' => $request->lang, 'seller_package_id' => $seller_package->id]);
             $seller_package_translation->name = $request->name;
             $seller_package_translation->save();
@@ -364,19 +367,20 @@ class SellerPackageController extends Controller
         }
         
         $seller_package = SellerPackage::findOrFail($data['seller_package_id']);
-        
-        if (Auth::user()->seller->seller_package != null && $seller_package->product_upload_limit < Auth::user()->seller->seller_package->product_upload_limit){
-            return response()->json([
-                'success' => false,
-                'message' => translate('You have more uploaded products than this package limit. You need to remove excessive products to downgrade.')
-            ]); 
-        }
-        
-        if(strtotime(Auth::user()->seller->invalid_at) > strtotime(date('Y-m-d'))){
-            return response()->json([
-                'success' => false,
-                'message' => 'Already purchase'
-            ]);
+
+        if(Auth::user()->seller){
+            if (Auth::user()->seller->seller_package != null && $seller_package->product_upload_limit < Auth::user()->seller->seller_package->product_upload_limit){
+                return response()->json([
+                    'success' => false,
+                    'message' => translate('You have more uploaded products than this package limit. You need to remove excessive products to downgrade.')
+                ]); 
+            }
+            if(strtotime(Auth::user()->seller->invalid_at) > strtotime(date('Y-m-d'))){
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Already purchase'
+                ]);
+            };
         }
 
         $upload_identity_card->save();
@@ -384,14 +388,26 @@ class SellerPackageController extends Controller
 
         $data['identity_card'] = $upload_identity_card->id;
         $data['business_license'] = $upload_business_license->id;
-
+        
         DB::table('users')
             ->where('id', Auth::user()->id)
             ->update([
+                'user_type' => 'seller',
                 'identity_card' => $upload_identity_card->id,
                 'business_license' => $upload_business_license->id,
+                'started_at' => Carbon::now(),
             ]);
-            
+
+        $seller = Seller::where('user_id', Auth::user()->id)->first();
+        
+        if(!$seller){
+            DB::table('sellers')
+            ->where('user_id', Auth::user()->id)
+            ->insert([
+                'user_id' => Auth::user()->id,
+            ]);
+        }
+
         return $this->purchase_payment_done_api($data, null);
     }
 
@@ -411,6 +427,12 @@ class SellerPackageController extends Controller
         $seller_package->offline_payment = 0;
         $seller_package->reciept = null;
         $seller_package->save();
+
+        DB::table('users')
+            ->where('id', Auth::user()->id)
+            ->update([
+                'finished_at' => $seller->invalid_at,
+            ]);
         
         return response()->json([
             'success' => true,

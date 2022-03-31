@@ -47,6 +47,18 @@
                     </div>
                 </div>
                 <div class="form-group row">
+                    <label class="col-lg-2 col-from-label">{{translate('Discount')}}</label>
+                    <div class="col-lg-6">
+                        <input type="number" lang="en" min="0" step="0.01" placeholder="{{translate('Discount')}}" name="discount" class="form-control" value="{{ $seller_package->discount }}" required>
+                    </div>
+                    <div class="col-lg-4">
+                        <select class="form-control aiz-selectpicker" name="discount_type" required>
+                            <option value="amount" <?php if ($seller_package->discount_type == 'amount') echo "selected"; ?> >{{translate('Flat')}}</option>
+                            <option value="percent" <?php if ($seller_package->discount_type == 'percent') echo "selected"; ?> >{{translate('Percent')}}</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group row">
                     <label class="col-md-2 col-form-label" for="signinSrEmail">{{translate('Package Logo')}}</label>
                     <div class="col-md-10">
                         <div class="input-group" data-toggle="aizuploader" data-type="image" data-multiple="false">

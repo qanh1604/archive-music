@@ -3,8 +3,10 @@
 namespace App\Http\Controllers\Api\V2;
 
 use App\Models\Cart;
+use App\Models\User;
 use App\Models\Product;
 use App\Models\Shop;
+use App\Models\SellerPackage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -39,8 +41,6 @@ class CartController extends Controller
             $subtotal += $cartItem->price * $cartItem->quantity;
             $tax += $cartItem->tax * $cartItem->quantity;
         }
-
-
 
         return response()->json([
             'sub_total' => format_price($subtotal),
@@ -89,7 +89,6 @@ class CartController extends Controller
                     }
                 }
 
-
                 $shop_data = Shop::where('user_id', $owner_id)->first();
                 if ($shop_data) {
                     $shop['name'] = $shop_data->name;
@@ -104,19 +103,17 @@ class CartController extends Controller
             }
         }
 
-        //dd($shops);
-
         return response()->json($shops);
     }
 
 
     public function add(Request $request)
-    {
+    {   
         $product = Product::findOrFail($request->id);
 
         $variant = $request->variant;
         $tax = 0;
-
+        
         if ($variant == '')
             $price = $product->unit_price;
         else {
@@ -135,7 +132,18 @@ class CartController extends Controller
             strtotime(date('d-m-Y H:i:s')) <= $product->discount_end_date) {
             $discount_applicable = true;
         }
+        
+        $user = User::where('id', $request->user_id)->first();
 
+        if($user->user_type == 'seller'){
+            $seller_package = SellerPackage::where('id', $user->seller->seller_package_id)->first();
+            if($seller_package->discount_type == 'percent'){
+                $price -= ($price*$seller_package->discount)/100;
+            }elseif($seller_package->discount_type == 'amount'){
+                $price -= $product->discount;
+            }
+        }
+       
         if ($discount_applicable) {
             if($product->discount_type == 'percent'){
                 $price -= ($price*$product->discount)/100;
@@ -144,7 +152,7 @@ class CartController extends Controller
                 $price -= $product->discount;
             }
         }
-
+        
         foreach ($product->taxes as $product_tax) {
             if ($product_tax->tax_type == 'percent') {
                 $tax += ($price * $product_tax->tax) / 100;
@@ -156,9 +164,8 @@ class CartController extends Controller
         if ($product->min_qty > $request->quantity) {
             return response()->json(['result' => false, 'message' => translate("Minimum")." {$product->min_qty} ".translate("item(s) should be ordered")], 200);
         }
-
+        
         $stock = $product->stocks->where('variant', $variant)->first()->qty;
-
         $variant_string = $variant != null && $variant != "" ? translate("for")." ($variant)" : "";
         if ($stock < $request->quantity) {
             if ($stock == 0) {

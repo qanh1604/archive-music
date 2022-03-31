@@ -1,5 +1,6 @@
 <?php
 use \Modules\MarketSession\Controllers\Api\MarketSessionController as MarketSessionController;
+use \Modules\MarketSession\Controllers\Api\CharterInformationController as CharterInformationController;
 
 Route::group(['prefix' => 'v2', 'middleware' => ['app_language']], function() 
 {
@@ -12,5 +13,9 @@ Route::group(['prefix' => 'v2', 'middleware' => ['app_language']], function()
         Route::get('get-customer/{id}', [MarketSessionController::class, 'getCustomer']);
         Route::get('get-seller-product/{id}', [MarketSessionController::class, 'getSellerProducts']);
         Route::post('get-market-list', [MarketSessionController::class, 'getMarketList']);
+    });
+
+    Route::prefix('charter_information')->group(function(){
+        Route::get('/', [CharterInformationController::class, 'index'])->name('charter_information');
     });
 });
