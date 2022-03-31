@@ -72,7 +72,7 @@ class PurchaseHistoryController extends Controller
 
                 $data->type_details = [
                     'market_name' => $market->name,
-                    'shop_name' => $shop->name,
+                    'shop_name' => $shop?$shop->name:'',
                     'order_description' => $hot_order->product_name,
                     'address_id' => $address?$address->address:'',
                 ];
