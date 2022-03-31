@@ -8,6 +8,7 @@ use App\Http\Resources\V2\PurchaseHistoryItemsCollection;
 use App\Models\Order;
 use App\Models\OrderDetail;
 use App\Models\Shop;
+use App\Models\Address;
 use \Modules\MarketSession\Models\MarketSession;
 use \Modules\MarketSession\Models\MarketSessionDetail;
 use Illuminate\Http\Request;
@@ -67,11 +68,13 @@ class PurchaseHistoryController extends Controller
                 $market = MarketSession::where('id', $market_detail->market_id)->first();
                 $shop = Shop::where('user_id', $data->user_id)->first();
                 
+                $address = Address::where('user_id', $data->user_id)->first();
+
                 $data->type_details = [
                     'market_name' => $market->name,
                     'shop_name' => $shop->name,
                     'order_description' => $hot_order->product_name,
-                    'address_id' => $hot_order->shipping_address,
+                    'address_id' => $address?$address->address:'',
                 ];
             }
         }
