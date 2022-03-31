@@ -61,6 +61,15 @@
                             </div>
                         </div>
                     </div>
+                    <div class="form-group row">
+                        <label class="col-md-2 col-from-label">{{translate('Type')}} <span class="text-danger">*</span></label>
+                        <div class="col-md-4">
+                            <select class="form-control aiz-selectpicker" name="type">
+                                <option value="pro">{{translate('Pro')}}</option>
+                                <option value="seller">{{translate('Seller')}}</option>
+                            </select>
+                        </div>
+                    </div>
                     <div class="form-group mb-0 text-right">
                         <button type="submit" class="btn btn-sm btn-primary">{{translate('Save')}}</button>
                     </div>

@@ -101,8 +101,17 @@ class MarketSessionController extends Controller
         {
             $marketLists = $marketLists->whereRaw('DATE(start_time) = CURDATE()');
         }
-
+        
         $marketLists = $marketLists->orderBy('start_time')->paginate(15);
+
+        foreach($marketLists as &$marketList){
+            $joiner = MarketSessionJoiner::where('market_detail_id', $marketList->id)->get();
+            $open_video = $joiner->pluck('open_video')->toArray();
+            $slider_video = $joiner->pluck('slider_video')->toArray();
+            $marketList->open_video = explode(',',implode(',',array_filter($open_video)));
+            $marketList->slider_video = explode(',',implode(',',array_filter($slider_video)));
+        }
+        
         return response()->json($marketLists, 200);
     }
 

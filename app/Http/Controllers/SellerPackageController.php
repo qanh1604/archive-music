@@ -56,6 +56,7 @@ class SellerPackageController extends Controller
         $seller_package->logo = $request->logo;
         $seller_package->discount = $request->discount;
         $seller_package->discount_type = $request->discount_type;
+        $seller_package->type = $request->type;
         if($seller_package->save()){
 
             $seller_package_translation = SellerPackageTranslation::firstOrNew(['lang' => env('DEFAULT_LANGUAGE'), 'seller_package_id' => $seller_package->id]);
@@ -114,6 +115,7 @@ class SellerPackageController extends Controller
         $seller_package->logo = $request->logo;
         $seller_package->discount = $request->discount;
         $seller_package->discount_type = $request->discount_type;
+        $seller_package->type = $request->type;
         if($seller_package->save()){
             $seller_package_translation = SellerPackageTranslation::firstOrNew(['lang' => $request->lang, 'seller_package_id' => $seller_package->id]);
             $seller_package_translation->name = $request->name;

@@ -72,6 +72,15 @@
                         </div>
                     </div>
                 </div>
+                <div class="form-group row">
+                    <label class="col-lg-2 col-from-label">{{translate('Type')}}</label>
+                    <div class="col-lg-4">
+                        <select class="form-control aiz-selectpicker" name="type" required>
+                            <option value="pro" <?php if ($seller_package->type == 'pro') echo "selected"; ?> >{{translate('Pro')}}</option>
+                            <option value="seller" <?php if ($seller_package->type == 'seller') echo "selected"; ?> >{{translate('Seller')}}</option>
+                        </select>
+                    </div>
+                </div>
                 <div class="form-group mb-0 text-right">
                     <button type="submit" class="btn btn-sm btn-primary">{{translate('Save')}}</button>
                 </div>
