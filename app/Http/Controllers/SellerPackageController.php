@@ -430,13 +430,6 @@ class SellerPackageController extends Controller
                 ]);
             }
 
-            if ($file_put_business_license == false) {
-                return response()->json([
-                    'result' => false,
-                    'message' => "Uploading error"
-                ]);
-            }
-
             $newPath_identity_card = "uploads/all/$newFileName_identity_card";
             $newPath_business_license = "uploads/all/$newFileName_business_license";
 
