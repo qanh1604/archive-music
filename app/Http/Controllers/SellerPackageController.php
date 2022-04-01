@@ -346,7 +346,7 @@ class SellerPackageController extends Controller
             $identity_card_name = $request->identity_card_name;
             $business_license_name = $request->business_license_name;
 
-            if($identity_card && $identity_card_name || $identity_card != "null" && $identity_card_name != "null"){
+            if($identity_card && $identity_card_name || $identity_card != "null" && $identity_card_name != "null" && $identity_card && $identity_card_name){
                 $real_identity_card = base64_decode($identity_card);
                 $dir_identity_card = public_path('uploads/all');
                 $full_path_identity_card = "$dir_identity_card/$identity_card_name";
@@ -411,8 +411,8 @@ class SellerPackageController extends Controller
                 $upload_identity_card->type = $type[$upload_identity_card->extension];
                 $upload_identity_card->file_size = $size_identity_card;
             }
-
-            if($business_license && $business_license_name || $business_license != "null" && $business_license_name != "null"){
+            
+            if($business_license != "null" && $business_license_name != "null" && $business_license && $business_license_name){
                 $real_business_license = base64_decode($business_license);
                 $dir_business_license = public_path('uploads/all');
                 
@@ -511,7 +511,7 @@ class SellerPackageController extends Controller
         // }
 
         $upload_identity_card->save();
-        if($business_license && $business_license_name){
+        if($business_license != "null" && $business_license_name != "null" && $business_license && $business_license_name){
             $upload_business_license->save();
             $data['business_license'] = $upload_business_license->id;
         }
@@ -579,7 +579,7 @@ class SellerPackageController extends Controller
             $seller_package->save();
 
             return response()->json([
-                'success' => true,
+                'result' => true,
                 'message' => translate('Package extended successful')
             ]); 
         }else {
@@ -597,7 +597,7 @@ class SellerPackageController extends Controller
             $seller_package->save();
             
             return response()->json([
-                'success' => true,
+                'result' => true,
                 'message' => translate('Package purchasing successful')
             ]); 
         }
