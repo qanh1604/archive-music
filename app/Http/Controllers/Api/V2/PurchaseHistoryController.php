@@ -65,10 +65,11 @@ class PurchaseHistoryController extends Controller
 
             if($data->type == 'hot_order'){
                 $hot_order = HotOrder::where('id', $data->id)->first();
-                $market_detail = MarketSessionDetail::where('id', $hot_order->market_id)->first();
-                $market = MarketSession::where('id', $market_detail->market_id)->first();
+                if($hot_order){
+                    $market_detail = MarketSessionDetail::where('id', $hot_order->market_id)->first();
+                    $market = MarketSession::where('id', $market_detail->market_id)->first();
+                }
                 $shop = Shop::where('user_id', $data->user_id)->first();
-                
                 $address = Address::where('user_id', $data->user_id)->first();
 
                 $data->type_details = [
