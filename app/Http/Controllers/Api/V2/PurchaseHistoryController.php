@@ -15,6 +15,7 @@ use Illuminate\Http\Request;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Modules\MarketSession\Models\HotOrder;
+use \Modules\MarketSession\Models\HotOrderDetail;
 
 class PurchaseHistoryController extends Controller
 {
@@ -83,8 +84,63 @@ class PurchaseHistoryController extends Controller
 
     public function details($id)
     {
-        $order_query = Order::where('id', $id);
-        return new PurchaseHistoryCollection($order_query->get());
+        $orders = DB::table('orders')
+            ->select("id", "code", "user_id", "shipping_address", "payment_type", "pickup_point_id", "shipping_type", "delivery_status", "payment_status", "grand_total", "date", DB::RAW("'order' AS type"), "coupon_discount", "cancel_request", "manual_payment", "manual_payment_data")
+            ->where("id", $id);
+
+        $hot_orders = DB::table('hot_orders')
+            ->select("id", DB::RAW('"NULL" AS code'), "user_id", "shipping_address", DB::RAW('"NULL" AS payment_type'), DB::RAW('"NULL" AS pickup_point_id'), DB::RAW('"NULL" AS shipping_type'), "delivery_status", "payment_status", "grand_total", DB::RAW('"NULL" AS date'), DB::RAW("'hot_order' AS type"), DB::RAW('"NULL" AS coupon_discount'), DB::RAW('"NULL" AS cancel_request'), DB::RAW('"NULL" AS manual_payment'), DB::RAW('"NULL" AS manual_payment_data'))
+            ->where("id", $id)
+            ->union($orders)
+            ->paginate(5);
+        // $order_query = Order::where('id', $id);
+        // return new PurchaseHistoryCollection($order_query->get());
+        return response()->json($this->detailorder($hot_orders));
+    }
+
+    public function detailorder($data_order){
+
+        foreach ($data_order->items() as &$data){
+            $pickup_point = null;
+            if ($data->shipping_type == 'pickup_point' && $data->pickup_point_id) {
+                $pickup_point = $data->pickup_point;
+            }
+            
+            $data->id = $data->id;
+            $data->code = $data->code;
+            $data->user_id = (int) $data->user_id;
+            $data->shipping_address = json_decode($data->shipping_address);
+            $data->payment_type = ucwords(str_replace('_', ' ', $data->payment_type));
+            $data->pickup_point = $pickup_point;
+            $data->payment_status = $data->payment_status;
+            $data->payment_status_string = ucwords(str_replace('_', ' ', $data->payment_status));
+            $data->delivery_status = $data->delivery_status;
+            $data->delivery_status_string = $data->delivery_status == 'pending'? "Order Placed" : ucwords(str_replace('_', ' ',  $data->delivery_status));
+            $data->grand_total = format_price($data->grand_total);
+            $data->coupon_discount = $data->coupon_discount != "NULL" ? format_price($data->coupon_discount) : format_price(0);
+            
+            if($data->type == 'order'){
+                $order_detail = OrderDetail::where('order_id', $data->id)->first();
+                if($order_detail){
+                    $data->shipping_cost = format_price($order_detail->sum('shipping_cost'));
+                    $data->subtotal = format_price($order_detail->price);
+                    $data->tax = format_price($order_detail->sum('tax'));
+                }
+            }
+            if($data->type == 'hot_order'){
+                $hot_order = HotOrderDetail::where('order_id', $data->id)->first();
+                if($hot_order){
+                    $data->subtotal = format_price($hot_order->price);
+                }
+            }
+            $data->date = Carbon::createFromTimestamp($data->date)->format('d-m-Y');
+            $data->cancel_request = $data->cancel_request == 1;
+            $data->manually_payable = $data->manual_payment && $data->manual_payment_data == null;
+            $data->links = [
+                'details' => ''
+            ];
+        }
+        return $data_order;
     }
 
     public function items($id)
