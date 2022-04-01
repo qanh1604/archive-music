@@ -488,20 +488,20 @@ class SellerPackageController extends Controller
         
         $seller_package = SellerPackage::findOrFail($data['seller_package_id']);
 
-        // if(Auth::user()->seller){
-        //     if (Auth::user()->seller->seller_package != null && $seller_package->product_upload_limit < Auth::user()->seller->seller_package->product_upload_limit){
-        //         return response()->json([
-        //             'success' => false,
-        //             'message' => translate('You have more uploaded products than this package limit. You need to remove excessive products to downgrade.')
-        //         ]); 
-        //     }
-        //     if(strtotime(Auth::user()->seller->invalid_at) > strtotime(date('Y-m-d'))){
-        //         return response()->json([
-        //             'success' => false,
-        //             'message' => 'Already purchase'
-        //         ]);
-        //     };
-        // }
+        if(Auth::user()->seller){
+            if (Auth::user()->seller->seller_package != null && $seller_package->product_upload_limit < Auth::user()->seller->seller_package->product_upload_limit){
+                return response()->json([
+                    'success' => false,
+                    'message' => translate('You have more uploaded products than this package limit. You need to remove excessive products to downgrade.')
+                ]); 
+            }
+            if(strtotime(Auth::user()->seller->invalid_at) > strtotime(date('Y-m-d'))){
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Already purchase'
+                ]);
+            };
+        }
 
         $upload_identity_card->save();
         $upload_business_license->save();
