@@ -411,7 +411,6 @@ class SellerPackageController extends Controller
                 $upload_identity_card->type = $type[$upload_identity_card->extension];
                 $upload_identity_card->file_size = $size_identity_card;
             }
-            
 
             if($business_license && $business_license_name){
                 $real_business_license = base64_decode($business_license);
@@ -502,20 +501,14 @@ class SellerPackageController extends Controller
         
         $seller_package = SellerPackage::findOrFail($data['seller_package_id']);
 
-        if(Auth::user()->seller){
-            if (Auth::user()->seller->seller_package != null && $seller_package->product_upload_limit < Auth::user()->seller->seller_package->product_upload_limit){
-                return response()->json([
-                    'success' => false,
-                    'message' => translate('You have more uploaded products than this package limit. You need to remove excessive products to downgrade.')
-                ]); 
-            }
-            // if(strtotime(Auth::user()->seller->invalid_at) > strtotime(date('Y-m-d'))){
-            //     return response()->json([
-            //         'success' => false,
-            //         'message' => 'Already purchase'
-            //     ]);
-            // };
-        }
+        // if(Auth::user()->seller){
+        //     if (Auth::user()->seller->seller_package != null && $seller_package->product_upload_limit < Auth::user()->seller->seller_package->product_upload_limit){
+        //         return response()->json([
+        //             'success' => false,
+        //             'message' => translate('You have more uploaded products than this package limit. You need to remove excessive products to downgrade.')
+        //         ]); 
+        //     }
+        // }
 
         $upload_identity_card->save();
         if($business_license && $business_license_name){
@@ -524,14 +517,23 @@ class SellerPackageController extends Controller
         }
 
         $data['identity_card'] = $upload_identity_card->id;
-        
-        DB::table('users')
+
+        if(strtotime(Auth::user()->seller->invalid_at) > strtotime(date('Y-m-d'))){
+            DB::table('users')
             ->where('id', Auth::user()->id)
             ->update([
                 'identity_card' => $upload_identity_card->id,
                 'business_license' => $upload_business_license?$upload_business_license->id:null,
                 'started_at' => Carbon::now(),
             ]);
+        }else {
+            DB::table('users')
+            ->where('id', Auth::user()->id)
+            ->update([
+                'identity_card' => $upload_identity_card->id,
+                'business_license' => $upload_business_license?$upload_business_license->id:null
+            ]);
+        }
         
         $seller = Seller::where('user_id', Auth::user()->id)->first();
         
