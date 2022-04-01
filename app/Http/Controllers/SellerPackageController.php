@@ -328,8 +328,7 @@ class SellerPackageController extends Controller
             'phone' => 'required',
             'email' => 'required',
             'seller_package_id' => 'required',
-            'identity_card' => 'required|mimes:jpeg,jpg,png,gif|max:100000',
-            'business_license' => 'mimes:jpeg,jpg,png,gif|max:100000',
+            'identity_card' => 'required'
         ]);
         
         if($validator->fails()){
@@ -347,8 +346,8 @@ class SellerPackageController extends Controller
             $dir_identity_card = public_path('uploads/all');
             $dir_business_license = public_path('uploads/all');
 
-            $url_identity_card = strtolower($request->file('identity_card')->getClientOriginalName());
-            $url_business_license = strtolower($request->file('business_license')->getClientOriginalName());
+            $url_identity_card = basename($real_identity_card);
+            $url_business_license = basename($real_business_license);
 
             $full_path_identity_card = "$dir_identity_card/$url_identity_card";
             $full_path_business_license = "$dir_business_license/$url_business_license";
@@ -449,7 +448,7 @@ class SellerPackageController extends Controller
             }
 
             $upload_identity_card->extension = $extension_identity_card;
-            $upload_identity_card->file_original_name = $request->file('identity_card')->getClientOriginalName();
+            $upload_identity_card->file_original_name = basename($real_identity_card);
             $upload_identity_card->file_name = $newPath_identity_card;
             $upload_identity_card->user_id = Auth::user()->id;
             $upload_identity_card->type = $type[$upload_identity_card->extension];
@@ -457,7 +456,7 @@ class SellerPackageController extends Controller
             
 
             $upload_business_license->extension = $extension_identity_card;
-            $upload_business_license->file_original_name = $request->file('business_license')->getClientOriginalName();
+            $upload_business_license->file_original_name = basename($real_business_license);
             $upload_business_license->file_name = $newPath_identity_card;
             $upload_business_license->user_id = Auth::user()->id;
             $upload_business_license->type = $type[$upload_business_license->extension];
