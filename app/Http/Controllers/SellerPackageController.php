@@ -11,6 +11,7 @@ use App\Models\Order;
 use App\Models\Upload;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\File;
 use App\Utility\PayfastUtility;
 use Auth;
 use Session;
@@ -337,35 +338,160 @@ class SellerPackageController extends Controller
                 'message' => $validator->errors()
             ], 401);
         }else{
-            if($request->file('identity_card')){
-                $extension_ = strtolower($request->file('identity_card')->getClientOriginalExtension());
-                $identity_card = $request->file('identity_card')->store('uploads/all');
-                $identity_card_size = $request->file('identity_card')->getSize();
-                $original_name_ = $request->file('identity_card')->getClientOriginalName();
+            $identity_card = $request->identity_card;
+            $business_license = $request->business_license;
+            
+            $real_identity_card = base64_decode($identity_card);
+            $real_business_license = base64_decode($business_license);
 
-                $upload_identity_card = new Upload;
-                $upload_identity_card->extension = $extension_;
-                $upload_identity_card->file_original_name = $original_name_;
-                $upload_identity_card->file_name = $identity_card;
-                $upload_identity_card->user_id = Auth::user()->id;
-                $upload_identity_card->type = $type[$upload_identity_card->extension];
-                $upload_identity_card->file_size = $identity_card_size;
+            $dir_identity_card = public_path('uploads/all');
+            $dir_business_license = public_path('uploads/all');
+
+            $url_identity_card = strtolower($request->file('identity_card')->getClientOriginalName());
+            $url_business_license = strtolower($request->file('business_license')->getClientOriginalName());
+
+            $full_path_identity_card = "$dir_identity_card/$url_identity_card";
+            $full_path_business_license = "$dir_business_license/$url_business_license";
+            
+            $file_put_identity_card = file_put_contents($full_path_identity_card, $real_identity_card);
+            $file_put_business_license = file_put_contents($full_path_business_license, $real_business_license);
+
+            if ($file_put_identity_card == false) {
+                return response()->json([
+                    'result' => false,
+                    'message' => "File uploading error"
+                ]);
             }
-            if($request->file('business_license')){
-                $extension__ = strtolower($request->file('business_license')->getClientOriginalExtension());
-                $business_license = $request->file('business_license')->store('uploads/all');
-                $business_license_size = $request->file('business_license')->getSize();
-                $original_name__ = $request->file('business_license')->getClientOriginalName();
 
-                $upload_business_license = new Upload;
+            if ($file_put_business_license == false) {
+                return response()->json([
+                    'result' => false,
+                    'message' => "File uploading error"
+                ]);
+            }
+            
+            $upload_identity_card = new Upload;
+            $upload_business_license = new Upload;
+            $extension_identity_card = strtolower(File::extension($full_path_identity_card));
+            $extension_business_license = strtolower(File::extension($full_path_business_license));
+            $size_identity_card = File::size($full_path_identity_card);
+            $size_business_license = File::size($full_path_business_license);
+            
+            if (!isset($type[$extension_identity_card])) {
+                unlink($full_path_identity_card);
+                return response()->json([
+                    'result' => false,
+                    'message' => "Only image can be uploaded"
+                ]);
+            }
+
+            if (!isset($type[$extension_business_license])) {
+                unlink($full_path_business_license);
+                return response()->json([
+                    'result' => false,
+                    'message' => "Only image can be uploaded"
+                ]);
+            }
+
+            $upload_identity_card->file_original_name = null;
+            $upload_business_license->file_original_name = null;
+
+            $arr_identity_card = explode('.', File::name($full_path_identity_card));
+            $arr_business_license = explode('.', File::name($full_path_business_license));
+            for ($i = 0; $i < count($arr_identity_card) - 1; $i++) {
+                if ($i == 0) {
+                    $upload_identity_card->file_original_name .= $arr_identity_card[$i];
+                } else {
+                    $upload_identity_card->file_original_name .= "." . $arr_identity_card[$i];
+                }
+            }
+            for ($i = 0; $i < count($arr_business_license) - 1; $i++) {
+                if ($i == 0) {
+                    $upload_business_licens->file_original_name .= $arr_business_license[$i];
+                } else {
+                    $upload_business_licens->file_original_name .= "." . $arr_business_license[$i];
+                }
+            }
+            //unlink and upload again with new name
+            unlink($full_path_identity_card);
+            unlink($full_path_business_license);
+
+            $newFileName_identity_card = rand(10000000000, 9999999999) . date("YmdHis") . "." . $extension_identity_card;
+            $newFileName_business_license = rand(10000000000, 9999999999) . date("YmdHis") . "." . $extension_business_license;
+            $newFullPath_identity_card = "$dir_identity_card/$newFileName_identity_card";
+            $newFullPath_business_license = "$dir_business_license/$newFileName_business_license";
+
+            $file_put_identity_card = file_put_contents($newFullPath_identity_card, $real_identity_card);
+            $file_put_business_license = file_put_contents($newFullPath_business_license, $real_business_license);
+
+            if ($file_put_identity_card == false) {
+                return response()->json([
+                    'result' => false,
+                    'message' => "Uploading error"
+                ]);
+            }
+
+            if ($file_put_business_license == false) {
+                return response()->json([
+                    'result' => false,
+                    'message' => "Uploading error"
+                ]);
+            }
+
+            $newPath_identity_card = "uploads/all/$newFileName_identity_card";
+            $newPath_business_license = "uploads/all/$newFileName_business_license";
+
+            if (env('FILESYSTEM_DRIVER') == 's3') {
+                Storage::disk('s3')->put($newPath_identity_card, file_get_contents(base_path('public/') . $newPath_identity_card));
+                Storage::disk('s3')->put($newPath_business_license, file_get_contents(base_path('public/') . $newPath_business_license));
+                unlink(base_path('public/') . $newPath_identity_card);
+                unlink(base_path('public/') . $newPath_business_license);
+            }
+
+            $upload_identity_card->extension = $extension_identity_card;
+            $upload_identity_card->file_original_name = $request->file('identity_card')->getClientOriginalName();
+            $upload_identity_card->file_name = $newPath_identity_card;
+            $upload_identity_card->user_id = Auth::user()->id;
+            $upload_identity_card->type = $type[$upload_identity_card->extension];
+            $upload_identity_card->file_size = $size_identity_card;
+            
+
+            $upload_business_license->extension = $extension_identity_card;
+            $upload_business_license->file_original_name = $request->file('business_license')->getClientOriginalName();
+            $upload_business_license->file_name = $newPath_identity_card;
+            $upload_business_license->user_id = Auth::user()->id;
+            $upload_business_license->type = $type[$upload_business_license->extension];
+            $upload_business_license->file_size = $size_identity_card;
+            
+            // if($request->file('identity_card')){
+            //     $extension_ = strtolower($request->file('identity_card')->getClientOriginalExtension());
+            //     $identity_card = $request->file('identity_card')->store('uploads/all');
+            //     $identity_card_size = $request->file('identity_card')->getSize();
+            //     $original_name_ = $request->file('identity_card')->getClientOriginalName();
+
+            //     $upload_identity_card = new Upload;
+            //     $upload_identity_card->extension = $extension_;
+            //     $upload_identity_card->file_original_name = $original_name_;
+            //     $upload_identity_card->file_name = $identity_card;
+            //     $upload_identity_card->user_id = Auth::user()->id;
+            //     $upload_identity_card->type = $type[$upload_identity_card->extension];
+            //     $upload_identity_card->file_size = $identity_card_size;
+            // }
+            // if($request->file('business_license')){
+            //     $extension__ = strtolower($request->file('business_license')->getClientOriginalExtension());
+            //     $business_license = $request->file('business_license')->store('uploads/all');
+            //     $business_license_size = $request->file('business_license')->getSize();
+            //     $original_name__ = $request->file('business_license')->getClientOriginalName();
+
+            //     $upload_business_license = new Upload;
                 
-                $upload_business_license->extension = $extension__;
-                $upload_business_license->file_original_name = $original_name__;
-                $upload_business_license->file_name = $business_license;
-                $upload_business_license->user_id = Auth::user()->id;
-                $upload_business_license->type = $type[$upload_business_license->extension];
-                $upload_business_license->file_size = $business_license_size;
-            }
+            //     $upload_business_license->extension = $extension__;
+            //     $upload_business_license->file_original_name = $original_name__;
+            //     $upload_business_license->file_name = $business_license;
+            //     $upload_business_license->user_id = Auth::user()->id;
+            //     $upload_business_license->type = $type[$upload_business_license->extension];
+            //     $upload_business_license->file_size = $business_license_size;
+            // }
         }
         
         $seller_package = SellerPackage::findOrFail($data['seller_package_id']);
@@ -390,7 +516,7 @@ class SellerPackageController extends Controller
 
         $data['identity_card'] = $upload_identity_card->id;
         $data['business_license'] = $upload_business_license->id;
-        
+        dd($data);
         DB::table('users')
             ->where('id', Auth::user()->id)
             ->update([
@@ -409,7 +535,6 @@ class SellerPackageController extends Controller
                 'user_id' => Auth::user()->id,
             ]);
         }
-
         return $this->purchase_payment_done_api($data, null);
     }
 

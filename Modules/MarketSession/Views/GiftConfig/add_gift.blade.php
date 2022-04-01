@@ -104,9 +104,7 @@
                                 data-target=".market-gift">
                                 {{ translate('Add New') }}
                             </button>
-                        </div>
-                        <div class="text-right">
-                            <button type="submit" class="btn btn-primary">{{ translate('Update') }}</button>
+                            <button type="submit" class="btn btn-primary btn-update-give">{{ translate('Update') }}</button>
                         </div>
                     </div>
                 </div>

@@ -79,7 +79,7 @@
                 <thead>
                     <tr>
                         <th>
-                            <div class="form-group">
+                            <div class="form-group title-table-name">
                                 <div class="aiz-checkbox-inline">
                                     <label class="aiz-checkbox">
                                         <input type="checkbox" class="check-all">
@@ -117,7 +117,7 @@
                             </div>
                         </td>
                         <td>
-                            <div class="row gutters-5 w-200px w-md-300px mw-100">
+                            <div class="row gutters-5 w-200px mw-100">
                                 <div class="col-auto">
                                     <img src="{{ uploaded_asset($product->thumbnail_img)}}" alt="Image" class="size-50px img-fit">
                                 </div>
@@ -134,7 +134,7 @@
                             <strong>{{translate('Base Price')}}:</strong> {{ single_price($product->unit_price) }} </br>
                             <strong>{{translate('Rating')}}:</strong> {{ $product->rating }} </br>
                         </td>
-                        <td>
+                        <td class="total_stock_table">
                             @php
                                 $qty = 0;
                                 if($product->variant_product) {
