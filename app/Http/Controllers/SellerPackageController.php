@@ -336,7 +336,7 @@ class SellerPackageController extends Controller
         
         if($validator->fails()){
             return response()->json([
-                'success' => false,
+                'result' => false,
                 'message' => $validator->errors()
             ], 401);
         }else{
