@@ -9,6 +9,7 @@ use App\Models\Address;
 use App\Http\Resources\V2\CitiesCollection;
 use App\Http\Resources\V2\CountriesCollection;
 use App\Models\Order;
+use Modules\MarketSession\Models\HotOrder;
 use App\Models\Upload;
 use App\Models\User;
 use App\Models\Wishlist;
@@ -25,7 +26,7 @@ class ProfileController extends Controller
         return response()->json([
             'cart_item_count' => Cart::where('user_id', $user_id)->count(),
             'wishlist_item_count' => Wishlist::where('user_id', $user_id)->count(),
-            'order_count' => Order::where('user_id', $user_id)->count(),
+            'order_count' => Order::where('user_id', $user_id)->count() + HotOrder::where('user_id', $user_id)->count(),
         ]);
     }
 
