@@ -27,7 +27,29 @@ class HotOrderController extends Controller
         $date = null;
         $sort_search = null;
         $delivery_status = null;
+
         $orders = HotOrder::with('orderDetails')->orderBy('order_at')->paginate(15);
+
+        if($request->delivery_status){
+            $delivery_status = $request->delivery_status;
+            $orders = HotOrder::with('orderDetails')->where('delivery_status', $delivery_status)->orderBy('order_at')->paginate(15);
+        }
+
+        if($request->search){
+            $sort_search = $request->search;
+            $orders = HotOrder::with('orderDetails')->where('order_code', 'LIKE', $sort_search)->orderBy('order_at')->paginate(15);
+        }
+        
+        if($request->date){ 
+            $date = $request->date;
+            $date_sort = explode(" to ", $date);
+            $from = date("Y-m-d", strtotime($date_sort[0]));
+            $to = date("Y-m-d", strtotime($date_sort[1]));
+
+            $orders = HotOrder::with('orderDetails')
+                        ->whereRaw('order_at >= ? AND order_at <= ?', [$from ." 00:00:00", $to ." 23:59:59"])
+                        ->paginate(15);
+        }
 
         return view('MarketSession::HotOrders.index', compact('orders', 'date', 'sort_search', 'delivery_status'));
     }
@@ -266,4 +288,5 @@ class HotOrderController extends Controller
 
         return 1;
     }
+
 }

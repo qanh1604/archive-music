@@ -65,6 +65,50 @@ class SellerController extends Controller
         return view('backend.sellers.index', compact('sellers', 'sort_search', 'approved'));
     }
 
+    public function filter(Request $request)
+    {
+        $sort_search = null;
+        $approved = null;
+        $sellers = Seller::whereIn('user_id', function ($query) {
+            $query->select('id')
+                ->from(with(new User)->getTable());
+        })->orderBy('created_at', 'desc');
+
+        if ($request->has('search')) {
+            $sort_search = $request->search;
+            $user_ids = User::where('user_type', 'seller')->where(function ($user) use ($sort_search) {
+                $user->where('name', 'like', '%' . $sort_search . '%')->orWhere('email', 'like', '%' . $sort_search . '%');
+            })->pluck('id')->toArray();
+            $sellers = $sellers->where(function ($seller) use ($user_ids) {
+                $seller->whereIn('user_id', $user_ids);
+            });
+        }
+        if ($request->approved_status != null) {
+            $approved = $request->approved_status;
+            $sellers = $sellers->where('verification_status', $approved);
+        }
+        $sellers = $sellers->paginate(15);
+
+        foreach($sellers as &$seller){
+            $products = Product::with('category')->where('user_id', $seller->user_id)->get();
+            $productCategory = [];
+            $productCategoryId = [];
+    
+            foreach($products as $product){
+                if($product->category){
+                    if(!in_array($product->category->id, $productCategoryId)){
+                        $productCategory[] = $product->category->name;
+                        $productCategoryId[] = $product->category->id;
+                    }
+                }
+            }
+    
+            $seller->category = implode(', ', $productCategory);
+        }        
+
+        return view('backend.sellers.inc.seller_body', compact('sellers', 'sort_search', 'approved'));
+    }
+
     /**
      * Show the form for creating a new resource.
      *
