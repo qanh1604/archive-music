@@ -448,8 +448,8 @@ class ProductController extends Controller
             return redirect()->route('products.admin');
         }
         else{
-            if(addon_is_activated('seller_subscription')){
-                $seller = Auth::user()->seller;
+            if(addon_is_activated('seller_subscription') && Auth::user()->user_type == 'seller' ){
+                $seller = Auth::user();
                 $seller->remaining_uploads -= 1;
                 $seller->save();
             }
@@ -864,8 +864,8 @@ class ProductController extends Controller
                 return redirect()->route('products.all');
             }
             else{
-                if (addon_is_activated('seller_subscription')) {
-                    $seller = Auth::user()->seller;
+                if (addon_is_activated('seller_subscription') && Auth::user()->user_type == 'seller') {
+                    $seller = Auth::user();
                     $seller->remaining_uploads -= 1;
                     $seller->save();
                 }
