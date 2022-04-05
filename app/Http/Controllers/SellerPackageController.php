@@ -467,48 +467,9 @@ class SellerPackageController extends Controller
                 $upload_business_license->type = $type[$upload_business_license->extension];
                 $upload_business_license->file_size = $size_identity_card;
             }
-            
-            // if($request->file('identity_card')){
-            //     $extension_ = strtolower($request->file('identity_card')->getClientOriginalExtension());
-            //     $identity_card = $request->file('identity_card')->store('uploads/all');
-            //     $identity_card_size = $request->file('identity_card')->getSize();
-            //     $original_name_ = $request->file('identity_card')->getClientOriginalName();
-
-            //     $upload_identity_card = new Upload;
-            //     $upload_identity_card->extension = $extension_;
-            //     $upload_identity_card->file_original_name = $original_name_;
-            //     $upload_identity_card->file_name = $identity_card;
-            //     $upload_identity_card->user_id = Auth::user()->id;
-            //     $upload_identity_card->type = $type[$upload_identity_card->extension];
-            //     $upload_identity_card->file_size = $identity_card_size;
-            // }
-            // if($request->file('business_license')){
-            //     $extension__ = strtolower($request->file('business_license')->getClientOriginalExtension());
-            //     $business_license = $request->file('business_license')->store('uploads/all');
-            //     $business_license_size = $request->file('business_license')->getSize();
-            //     $original_name__ = $request->file('business_license')->getClientOriginalName();
-
-            //     $upload_business_license = new Upload;
-                
-            //     $upload_business_license->extension = $extension__;
-            //     $upload_business_license->file_original_name = $original_name__;
-            //     $upload_business_license->file_name = $business_license;
-            //     $upload_business_license->user_id = Auth::user()->id;
-            //     $upload_business_license->type = $type[$upload_business_license->extension];
-            //     $upload_business_license->file_size = $business_license_size;
-            // }
         }
         
         $seller_package = SellerPackage::findOrFail($data['seller_package_id']);
-
-        // if(Auth::user()->seller){
-        //     if (Auth::user()->seller->seller_package != null && $seller_package->product_upload_limit < Auth::user()->seller->seller_package->product_upload_limit){
-        //         return response()->json([
-        //             'success' => false,
-        //             'message' => translate('You have more uploaded products than this package limit. You need to remove excessive products to downgrade.')
-        //         ]); 
-        //     }
-        // }
 
         $upload_identity_card->save();
         if($business_license != "null" && $business_license_name != "null" && $business_license && $business_license_name){
@@ -558,15 +519,11 @@ class SellerPackageController extends Controller
             $package_type = "pro";
         }
 
-        DB::table('users')
-            ->where('id', Auth::user()->id)
-            ->update([
-                'user_type' => $package_type,
-                'finished_at' => $seller->invalid_at,
-            ]);
         if(strtotime(Auth::user()->seller->invalid_at) > strtotime(date('Y-m-d'))){
             $seller->invalid_at = date('Y-m-d', strtotime( $seller->invalid_at. ' +'. $seller_package->duration .'days'));
             $seller->save();
+
+            $remaining_uploads = Auth::user()->remaining_uploads + $seller_package->product_upload_limit;
 
             $seller_package = new SellerPackagePayment;
             $seller_package->user_id = Auth::user()->id;
@@ -577,14 +534,12 @@ class SellerPackageController extends Controller
             $seller_package->offline_payment = 0;
             $seller_package->reciept = null;
             $seller_package->save();
-
-            return response()->json([
-                'result' => true,
-                'message' => translate('Package extended successful')
-            ]); 
+            $message = "Package extended successful";
         }else {
             $seller->invalid_at = date('Y-m-d', strtotime( $seller->invalid_at. ' +'. $seller_package->duration .'days'));
             $seller->save();
+
+            $remaining_uploads = $seller_package->product_upload_limit;
     
             $seller_package = new SellerPackagePayment;
             $seller_package->user_id = Auth::user()->id;
@@ -595,11 +550,19 @@ class SellerPackageController extends Controller
             $seller_package->offline_payment = 0;
             $seller_package->reciept = null;
             $seller_package->save();
+            $message = "Package purchasing successfull";
             
-            return response()->json([
-                'result' => true,
-                'message' => translate('Package purchasing successful')
-            ]); 
         }
+        DB::table('users')
+            ->where('id', Auth::user()->id)
+            ->update([
+                'user_type' => $package_type,
+                'finished_at' => $seller->invalid_at,
+                'remaining_uploads' => $remaining_uploads
+            ]);
+        return response()->json([
+            'result' => true,
+            'message' => translate($message)
+        ]);
     }
 }
