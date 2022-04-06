@@ -55,7 +55,7 @@
                                             <option value="{{$key+1}}" @if(in_array($key+1, $periodTime)) selected @endif>{{$value}}</option>
                                         @endforeach
                                     </select>
-                                    <input type="text" class="form-control aiz-time-picker" autocomplete="off" name="period_time" style="margin-left: 10px" value="{{$session->start_date}}" required>
+                                    <input type="text" class="form-control aiz-time-picker" autocomplete="off" name="period_time" style="margin-left: 10px" value="{{date('h:i:s', strtotime($session->start_date))}}" required>
                                 @else
                                     <input type="text" class="form-control aiz-date-range" autocomplete="off" data-single="true" name="period" placeholder="Ngày diễn ra" data-time-picker="true" data-format="DD/MM/Y HH:mm:ss" value="{{date('d/m/Y H:i:s', strtotime($session->start_date))}}" required>
                                 @endif
