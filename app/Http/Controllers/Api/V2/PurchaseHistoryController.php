@@ -26,26 +26,21 @@ class PurchaseHistoryController extends Controller
         $delivery_status = "";
         $payment_status = $request->payment_status;
         $delivery_status = $request->delivery_status;
-        // if ($request->payment_status != "" || $request->payment_status != null) {
-        //     $order_query->where('payment_status', $request->payment_status);
-        // }
-        // if ($request->delivery_status != "" || $request->delivery_status != null) {
-        //     $delivery_status = $request->delivery_status;
-        //     $order_query->whereIn("id", function ($query) use ($delivery_status) {
-        //         $query->select('order_id')
-        //             ->from('order_details')
-        //             ->where('delivery_status', $delivery_status);
-        //     });
-        // }
 
         $orders = DB::table('orders')
             ->select("id", "code", "user_id", "delivery_status", "payment_type", "payment_status", "grand_total", "date", DB::RAW("'order' AS type"))
             ->where("user_id", $id);
 
+        if($payment_status != ""){
+            $orders = $orders->where('payment_status', $payment_status);
+        }
+        if($delivery_status != ""){
+            $orders = $orders->where('delivery_status', $delivery_status);
+        }
+
         $hot_orders = DB::table('hot_orders')
             ->select("id", DB::RAW('"NULL" AS code'), "user_id", "delivery_status", DB::RAW('"NULL" AS payment_type'), "payment_status", "grand_total", DB::RAW('"NULL" AS date'), DB::RAW("'hot_order' AS type"))
-            ->where("user_id", $id)
-            ->union($orders);
+            ->where("user_id", $id);
 
         if($payment_status != ""){
             $hot_orders = $hot_orders->where('payment_status', $payment_status);
@@ -54,9 +49,8 @@ class PurchaseHistoryController extends Controller
             $hot_orders = $hot_orders->where('delivery_status', $delivery_status);
         }
 
-        $hot_orders = $hot_orders->paginate(5);
+        $hot_orders = $hot_orders->union($orders)->paginate(5);
 
-        // return new PurchaseHistoryMiniCollection($order_query->where('user_id', $id)->latest()->paginate(5));
         return response()->json($this->ordersdata($hot_orders));
     }
 
