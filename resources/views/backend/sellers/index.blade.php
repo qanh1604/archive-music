@@ -40,7 +40,7 @@
             </div>
         </div>
     
-        <div class="card-body">
+        <div id="seller-body" class="card-body">
             <table class="table aiz-table mb-0">
                 <thead>
                 <tr>
@@ -235,6 +235,33 @@
                 });
             }
           
+        });
+
+        function delay(fn, ms) {
+            let timer = 0;
+            return function(...args) {
+                clearTimeout(timer);
+                timer = setTimeout(fn.bind(this, ...args), ms || 0)
+            }
+        }
+
+        $(document).ready(function(){
+            $("#search").keyup(delay(function() {
+                let search = $(this).val();
+                $.ajax({
+                    type: 'GET',
+                    url: '{{ route('sellsers.filter') }}?search='+search,
+                    success: function(response) {
+                        if(response.length == 0){
+                            $("#seller-body").append('No data found');
+                        }else {
+                            $("#seller-body").empty();
+                            $("#seller-body").html(response);
+                            AIZ.plugins.fooTable();
+                        }
+                    }
+                })
+            }, 400));
         });
         
         function show_seller_payment_modal(id){

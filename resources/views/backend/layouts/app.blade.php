@@ -27,6 +27,20 @@
     @endif
 	<link rel="stylesheet" href="{{ static_asset('assets/css/aiz-core.css') }}">
     <link rel="stylesheet" href="{{ static_asset('assets/css/custom-style-admin.css') }}">
+    <link rel="stylesheet" href="{{ static_asset('assets/css/custom-style.css') }}">
+
+	<!-- <script src="{{ static_asset('assets/tinymce/js/tinymce/tinymce.min.js') }}"></script> -->
+	<script src='https://cdn.tiny.cloud/1/3xdpks7bje8z6tm3q33kg8x1b1by0xvg7kj75iawxbaqthv5/tinymce/5/tinymce.min.js' referrerpolicy='origin'></script>
+	<script src="https://cdn.tiny.cloud/1/no-api-key/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
+	
+	<script type="text/javascript">
+		tinymce.init({
+			selector: 'textarea.content-editor',
+			plugins: 'code table lists',
+			toolbar: 'undo redo | formatselect| bold italic | alignleft aligncenter alignright | indent outdent | bullist numlist | code | table'
+		});
+	</script>
+	
 
     <style>
         body {
@@ -132,6 +146,6 @@
 			}
         }
     </script>
-
+	<script>tinymce.init({selector:'.content-editor'});</script>
 </body>
 </html>

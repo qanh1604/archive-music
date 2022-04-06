@@ -9,18 +9,18 @@
                 <h5 class="mb-md-0 h6">{{ translate('All Orders') }}</h5>
             </div>
 
-            <div class="dropdown mb-2 mb-md-0">
+            <!-- <div class="dropdown mb-2 mb-md-0">
                 <button class="btn border dropdown-toggle" type="button" data-toggle="dropdown">
                     {{translate('Bulk Action')}}
                 </button>
                 <div class="dropdown-menu dropdown-menu-right">
                     <a class="dropdown-item" href="#" onclick="bulk_delete()"> {{translate('Delete selection')}}</a>
-<!--                    <a class="dropdown-item" href="#" data-toggle="modal" data-target="#exampleModal">
+                   <a class="dropdown-item" href="#" data-toggle="modal" data-target="#exampleModal">
                         <i class="las la-sync-alt"></i>
                         {{translate('Change Order Status')}}
-                    </a>-->
+                    </a>
                 </div>
-            </div>
+            </div> -->
 
             <!-- Change Status Modal -->
             <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -197,25 +197,25 @@
 
         });
 
-//        function change_status() {
-//            var data = new FormData($('#order_form')[0]);
-//            $.ajax({
-//                headers: {
-//                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-//                },
-//                url: "{{route('bulk-order-status')}}",
-//                type: 'POST',
-//                data: data,
-//                cache: false,
-//                contentType: false,
-//                processData: false,
-//                success: function (response) {
-//                    if(response == 1) {
-//                        location.reload();
-//                    }
-//                }
-//            });
-//        }
+        // function change_status() {
+        //     var data = new FormData($('#order_form')[0]);
+        //     $.ajax({
+        //         headers: {
+        //             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        //         },
+        //         url: "{{route('bulk-order-status')}}",
+        //         type: 'POST',
+        //         data: data,
+        //         cache: false,
+        //         contentType: false,
+        //         processData: false,
+        //         success: function (response) {
+        //             if(response == 1) {
+        //                 location.reload();
+        //             }
+        //         }
+        //     });
+        // }
 
         function bulk_delete() {
             var data = new FormData($('#sort_orders')[0]);

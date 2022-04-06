@@ -397,6 +397,11 @@
                                     </a>
                                 </li>
                             @endif
+                            <li class="aiz-side-nav-item">
+                                <a href="{{ route('charter_information') }}" class="aiz-side-nav-link {{ areActiveRoutes(['charter_information'])}}">
+                                    <span class="aiz-side-nav-text">{{ translate('Thông tin điều lệ') }}</span>
+                                </a>
+                            </li>
                             {{-- <li class="aiz-side-nav-item">
                                 <a href="{{ route('sellers.payment_histories') }}" class="aiz-side-nav-link">
                                     <span class="aiz-side-nav-text">{{ translate('Payouts') }}</span>

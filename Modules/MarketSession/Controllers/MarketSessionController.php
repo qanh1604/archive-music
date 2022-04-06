@@ -420,7 +420,16 @@ class MarketSessionController extends Controller
             Artisan::call('view:clear');
             Artisan::call('cache:clear');
 
-            return back();
+            $searchDate = null;
+            $lang = $request->lang;
+            $marketSessions = MarketSessionDetail::where('market_id', $request->id);
+
+            if($request->start_date){
+                $marketSessions = $marketSessions->whereRaw('DATE(start_date) = '.$request->start_date);
+            }
+
+            $marketSessions = $marketSessions->paginate(15);
+            return redirect()->route('market-session');
         }
         flash('Đã có lỗi xảy ra')->error();
         return back();

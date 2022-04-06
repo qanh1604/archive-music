@@ -33,6 +33,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin']], function(
     Route::get('/products/admin', 'ProductController@admin_products')->name('products.admin');
     Route::get('/products/seller', 'ProductController@seller_products')->name('products.seller');
     Route::get('/products/all', 'ProductController@all_products')->name('products.all');
+    Route::get('/products/all/filter', 'ProductController@filter_product')->name('products.filter_product');
     Route::get('/products/create', 'ProductController@create')->name('products.create');
     Route::get('/products/admin/{id}/edit', 'ProductController@admin_product_edit')->name('products.admin.edit');
     Route::get('/products/seller/{id}/edit', 'ProductController@seller_product_edit')->name('products.seller.edit');
@@ -46,6 +47,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin']], function(
 
     Route::resource('sellers', 'SellerController');
     Route::get('/sellsers/create', 'SellerController@create')->name('sellsers.create');
+    Route::get('/sellsers/filter', 'SellerController@filter')->name('sellsers.filter');
     Route::get('sellers_ban/{id}', 'SellerController@ban')->name('sellers.ban');
     Route::get('/sellers/destroy/{id}', 'SellerController@destroy')->name('sellers.destroy');
     Route::post('/bulk-seller-delete', 'SellerController@bulk_seller_delete')->name('bulk-seller-delete');

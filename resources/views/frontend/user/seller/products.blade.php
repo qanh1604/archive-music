@@ -18,7 +18,7 @@
                       <i class="las la-upload la-2x text-white"></i>
                   </span>
                   <div class="px-3 pt-3 pb-3">
-                      <div class="h4 fw-700 text-center">{{ max(0, optional(auth()->user()->seller->seller_package)->product_upload_limit - auth()->user()->products()->count()) }}</div>
+                      <div class="h4 fw-700 text-center">{{ Auth::user()->remaining_uploads }}</div>
                       <div class="opacity-50 text-center">{{  translate('Remaining Uploads') }}</div>
                   </div>
                 </div>
@@ -41,7 +41,7 @@
             $seller_package = \App\Models\SellerPackage::find(Auth::user()->seller->seller_package_id);
         @endphp
         <div class="col-md-4">
-            <a href="{{ route('seller_packages_list') }}" class="text-center bg-white shadow-sm hov-shadow-lg text-center d-block p-3 rounded">
+            <a style="height: 80%" href="{{ route('seller_packages_list') }}" class="text-center bg-white shadow-sm hov-shadow-lg text-center d-block p-3 rounded">
                 @if($seller_package != null)
                     <img src="{{ uploaded_asset($seller_package->logo) }}" height="44" class="mw-100 mx-auto">
                     <span class="d-block sub-title mb-2">{{ translate('Current Package')}}: {{ $seller_package->getTranslation('name') }}</span>

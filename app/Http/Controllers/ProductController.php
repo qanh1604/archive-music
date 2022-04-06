@@ -121,6 +121,26 @@ class ProductController extends Controller
         return view('backend.product.products.index', compact('products','type', 'col_name', 'query', 'seller_id', 'sort_search'));
     }
 
+    public function filter_product(Request $request){
+        // dd($request);
+        $col_name = null;
+        $query = null;
+        $seller_id = null;
+        $sort_search = null;
+        $products = Product::orderBy('created_at', 'desc')->where('auction_product',0)->where('wholesale_product',0);
+        
+        if ($request->search != null){
+            $products = $products
+                        ->where('name', 'like', '%'.$request->search.'%');
+            $sort_search = $request->search;
+        }
+        $products = $products->paginate(15);
+        // $type = 'All';
+        $type = 'Seller';
+
+        return view('backend.product.inc.product_body', compact('products','type', 'col_name', 'query', 'seller_id', 'sort_search'));
+    }
+
 
     /**
      * Show the form for creating a new resource.
@@ -428,8 +448,8 @@ class ProductController extends Controller
             return redirect()->route('products.admin');
         }
         else{
-            if(addon_is_activated('seller_subscription')){
-                $seller = Auth::user()->seller;
+            if(addon_is_activated('seller_subscription') && Auth::user()->user_type == 'seller' ){
+                $seller = Auth::user();
                 $seller->remaining_uploads -= 1;
                 $seller->save();
             }
@@ -844,8 +864,8 @@ class ProductController extends Controller
                 return redirect()->route('products.all');
             }
             else{
-                if (addon_is_activated('seller_subscription')) {
-                    $seller = Auth::user()->seller;
+                if (addon_is_activated('seller_subscription') && Auth::user()->user_type == 'seller') {
+                    $seller = Auth::user();
                     $seller->remaining_uploads -= 1;
                     $seller->save();
                 }

@@ -101,7 +101,7 @@
                             <input onchange="update_rtl_status(this)" value="{{ $language->id }}" type="checkbox" <?php if($language->rtl == 1) echo "checked";?> >
                             <span class="slider round"></span></label>
                         </td>
-                        <td class="text-right">
+                        <td class="text-right option-languages-table">
                             <a class="btn btn-soft-info btn-icon btn-circle btn-sm" href="{{route('languages.show', $language->id)}}" title="{{ translate('Translation') }}">
                                 <i class="las la-language"></i>
                             </a>

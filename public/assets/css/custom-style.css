@@ -1,1 +1,18 @@
 /*your custom css goes here*/
+.title-table-name {
+    margin-bottom: 0.5rem;
+}
+.total_stock_table {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box !important;
+    -webkit-line-clamp: 4;
+    line-clamp: 4; 
+    -webkit-box-orient: vertical;
+}
+.btn-update-give {
+    float: right;
+}
+.option-languages-table {
+    width: 20%;
+}

@@ -69,17 +69,17 @@
             </div>
             <div class="col-md-2">
                 <div class="form-group mb-0">
-                    <input type="text" class="form-control form-control-sm" id="search" name="search"@isset($sort_search) value="{{ $sort_search }}" @endisset placeholder="{{ translate('Type & Enter') }}">
+                    <input type="text" class="form-control form-control-sm" id="search" name="search"@isset($sort_search) value="{{ $sort_search }}" @endisset placeholder="{{ translate('Type') }}">
                 </div>
             </div>
         </div>
     
-        <div class="card-body">
+        <div id="product-body" class="card-body">
             <table class="table aiz-table mb-0">
                 <thead>
                     <tr>
                         <th>
-                            <div class="form-group">
+                            <div class="form-group title-table-name">
                                 <div class="aiz-checkbox-inline">
                                     <label class="aiz-checkbox">
                                         <input type="checkbox" class="check-all">
@@ -117,7 +117,7 @@
                             </div>
                         </td>
                         <td>
-                            <div class="row gutters-5 w-200px w-md-300px mw-100">
+                            <div class="row gutters-5 w-200px mw-100">
                                 <div class="col-auto">
                                     <img src="{{ uploaded_asset($product->thumbnail_img)}}" alt="Image" class="size-50px img-fit">
                                 </div>
@@ -134,7 +134,7 @@
                             <strong>{{translate('Base Price')}}:</strong> {{ single_price($product->unit_price) }} </br>
                             <strong>{{translate('Rating')}}:</strong> {{ $product->rating }} </br>
                         </td>
-                        <td>
+                        <td class="total_stock_table">
                             @php
                                 $qty = 0;
                                 if($product->variant_product) {
@@ -238,6 +238,34 @@
             //$('#container').removeClass('mainnav-lg').addClass('mainnav-sm');
         });
 
+        function delay(fn, ms) {
+            let timer = 0;
+            return function(...args) {
+                clearTimeout(timer);
+                timer = setTimeout(fn.bind(this, ...args), ms || 0)
+            }
+        }
+
+        $(document).ready(function(){
+            $("#search").keyup(delay(function() {
+                let search = $(this).val();
+                $.ajax({
+                    type: 'GET',
+                    url: '{{ route('products.filter_product') }}?search='+search,
+                    success: function(response) {
+                        if(response.length == 0){
+                            $("#product-body").append('No data found');
+                        }else {
+                            $("#product-body").empty();
+                            $("#product-body").html(response);
+                            AIZ.plugins.fooTable();
+                        }
+                    }
+                })
+            }, 400));
+        });
+        
+
         function update_todays_deal(el){
             if(el.checked){
                 var status = 1;
@@ -333,6 +361,5 @@
                 }
             });
         }
-
     </script>
 @endsection
