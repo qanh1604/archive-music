@@ -49,7 +49,7 @@
                                 <input type="text" class="form-control aiz-date-range" autocomplete="off" data-single="true" name="end_session_date" placeholder="Ngày kết thúc phiên chợ" data-time-picker="false" data-format="DD/MM/Y" required>
                             </div>
                         </div>
-                        <div class="form-group row">
+                        {{-- <div class="form-group row">
                             <label class="col-md-3 col-form-label" for="signinSrEmail">Ảnh phiên chợ <small>(290x300)</small></label>
                             <div class="col-md-8">
                                 <div class="input-group" data-toggle="aizuploader" data-type="image">
@@ -62,7 +62,7 @@
                                 <div class="file-preview box sm">
                                 </div>
                             </div>
-                        </div>
+                        </div> --}}
                         <div class="form-group row">
                             <label class="col-lg-3 col-from-label">Đường dẫn tham gia </label>
                             <div class="input-group col-lg-8">
