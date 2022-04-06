@@ -55,7 +55,7 @@ class PurchaseHistoryController extends Controller
             $data->code = $data->code;
             $data->user_id = intval($data->user_id);
             $data->payment_type = ucwords(str_replace('_', ' ', $data->payment_type));
-            $data->payment_status = $data->delivery_status;
+            $data->payment_status = $data->payment_status;
             $data->payment_status_string = $data->delivery_status == 'pending'? "Order Placed" : ucwords(str_replace('_', ' ',  $data->delivery_status));
             $data->grand_total = format_price($data->grand_total);
             $data->date = Carbon::createFromTimestamp($data->date)->format('d-m-Y');
