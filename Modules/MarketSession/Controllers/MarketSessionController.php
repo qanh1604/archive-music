@@ -9,6 +9,7 @@ use Modules\MarketSession\Models\MarketSession;
 use Modules\MarketSession\Models\MarketSessionJoiner;
 use Modules\MarketSession\Models\MarketSessionDetail;
 use Modules\MarketSession\Models\HotOrderGift;
+use App\Models\Upload;
 use Artisan;
 use Auth;
 use CoreComponentRepository;
@@ -368,8 +369,12 @@ class MarketSessionController extends Controller
         if(!$seller){
             return 0;
         }
-        $seller->open_video = $request->open_video;
-        $seller->slider_video = $request->slider_video;
+
+        $open_vieo = Upload::where('id', $request->open_video)->first();
+        $slider_video = Upload::where('id', $request->slider_video)->first();
+
+        $seller->open_video = $open_vieo->file_name;
+        $seller->slider_video = $slider_video->file_name;
 
         if($seller->save()){
             return 1;
