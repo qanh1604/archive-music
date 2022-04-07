@@ -4,6 +4,7 @@ namespace App\Http\Resources\V2;
 
 use Illuminate\Http\Resources\Json\ResourceCollection;
 use \App\Models\Product;
+use \App\Models\Upload;
 
 class ShopDetailsCollection extends ResourceCollection
 {
@@ -11,6 +12,7 @@ class ShopDetailsCollection extends ResourceCollection
     {
         return [
             'data' => $this->collection->map(function($data) {
+                $background_img = Upload::where('id', $data->background_img)->first();
                 $tmpData = [
                     'id' => $data->id,
                     'user_id' => intval($data->user_id) ,
@@ -24,7 +26,7 @@ class ShopDetailsCollection extends ResourceCollection
                     'true_rating' => (double) $data->user->seller->rating,
                     'rating' => (double) $data->user->seller->rating,
                     'meta_description' => $data->meta_description,
-                    'background_img' => $data->background_img,
+                    'background_img' => $background_img->file_name,
                     'virtual_assistant' => $data->virtual_assistant,
                 ];
 
