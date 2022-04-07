@@ -59,7 +59,7 @@ class MarketSessionController extends Controller
          */
         $listSellers = MarketSessionJoiner::with(['joinerUser:id,name,email,avatar'])->where('market_detail_id', $request->id)
                         ->whereHas('joinerUser', function($query){
-                            $query->where('user_type', 'customer');
+                            $query->whereIn('user_type', ['customer','pro']);
                         })->paginate(15);
                        
         return response()->json($listSellers, 200);
@@ -111,7 +111,6 @@ class MarketSessionController extends Controller
             $slider_video = $joiner->pluck('slider_video')->toArray();
             $marketList->slider_video = explode(',',implode(',',array_filter($slider_video)));
         }
-        
         return response()->json($marketLists, 200);
     }
 
