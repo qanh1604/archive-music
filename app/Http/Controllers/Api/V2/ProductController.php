@@ -40,6 +40,7 @@ class ProductController extends Controller
             $products = $products->where('name', 'like', '%' . $request->name . '%');
         }
         $products->where('published', 1);
+        
         return new ProductMiniCollection($products->latest()->paginate(10));
     }
 
