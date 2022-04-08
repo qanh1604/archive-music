@@ -99,7 +99,8 @@ class MarketSessionController extends Controller
         }
         else
         {
-            $marketLists = $marketLists->whereRaw('DATE(start_time) = CURDATE()');
+            $marketLists = $marketLists->where('start_time', '>', date('Y-m-d H:i:s'));
+            // $marketLists = $marketLists->whereRaw('DATE(start_time) = CURDATE()');
         }
 
         $marketLists = $marketLists->has('marketSession')->orderBy('start_time')->paginate(15);
