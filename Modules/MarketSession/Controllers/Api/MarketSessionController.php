@@ -392,12 +392,14 @@ class MarketSessionController extends Controller
         {
             return response()->json([
                 'result' => true,
-                'isAttended' => true
+                'isAttended' => true,
+                'alreadyAttended' => true,
             ], 200);
         }
         return response()->json([
             'result' => true,
-            'isAttended' => false
+            'isAttended' => false,                
+            'alreadyAttended' => false,
         ], 200);
     }
 
