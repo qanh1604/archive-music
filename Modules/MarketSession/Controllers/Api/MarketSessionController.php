@@ -407,8 +407,9 @@ class MarketSessionController extends Controller
 
     public function countdown(Request $request)
     {
-        $marketSession = MarketSessionDetail::with('marketSession')->where('start_time', '>=', date('Y-m-d 00:00:00'))
-                        ->where('start_time', '<=', date('Y-m-d 23:59:59'))->whereHas('marketSession', function($query){
+        $marketSession = MarketSessionDetail::with('marketSession')->where('start_time', '>=', date('Y-m-d H:i:s'))
+                        // ->where('end_time', '>=', date('Y-m-d H:i:s'))
+                        ->whereHas('marketSession', function($query){
                             $query->where('status', 1);
                         })->orderBy('start_time', 'ASC')->paginate(1);
 
