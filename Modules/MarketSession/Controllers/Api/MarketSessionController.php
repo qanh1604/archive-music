@@ -100,7 +100,7 @@ class MarketSessionController extends Controller
         else
         {
             $marketLists = $marketLists->where('start_time', '<=', date('Y-m-d H:i:s'))
-                        ->where('end_time', '<=', date('Y-m-d H:i:s'));
+                        ->where('end_time', '>=', date('Y-m-d H:i:s'));
             // $marketLists = $marketLists->whereRaw('DATE(start_time) = CURDATE()');
         }
 
