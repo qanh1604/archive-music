@@ -385,6 +385,22 @@ class MarketSessionController extends Controller
         ], 200);
     }
 
+    public function checkAttendance(Request $request){
+        $marketSession = MarketSessionJoiner::where('market_detail_id', $request->market_id)
+                        ->where('user_id', $request->user_id)->first();
+        if($marketSession)
+        {
+            return response()->json([
+                'result' => true,
+                'isAttended' => true
+            ], 200);
+        }
+        return response()->json([
+            'result' => true,
+            'isAttended' => false
+        ], 200);
+    }
+
     public function countdown(Request $request)
     {
         $marketSession = MarketSessionDetail::with('marketSession')->where('start_time', '>=', date('Y-m-d 00:00:00'))
