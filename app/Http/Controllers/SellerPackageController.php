@@ -514,7 +514,7 @@ class SellerPackageController extends Controller
         $seller->seller_package_id = $payment_data['seller_package_id'];
         $seller_package = SellerPackage::findOrFail($payment_data['seller_package_id']);
 
-        if(Auth::user()->user_type == "seller" && $seller_package == "pro"){
+        if(Auth::user()->user_type == "seller" && $seller_package->type == "pro"){
             return response()->json([
                 'result' => false,
                 'message' => "Tài khoản đang là seller"
