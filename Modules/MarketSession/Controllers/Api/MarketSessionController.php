@@ -276,8 +276,13 @@ class MarketSessionController extends Controller
                 if(empty($userInWheel)){
                     break;
                 }
+
+                if(count($userInWheel) == count($arrayOfWheelSet)){
+                    break;
+                }
+
                 $rand = rand(0, count($userInWheel)-1);
-                
+
                 while(true){
                     if(in_array($rand, $arrayOfWheelSet)){
                         $rand = rand(0, count($userInWheel)-1);
@@ -314,6 +319,8 @@ class MarketSessionController extends Controller
             $hotOrderGift->current_turn = $current_turn;
             $hotOrderGift->max_turn = $max_turn;
             $hotOrderGift->save();
+
+            $wheelResult = json_encode($wheelResult);
         }
         else{
             $userInWheel = $hotOrderGift->user;
