@@ -505,7 +505,7 @@ class SellerPackageController extends Controller
                 'business_license' => $upload_business_license?$upload_business_license->id:null
             ]);
         }
-        
+
         return $this->purchase_payment_done_api($data, null);
     }
 
@@ -513,6 +513,13 @@ class SellerPackageController extends Controller
         $seller = Auth::user()->seller;
         $seller->seller_package_id = $payment_data['seller_package_id'];
         $seller_package = SellerPackage::findOrFail($payment_data['seller_package_id']);
+
+        if(Auth::user()->user_type == "seller" && $seller_package == "pro"){
+            return response()->json([
+                'result' => false,
+                'message' => "Tài khoản đang là seller"
+            ]);
+        }
 
         if($seller_package->type == "seller"){
             $package_type = "seller";
