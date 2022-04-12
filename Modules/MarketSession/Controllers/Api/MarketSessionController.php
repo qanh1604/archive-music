@@ -317,7 +317,7 @@ class MarketSessionController extends Controller
         }
         else{
             $userInWheel = $hotOrderGift->user;
-            $wheelResult = $hotOrderGift->wheel;
+            $wheelResult = $hotOrderGift->wheel?$hotOrderGift->wheel:json_encode([]);
             $current_turn = $hotOrderGift->current_turn;
             $max_turn = $hotOrderGift->max_turn;
             $giftWheel = $hotOrderGift->gift;
