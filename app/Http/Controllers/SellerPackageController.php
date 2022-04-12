@@ -479,6 +479,16 @@ class SellerPackageController extends Controller
 
         $data['identity_card'] = $upload_identity_card->id;
 
+        $seller = Seller::where('user_id', Auth::user()->id)->first();
+        
+        if(!$seller){
+            DB::table('sellers')
+            ->where('user_id', Auth::user()->id)
+            ->insert([
+                'user_id' => Auth::user()->id,
+            ]);
+        }
+
         if(strtotime(Auth::user()->seller->invalid_at) > strtotime(date('Y-m-d'))){
             DB::table('users')
             ->where('id', Auth::user()->id)
@@ -496,15 +506,6 @@ class SellerPackageController extends Controller
             ]);
         }
         
-        $seller = Seller::where('user_id', Auth::user()->id)->first();
-        
-        if(!$seller){
-            DB::table('sellers')
-            ->where('user_id', Auth::user()->id)
-            ->insert([
-                'user_id' => Auth::user()->id,
-            ]);
-        }
         return $this->purchase_payment_done_api($data, null);
     }
 
