@@ -81,7 +81,7 @@ class PurchaseHistoryController extends Controller
                 $address = Address::where('user_id', $data->user_id)->first();
 
                 $data->type_details = [
-                    'market_name' => $market->name,
+                    'market_name' => isset($market)?$market->name:'',
                     'shop_name' => $shop?$shop->name:'',
                     'order_description' => $hot_order->product_name,
                     'address_id' => $address?$address->address:'',
