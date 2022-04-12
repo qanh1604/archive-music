@@ -467,24 +467,24 @@
                     </li>
                 @endif
             <!-- Reports -->
-                @if(Auth::user()->user_type == 'admin' || in_array('10', json_decode(Auth::user()->staff->role->permissions)))
+            {{-- @if(Auth::user()->user_type == 'admin' || in_array('10', json_decode(Auth::user()->staff->role->permissions)))
                     <li class="aiz-side-nav-item">
                         <a href="#" class="aiz-side-nav-link">
                             <i class="las la-file-alt aiz-side-nav-icon"></i>
                             <span class="aiz-side-nav-text">{{ translate('Reports') }}</span>
                             <span class="aiz-side-nav-arrow"></span>
                         </a>
-                        <ul class="aiz-side-nav-list level-2">
+                        <ul class="aiz-side-nav-list level-2"> --}}
                             {{-- <li class="aiz-side-nav-item">
                                 <a href="{{ route('in_house_sale_report.index') }}" class="aiz-side-nav-link {{ areActiveRoutes(['in_house_sale_report.index'])}}">
                                     <span class="aiz-side-nav-text">{{ translate('In House Product Sale') }}</span>
                                 </a>
                             </li> --}}
-                            <li class="aiz-side-nav-item">
+                            {{-- <li class="aiz-side-nav-item">
                                 <a href="{{ route('seller_sale_report.index') }}" class="aiz-side-nav-link {{ areActiveRoutes(['seller_sale_report.index'])}}">
                                     <span class="aiz-side-nav-text">{{ translate('Seller Products Sale') }}</span>
                                 </a>
-                            </li>
+                            </li> --}}
                             {{-- <li class="aiz-side-nav-item">
                                 <a href="{{ route('stock_report.index') }}" class="aiz-side-nav-link {{ areActiveRoutes(['stock_report.index'])}}">
                                     <span class="aiz-side-nav-text">{{ translate('Products Stock') }}</span>
@@ -510,9 +510,9 @@
                                     <span class="aiz-side-nav-text">{{ translate('Wallet Recharge History') }}</span>
                                 </a>
                             </li> --}}
-                        </ul>
+                        {{--</ul>
                     </li>
-                @endif
+                @endif --}}
                 {{-- @if(Auth::user()->user_type == 'admin' || in_array('23', json_decode(Auth::user()->staff->role->permissions)))
                 <!--Blog System-->
                     <li class="aiz-side-nav-item">
@@ -927,13 +927,13 @@
                                     <span class="aiz-side-nav-text">{{translate('File System & Cache Configuration')}}</span>
                                 </a>
                             </li> --}}
-                            <li class="aiz-side-nav-item">
+                            {{-- <li class="aiz-side-nav-item">
                                 <a href="{{ route('social_login.index') }}" class="aiz-side-nav-link">
                                     <span class="aiz-side-nav-text">{{translate('Social media Logins')}}</span>
                                 </a>
-                            </li>
+                            </li> --}}
 
-                            <li class="aiz-side-nav-item">
+                            {{-- <li class="aiz-side-nav-item">
                                 <a href="javascript:void(0);" class="aiz-side-nav-link">
                                     <span class="aiz-side-nav-text">{{translate('Facebook')}}</span>
                                     <span class="aiz-side-nav-arrow"></span>
@@ -979,7 +979,7 @@
                                         </a>
                                     </li>
                                 </ul>
-                            </li>
+                            </li> --}}
 
                             {{-- <li class="aiz-side-nav-item">
                                 <a href="javascript:void(0);" class="aiz-side-nav-link">
