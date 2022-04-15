@@ -479,6 +479,16 @@ class SellerPackageController extends Controller
 
         $data['identity_card'] = $upload_identity_card->id;
 
+        $seller = Seller::where('user_id', Auth::user()->id)->first();
+        
+        if(!$seller){
+            DB::table('sellers')
+            ->where('user_id', Auth::user()->id)
+            ->insert([
+                'user_id' => Auth::user()->id,
+            ]);
+        }
+
         if(strtotime(Auth::user()->seller->invalid_at) > strtotime(date('Y-m-d'))){
             DB::table('users')
             ->where('id', Auth::user()->id)
@@ -495,16 +505,7 @@ class SellerPackageController extends Controller
                 'business_license' => $upload_business_license?$upload_business_license->id:null
             ]);
         }
-        
-        $seller = Seller::where('user_id', Auth::user()->id)->first();
-        
-        if(!$seller){
-            DB::table('sellers')
-            ->where('user_id', Auth::user()->id)
-            ->insert([
-                'user_id' => Auth::user()->id,
-            ]);
-        }
+
         return $this->purchase_payment_done_api($data, null);
     }
 
@@ -512,6 +513,13 @@ class SellerPackageController extends Controller
         $seller = Auth::user()->seller;
         $seller->seller_package_id = $payment_data['seller_package_id'];
         $seller_package = SellerPackage::findOrFail($payment_data['seller_package_id']);
+
+        if(Auth::user()->user_type == "seller" && $seller_package->type == "pro"){
+            return response()->json([
+                'result' => false,
+                'message' => "Tài khoản đang là seller"
+            ]);
+        }
 
         if($seller_package->type == "seller"){
             $package_type = "seller";
