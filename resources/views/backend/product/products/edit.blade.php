@@ -66,12 +66,12 @@
                                 <input type="number" lang="en" class="form-control" name="min_qty" value="@if($product->min_qty <= 1){{1}}@else{{$product->min_qty}}@endif" min="1" required>
                             </div>
                         </div>
-                        <div class="form-group row">
+                        {{-- <div class="form-group row">
                             <label class="col-lg-3 col-from-label">{{translate('Tags')}}</label>
                             <div class="col-lg-8">
                                 <input type="text" class="form-control aiz-tag-input" name="tags[]" id="tags" value="{{ $product->tags }}" placeholder="{{ translate('Type to add a tag') }}" data-role="tagsinput">
                             </div>
-                        </div>
+                        </div> --}}
                         
                         @if (addon_is_activated('pos_system'))
                         <div class="form-group row">
@@ -320,7 +320,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="form-group row">
+                        {{-- <div class="form-group row">
                             <label class="col-md-3 col-from-label">
                                 {{translate('External link')}}
                             </label>
@@ -337,7 +337,7 @@
                                 <input type="text" placeholder="{{ translate('External link button text') }}" name="external_link_btn" value="{{ $product->external_link_btn }}" class="form-control">
                                 <small class="text-muted">{{translate('Leave it blank if you do not use external site link')}}</small>
                             </div>
-                        </div>
+                        </div> --}}
                         <br>
                         <div class="sku_combination" id="sku_combination">
 
@@ -367,7 +367,7 @@
                     </div>
                 </div>-->
 
-                <div class="card">
+                {{-- <div class="card">
                     <div class="card-header">
                         <h5 class="mb-0 h6">{{translate('PDF Specification')}}</h5>
                     </div>
@@ -387,8 +387,8 @@
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="card">
+                </div> --}}
+                {{-- <div class="card">
                     <div class="card-header">
                         <h5 class="mb-0 h6">{{translate('SEO Meta Tags')}}</h5>
                     </div>
@@ -426,7 +426,7 @@
                             </div>
                         </div>
                     </div>
-                </div>
+                </div> --}}
             </div>
 
             <div class="col-lg-4">
