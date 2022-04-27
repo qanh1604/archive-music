@@ -422,4 +422,24 @@ class MarketSessionController extends Controller
 
         return response()->json($marketSession, 200);
     }
+
+    public function listGifts(Request $request){
+        /**
+         * market_id: int
+         * user_id: int (optional)
+         */
+        $hotOrderGift = HotOrderGift::where('market_id', $request->market_id)->first();
+        $tmpWheel = [];
+        if($hotOrderGift){
+            $tmpWheel = json_decode($hotOrderGift->wheel);
+            if($request->user_id){
+                foreach($tmpWheel as $key => $wheel){
+                    if($wheel->user->id != $request->user_id){
+                        unset($tmpWheel[$key]);
+                    }
+                }
+            }
+        }
+        return response()->json($tmpWheel);
+    }
 }
