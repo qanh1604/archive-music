@@ -10,6 +10,7 @@ use App\Models\Seller;
 use App\Models\Order;
 use App\Models\Upload;
 use App\Models\User;
+use App\Models\VirtualAssistant;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use App\Utility\PayfastUtility;
@@ -322,6 +323,8 @@ class SellerPackageController extends Controller
         $data['phone'] = $request->phone;
         $data['email'] = $request->email;
         $data['seller_package_id'] = $request->seller_package_id;
+        $data['has_virtual_assistant'] = $request->has_virtual_assistant;
+        $data['virtual_assistant_description'] = $request->virtual_assistant_description;
 
         $validator = Validator::make($request->all(), [
             'name' => 'required',
@@ -497,6 +500,13 @@ class SellerPackageController extends Controller
                 'business_license' => $upload_business_license?$upload_business_license->id:null,
                 'started_at' => Carbon::now(),
             ]);
+            if(Auth::user()->identity_card){
+                $seller->isVerified = 1;
+                $seller->save();
+            }else {
+                $seller->isVerified = 0;
+                $seller->save();
+            }
         }else {
             DB::table('users')
             ->where('id', Auth::user()->id)
@@ -504,6 +514,32 @@ class SellerPackageController extends Controller
                 'identity_card' => $upload_identity_card->id,
                 'business_license' => $upload_business_license?$upload_business_license->id:null
             ]);
+        }
+
+        if($data['has_virtual_assistant'] == 1){
+            $virtual_assistant = VirtualAssistant::where('seller_id', $seller->id)->first();
+            
+            if(!$virtual_assistant){
+                $virtual_assistant = new VirtualAssistant;
+                $virtual_assistant->seller_id = $seller->id;
+                $virtual_assistant->description = $data['virtual_assistant_description'];
+                $virtual_assistant->save();
+                
+                $seller->has_virtual_assistant = 1;
+                $seller->virtual_assistant_id = $virtual_assistant->id;
+                $seller->save();
+            }else {
+                $virtual_assistant->seller_id = $seller->id;
+                $virtual_assistant->description = $data['virtual_assistant_description'];
+                $virtual_assistant->save();
+
+                $seller->has_virtual_assistant = 1;
+                $seller->virtual_assistant_id = $virtual_assistant->id;
+                $seller->save();
+            }
+        }else {
+            $seller->has_virtual_assistant = 0;
+            $seller->save();
         }
 
         return $this->purchase_payment_done_api($data, null);

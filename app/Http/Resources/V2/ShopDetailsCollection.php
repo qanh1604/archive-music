@@ -26,7 +26,7 @@ class ShopDetailsCollection extends ResourceCollection
                     'true_rating' => (double) $data->user->seller->rating,
                     'rating' => (double) $data->user->seller->rating,
                     'meta_description' => $data->meta_description,
-                    'background_img' => $background_img->file_name,
+                    'background_img' => $background_img?$background_img->file_name:'',
                     'virtual_assistant' => $data->virtual_assistant,
                 ];
 
