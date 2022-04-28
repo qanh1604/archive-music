@@ -7,6 +7,9 @@ namespace App\Http\Controllers\Api\V2;
 use App\Http\Controllers\OTPVerificationController;
 use App\Models\BusinessSetting;
 use App\Models\Customer;
+use App\Models\Country;
+use App\Models\City;
+use App\Models\State;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use App\Models\User;
@@ -75,7 +78,8 @@ class AuthController extends Controller
 
     public function signupPhone(Request $request)
     {
-        if (User::where('email', $request->email_or_phone)->orWhere('phone', $request->email_or_phone)->first() != null) {
+        $user_check = User::where('phone', $request->email_or_phone)->first();
+        if ($user_check != null) {
             return response()->json([
                 'result' => false,
                 'message' => translate('User already exists.'),
@@ -87,9 +91,14 @@ class AuthController extends Controller
             'name' => $request->name,
             'phone' => $request->email_or_phone,
             'password' => bcrypt('$unshineSoftware'),
-            'verification_code' => rand(100000, 999999)
+            'verification_code' => rand(100000, 999999),
+            'address' => $request->address,
+            'country' => Country::where('id', $request->country_id)->first()->name,
+            'city' => City::where('id', $request->city_id)->first()->name,
+            'state' => State::where('id', $request->state_id)->first()->name,
+            'poscal_code' => $request->poscal_code,
         ]);
-
+        
         // $otpController = new OTPVerificationController();
         // $otpController->send_code($user);
 

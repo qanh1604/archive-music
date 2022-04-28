@@ -20,6 +20,9 @@ use App\Models\Address;
 use App\Models\Product;
 use App\Models\Category;
 use Illuminate\Support\Str;
+use Illuminate\Pagination\Paginator;
+use Illuminate\Support\Collection;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class MarketSessionController extends Controller
 {
@@ -440,6 +443,27 @@ class MarketSessionController extends Controller
                 }
             }
         }
-        return response()->json($tmpWheel);
+        // $data = $this->paginate($tmpWheel);
+        // $units = Paginator::make($tmpWheel, count($tmpWheel), 5);
+
+        $page = isset($request->page) ? $request->page : 1; // Get the page=1 from the url
+        $perPage = 5; // Number of items per page
+        $offset = ($page * $perPage) - $perPage;
+
+        $data =  new LengthAwarePaginator(
+            array_slice($tmpWheel, $offset, $perPage, true),
+            count($tmpWheel), // Total items
+            $perPage, // Items per page
+            $page, // Current page
+            ['path' => $request->url(), 'query' => $request->query()]
+        );
+        return response()->json($data);
+    }
+
+    public function paginate($items, $perPage = 5, $page = null, $options = [])
+    {
+        $page = $page ?: (Paginator::resolveCurrentPage() ?: 1);
+        $items = $items instanceof Collection ? $items : Collection::make($items);
+        return new LengthAwarePaginator($items->forPage($page, $perPage), $items->count(), $perPage, $page, $options);
     }
 }
