@@ -30,7 +30,7 @@ class CharterInformationController extends Controller
         $information->image = $request->image;
         $information->save();
 
-        flash(translate('Thông tin điều lệ đã lưu cập nhập thành công'))->success();
+        flash(translate('Thông tin điều lệ đã lưu thành công'))->success();
 
         return back();
     }

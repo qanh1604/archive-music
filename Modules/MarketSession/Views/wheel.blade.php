@@ -175,18 +175,28 @@
                         currentTurn: parseInt(i)+1
                     },
                     success: function(data){
-
+                        
                     }
                 });
                 await startSpin((wheelResult[i].position)+1);
                 await timer(time);
+
+                theWheel.segments[wheelResult[i].position+1].text = "";
+                theWheel.draw();
                 $(`#${wheelResult[i].uuid}`).html(wheelResult[i].user.name);
             }
 
             $(document).ready(async function(){
                 wheelResult = JSON.parse(wheelResult);
+                
+                for(var j = 0; j < current_turn-1; j++){
+                    theWheel.segments[wheelResult[j].position+1].text = "";
+                }
+                theWheel.draw();
+
                 var intervalTime = (duration+4)*1000;
                 await timer(4000);
+
                 for (var i = current_turn; i < max_turn; i++) {
                     await task(i, intervalTime);
                 }

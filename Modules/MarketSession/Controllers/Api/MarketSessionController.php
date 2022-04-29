@@ -460,6 +460,37 @@ class MarketSessionController extends Controller
         return response()->json($data);
     }
 
+    public function allGifts(Request $request){
+        $market_joiner = MarketSessionJoiner::where('user_id', Auth::user()->id)->get();
+
+        $gifts = HotOrderGift::whereIn('market_id', $market_joiner->pluck('market_detail_id')->toArray())->get();
+
+        $tmpWheel = [];
+        if($gifts){
+            foreach($gifts as $gift){
+                $tmpWheel = json_decode($gift->wheel);
+                foreach($tmpWheel as $key => $wheel){
+                    if($wheel->user->id != Auth::user()->id){
+                        unset($tmpWheel[$key]);
+                    }
+                }
+                $tmpWheel = array_values($tmpWheel);
+            }
+        }
+        $page = isset($request->page) ? $request->page : 1;
+        $perPage = 5; // Number of items per page
+        $offset = ($page * $perPage) - $perPage;
+
+        $data =  new LengthAwarePaginator(
+            array_slice($tmpWheel, $offset, $perPage, true),
+            count($tmpWheel), // Total items
+            $perPage, // Items per page
+            $page, // Current page
+            ['path' => $request->url(), 'query' => $request->query()]
+        );
+        return response()->json($data);
+    }
+
     public function paginate($items, $perPage = 5, $page = null, $options = [])
     {
         $page = $page ?: (Paginator::resolveCurrentPage() ?: 1);

@@ -370,10 +370,8 @@ class MarketSessionController extends Controller
             return 0;
         }
 
-        $open_vieo = Upload::where('id', $request->open_video)->first();
         $slider_video = Upload::where('id', $request->slider_video)->first();
 
-        $seller->open_video = $open_vieo->file_name;
         $seller->slider_video = $slider_video->file_name;
 
         if($seller->save()){

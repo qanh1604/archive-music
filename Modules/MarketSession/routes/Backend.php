@@ -2,6 +2,7 @@
 use \Modules\MarketSession\Controllers\MarketSessionController as MarketSessionController;
 use \Modules\MarketSession\Controllers\HotOrderController as HotOrderController;
 use \Modules\MarketSession\Controllers\CharterInformationController as CharterInformationController;
+use \Modules\MarketSession\Controllers\VirtualAssistantController as VirtualAssistantController;
 
 Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin']], function() {
     Route::group(['prefix' => 'market-session'], function(){
@@ -43,5 +44,15 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin']], function(
         Route::get('/edit/{id}', [CharterInformationController::class, 'edit'])->name('charter_information.edit');
         Route::post('/edit/{id}', [CharterInformationController::class, 'saveEdit'])->name('charter_information.saveEdit');
         Route::get('/delete/{id}', [CharterInformationController::class, 'delete'])->name('charter_information.delete');
+    });
+
+    Route::group(['prefix' => 'virtual_assistant'], function(){
+        Route::resource('/', VirtualAssistantController::class);
+        Route::get('/', [VirtualAssistantController::class, 'index'])->name('virtual_assistant');
+        Route::get('/create', [VirtualAssistantController::class, 'create'])->name('virtual_assistant.create');
+        Route::post('/create', [VirtualAssistantController::class, 'save'])->name('virtual_assistant.save');
+        // Route::get('/edit/{id}', [CharterInformationController::class, 'edit'])->name('charter_information.edit');
+        Route::post('/edit/{id}', [VirtualAssistantController::class, 'saveEdit'])->name('virtual_assistant.saveEdit');
+        Route::get('/delete/{id}', [VirtualAssistantController::class, 'delete'])->name('virtual_assistant.delete');
     });
 });

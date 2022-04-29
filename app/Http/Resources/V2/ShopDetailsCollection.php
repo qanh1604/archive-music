@@ -5,6 +5,7 @@ namespace App\Http\Resources\V2;
 use Illuminate\Http\Resources\Json\ResourceCollection;
 use \App\Models\Product;
 use \App\Models\Upload;
+use \App\Models\User;
 
 class ShopDetailsCollection extends ResourceCollection
 {
@@ -13,6 +14,7 @@ class ShopDetailsCollection extends ResourceCollection
         return [
             'data' => $this->collection->map(function($data) {
                 $background_img = Upload::where('id', $data->background_img)->first();
+                $user = User::where('id', $data->user_id)->first();
                 $tmpData = [
                     'id' => $data->id,
                     'user_id' => intval($data->user_id) ,
@@ -28,6 +30,7 @@ class ShopDetailsCollection extends ResourceCollection
                     'meta_description' => $data->meta_description,
                     'background_img' => $background_img?$background_img->file_name:'',
                     'virtual_assistant' => $data->virtual_assistant,
+                    'isVerified' => $user->seller->isVerified
                 ];
 
                 $products = Product::with('category')->where('user_id', intval($data->user_id))->get();

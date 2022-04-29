@@ -196,16 +196,6 @@
                                         <div class="input-group-text bg-soft-secondary font-weight-medium">{{ translate('Browse')}}</div>
                                     </div>
                                     <div class="form-control file-amount">{{ translate('Choose File') }}</div>
-                                    <input type="hidden" name="open_video" value="{{ $seller->open_video }}" id="open_video_{{ $seller->id }}" class="selected-files">
-                                </div>
-                                <div class="file-preview box sm"></div>
-                            </td>
-                            <td>
-                                <div class="input-group" data-toggle="aizuploader1" data-type="video" data-multiple="true">
-                                    <div class="input-group-prepend">
-                                        <div class="input-group-text bg-soft-secondary font-weight-medium">{{ translate('Browse')}}</div>
-                                    </div>
-                                    <div class="form-control file-amount">{{ translate('Choose File') }}</div>
                                     <input type="hidden" name="slider_video" value="{{ $seller->slider_video }}" id="slider_video_{{ $seller->id }}" class="selected-files">
                                 </div>
                                 <div class="file-preview box sm"></div>

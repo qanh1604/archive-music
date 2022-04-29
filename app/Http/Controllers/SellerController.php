@@ -8,6 +8,7 @@ use App\Models\User;
 use App\Models\Shop;
 use App\Models\Product;
 use App\Models\Order;
+use App\Models\VirtualAssistant;
 use App\Models\OrderDetail;
 use Illuminate\Support\Facades\Hash;
 use App\Notifications\EmailVerificationNotification;
@@ -147,6 +148,7 @@ class SellerController extends Controller
 
             $seller = new Seller;
             $seller->user_id = $user->id;
+            $seller->open_video = $request->open_video;
 
             if ($seller->save()) {
                 $shop = new Shop;
@@ -205,7 +207,14 @@ class SellerController extends Controller
         $user->email = $request->email;
         $user->shop->meta_description = $request->meta_description;
         $user->shop->background_img = $request->background_img;
-        $user->shop->virtual_assistant = $request->virtual_assistant;
+        $seller->open_video = $request->open_video;
+        $virtual_assistant = VirtualAssistant::where('id', $request->virtual_assistant)->first();
+        $virtual_assistant = VirtualAssistant::updateOrCreate(
+            ['id' => $request->virtual_assistant],
+            ['video' => $request->virtual_assistant],
+        );
+        // $user->shop->virtual_assistant = $request->virtual_assistant;
+
         if (strlen($request->password) > 0) {
             $user->password = Hash::make($request->password);
         }
