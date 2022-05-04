@@ -422,6 +422,11 @@
                                     <span class="aiz-side-nav-text">{{ translate('Seller Verification Form') }}</span>
                                 </a>
                             </li> --}}
+                            <li class="aiz-side-nav-item">
+                                <a href="{{ route('virtual_assistant') }}" class="aiz-side-nav-link">
+                                    <span class="aiz-side-nav-text">{{ translate('Trợ lý ảo') }}</span>
+                                </a>
+                            </li>
                         </ul>
                     </li>
                 @endif

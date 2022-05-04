@@ -29,7 +29,7 @@
                     </div>
                 </div>
                 <div class="form-group row">
-                    <label class="col-sm-3 col-from-label" for="password">{{translate('Password')}}</label>
+                    <label class="col-sm-3 col-from-label" for="password">Password</label>
                     <div class="col-sm-9">
                         <input type="password" placeholder="{{translate('Password')}}" id="password" name="password" class="form-control">
                     </div>
@@ -48,7 +48,7 @@
                 </div>
                 <div class="form-group row">
                     <label class="col-md-3 col-form-label" for="shopBackground">Background quầy hàng</label>
-                    <div class="col-md-8">
+                    <div class="col-md-9">
                         <div class="input-group" data-toggle="aizuploader" data-type="image">
                             <div class="input-group-prepend">
                                 <div class="input-group-text bg-soft-secondary font-weight-medium">{{ translate('Browse')}}</div>
@@ -61,8 +61,21 @@
                     </div>
                 </div>
                 <div class="form-group row">
+                    <label class="col-md-3 col-form-label" for="shopOpenVideo">Open Video</label>
+                    <div class="col-md-9">
+                        <div class="input-group" data-toggle="aizuploader" data-type="video">
+                            <div class="input-group-prepend">
+                                <div class="input-group-text bg-soft-secondary font-weight-medium">{{ translate('Browse')}}</div>
+                            </div>
+                            <div class="form-control file-amount">{{ translate('Choose File') }}</div>
+                            <input type="hidden" name="open_video" value="{{ $seller->open_video }}" class="selected-files">
+                        </div>
+                        <div class="file-preview box sm"></div>
+                    </div>
+                </div>
+                <div class="form-group row">
                     <label class="col-md-3 col-form-label" for="shopVAssistant">Video trợ lý ảo</label>
-                    <div class="col-md-8">
+                    <div class="col-md-9">
                         <div class="input-group" data-toggle="aizuploader" data-type="video">
                             <div class="input-group-prepend">
                                 <div class="input-group-text bg-soft-secondary font-weight-medium">{{ translate('Browse')}}</div>

@@ -10,6 +10,7 @@ use App\Models\Customer;
 use App\Models\Country;
 use App\Models\City;
 use App\Models\State;
+use App\Models\Address;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use App\Models\User;
@@ -103,6 +104,19 @@ class AuthController extends Controller
         // $otpController->send_code($user);
 
         $user->save();
+
+        $address = new Address ([
+            'user_id' => $user->id,
+            'address' => $user->address,
+            'country' => $user->country_id,
+            'city' => $user->city_id,
+            'state' => $user->state_id,
+            'postal_code' => $user->postal_code?$user->postal_code:'',
+            'phone' => $user->phone,
+            'set_default' => 1
+        ]);
+
+        $address->save();
 
         $customer = new Customer;
         $customer->user_id = $user->id;

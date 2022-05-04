@@ -32,6 +32,19 @@
                         <input type="password" placeholder="{{translate('Password')}}" id="password" name="password" class="form-control" required>
                     </div>
                 </div>
+                <div class="form-group row">
+                    <label class="col-md-3 col-form-label" for="shopOpenVideo">Video</label>
+                    <div class="col-md-9">
+                        <div class="input-group" data-toggle="aizuploader" data-type="video">
+                            <div class="input-group-prepend">
+                                <div class="input-group-text bg-soft-secondary font-weight-medium">{{ translate('Browse')}}</div>
+                            </div>
+                            <div class="form-control file-amount">{{ translate('Choose File') }}</div>
+                            <input type="hidden" name="open_video" class="selected-files">
+                        </div>
+                        <div class="file-preview box sm"></div>
+                    </div>
+                </div>
             </div>
         </div>
         <div class="card">
@@ -71,4 +84,15 @@
     </form>
 </div>
 
+@endsection
+
+@section('script')
+<script>
+    $(document).on('ready.ft.table', function(){
+        $('[data-toggle="aizuploader1"]').each(function () {
+            $(this).attr('data-toggle', 'aizuploader');
+        });
+        AIZ.uploader.previewGenerate();
+    });
+</script>
 @endsection
