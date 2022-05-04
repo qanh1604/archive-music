@@ -105,16 +105,15 @@ class AuthController extends Controller
 
         $user->save();
 
-        $address = new Address ([
-            'user_id' => $user->id,
-            'address' => $user->address,
-            'country' => $user->country_id,
-            'city' => $user->city_id,
-            'state' => $user->state_id,
-            'postal_code' => $user->postal_code?$user->postal_code:'',
-            'phone' => $user->phone,
-            'set_default' => 1
-        ]);
+        $address = new Address;
+        $address->user_id = $user->id;
+        $address->address = $user->address;
+        $address->country_id = $request->country_id;
+        $address->city_id = $request->city_id;
+        $address->state_id = $request->state_id;
+        $address->postal_code = $user->postal_code?$user->postal_code:null;
+        $address->phone = $user->phone;
+        $address->set_default = 1;
 
         $address->save();
 
