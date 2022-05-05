@@ -433,7 +433,7 @@ class MarketSessionController extends Controller
          * user_id: int (optional)
          */
         $hotOrderGift = HotOrderGift::where('market_id', $request->market_id)->first();
-        $market_detail = MarketSessionDetail::with('marketSession')->whereIn('id', $request->market_id)->get();
+        $market_detail = MarketSessionDetail::with('marketSession')->where('id', $request->market_id)->get();
         $tmpWheel = [];
         if($hotOrderGift && $market_detail){
             foreach($market_detail as $market){
