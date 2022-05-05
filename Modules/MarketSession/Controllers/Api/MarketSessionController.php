@@ -442,6 +442,8 @@ class MarketSessionController extends Controller
                     foreach($tmpWheel as $key => $wheel){
                         $wheel->market_name = $market->marketSession?$market->marketSession->name:'';
                         $wheel->market_date = $market->start_time;
+                        $image = Upload::where('id', $wheel->image)->first();
+                        $wheel->image = $image?$image->file_name:'';
                         if($wheel->user->id != $request->user_id){
                             unset($tmpWheel[$key]);
                         }
