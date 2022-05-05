@@ -485,7 +485,9 @@ class MarketSessionController extends Controller
         $page = isset($request->page) ? $request->page : 1;
         $perPage = 5; // Number of items per page
         $offset = ($page * $perPage) - $perPage;
-
+        if($page > 1) {
+            $tmpWheel = array_values($tmpWheel);
+        }
         $data =  new LengthAwarePaginator(
             array_slice($tmpWheel, $offset, $perPage, true),
             count($tmpWheel), // Total items
@@ -493,6 +495,7 @@ class MarketSessionController extends Controller
             $page, // Current page
             ['path' => $request->url(), 'query' => $request->query()]
         );
+        
         return response()->json($data);
     }
 
