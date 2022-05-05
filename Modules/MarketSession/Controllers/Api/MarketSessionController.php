@@ -432,17 +432,22 @@ class MarketSessionController extends Controller
          * user_id: int (optional)
          */
         $hotOrderGift = HotOrderGift::where('market_id', $request->market_id)->first();
+        $market_detail = MarketSessionDetail::with('marketSession')->whereIn('id', $request->market_id)->get();
         $tmpWheel = [];
-        if($hotOrderGift){
-            $tmpWheel = json_decode($hotOrderGift->wheel);
-            if($request->user_id){
-                foreach($tmpWheel as $key => $wheel){
-                    if($wheel->user->id != $request->user_id){
-                        unset($tmpWheel[$key]);
+        if($hotOrderGift && $market_detail){
+            foreach($market_detail as $market){
+                $tmpWheel = json_decode($hotOrderGift->wheel);
+                if($request->user_id){
+                    foreach($tmpWheel as $key => $wheel){
+                        $wheel->market_name = $market->marketSession?$market->marketSession->name:'';
+                        $wheel->market_date = $market->start_time;
+                        if($wheel->user->id != $request->user_id){
+                            unset($tmpWheel[$key]);
+                        }
                     }
                 }
+                $tmpWheel = array_values($tmpWheel);
             }
-            $tmpWheel = array_values($tmpWheel);
         }
 
         $page = isset($request->page) ? $request->page : 1; // Get the page=1 from the url
@@ -450,7 +455,7 @@ class MarketSessionController extends Controller
         $offset = ($page * $perPage) - $perPage;
 
         $data = new LengthAwarePaginator(
-            array_slice($tmpWheel, $offset, $perPage, true),
+            array_values(array_slice($tmpWheel, $offset, $perPage, true)),
             count($tmpWheel), // Total items
             $perPage, // Items per page
             $page, // Current page
@@ -465,7 +470,7 @@ class MarketSessionController extends Controller
 
         $gifts = HotOrderGift::whereIn('market_id', $market_joiner->pluck('market_detail_id')->toArray())->get();
         $market_detail = MarketSessionDetail::with('marketSession')->whereIn('id', $market_joiner->pluck('market_detail_id')->toArray())->get();
-
+        dd($gifts);
         $tmpWheel = [];
         if($gifts && $market_detail){
             foreach ($market_detail as $market){
