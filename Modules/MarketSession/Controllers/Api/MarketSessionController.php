@@ -19,6 +19,7 @@ use App\Models\User;
 use App\Models\Address;
 use App\Models\Product;
 use App\Models\Category;
+use App\Models\Upload;
 use Illuminate\Support\Str;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Collection;
@@ -482,6 +483,8 @@ class MarketSessionController extends Controller
                         if($wheel->user->id == Auth::user()->id && !in_array($wheel->uuid, $checkArray)){
                             $wheel->market_name = $market->marketSession?$market->marketSession->name:'';
                             $wheel->market_date = $market->start_time;
+                            $image = Upload::where('id', $wheel->image)->first();
+                            $wheel->image = $image?$image->file_name:'';
                             $arr[$wheel->uuid] = $wheel;
                             $checkArray[] = $wheel->uuid;
                         }else{
