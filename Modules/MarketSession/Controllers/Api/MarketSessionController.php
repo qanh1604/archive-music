@@ -472,7 +472,7 @@ class MarketSessionController extends Controller
                 foreach($gifts as $gift){
                     $tmpWheel = json_decode($gift->wheel);
                     foreach($tmpWheel as $key => $wheel){
-                        $wheel->market_name = $market->marketSession->name;
+                        $wheel->market_name = $market->marketSession?$market->marketSession->name:'';
                         $wheel->market_date = $market->start_time;
                         if($wheel->user->id != Auth::user()->id){
                             unset($tmpWheel[$key]);
