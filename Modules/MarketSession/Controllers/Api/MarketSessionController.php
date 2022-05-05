@@ -494,7 +494,7 @@ class MarketSessionController extends Controller
         }
         
         $page = isset($request->page) ? $request->page : 1;
-        $perPage = 5; // Number of items per page
+        $perPage = 5;
         
         $offset = ($page * $perPage) - $perPage;
 
