@@ -485,11 +485,9 @@ class MarketSessionController extends Controller
         $page = isset($request->page) ? $request->page : 1;
         $perPage = 5; // Number of items per page
         $offset = ($page * $perPage) - $perPage;
-        if($page > 1) {
-            $tmpWheel = array_values($tmpWheel);
-        }
+
         $data =  new LengthAwarePaginator(
-            array_slice($tmpWheel, $offset, $perPage, true),
+            array_values(array_slice($tmpWheel, $offset, $perPage, true)),
             count($tmpWheel), // Total items
             $perPage, // Items per page
             $page, // Current page
