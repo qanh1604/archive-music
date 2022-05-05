@@ -464,17 +464,22 @@ class MarketSessionController extends Controller
         $market_joiner = MarketSessionJoiner::where('user_id', Auth::user()->id)->get();
 
         $gifts = HotOrderGift::whereIn('market_id', $market_joiner->pluck('market_detail_id')->toArray())->get();
+        $market_detail = MarketSessionDetail::with('marketSession')->whereIn('id', $market_joiner->pluck('market_detail_id')->toArray())->get();
 
         $tmpWheel = [];
         if($gifts){
-            foreach($gifts as $gift){
-                $tmpWheel = json_decode($gift->wheel);
-                foreach($tmpWheel as $key => $wheel){
-                    if($wheel->user->id != Auth::user()->id){
-                        unset($tmpWheel[$key]);
+            foreach ($market_detail as $market){
+                foreach($gifts as $gift){
+                    $tmpWheel = json_decode($gift->wheel);
+                    foreach($tmpWheel as $key => $wheel){
+                        $wheel->market_name = $market->marketSession->name;
+                        $wheel->market_date = $market->start_time;
+                        if($wheel->user->id != Auth::user()->id){
+                            unset($tmpWheel[$key]);
+                        }
                     }
+                    $tmpWheel = array_values($tmpWheel);
                 }
-                $tmpWheel = array_values($tmpWheel);
             }
         }
         $page = isset($request->page) ? $request->page : 1;
