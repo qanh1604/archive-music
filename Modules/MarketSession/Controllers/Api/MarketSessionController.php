@@ -470,16 +470,21 @@ class MarketSessionController extends Controller
 
         $gifts = HotOrderGift::whereIn('market_id', $market_joiner->pluck('market_detail_id')->toArray())->get();
         $market_detail = MarketSessionDetail::with('marketSession')->whereIn('id', $market_joiner->pluck('market_detail_id')->toArray())->get();
-        dd($gifts);
+        
         $tmpWheel = [];
+        $arr = [];
+        $checkArray = [];
         if($gifts && $market_detail){
             foreach ($market_detail as $market){
                 foreach($gifts as $gift){
                     $tmpWheel = json_decode($gift->wheel);
                     foreach($tmpWheel as $key => $wheel){
-                        $wheel->market_name = $market->marketSession?$market->marketSession->name:'';
-                        $wheel->market_date = $market->start_time;
-                        if($wheel->user->id != Auth::user()->id){
+                        if($wheel->user->id == Auth::user()->id && !in_array($wheel->uuid, $checkArray)){
+                            $wheel->market_name = $market->marketSession?$market->marketSession->name:'';
+                            $wheel->market_date = $market->start_time;
+                            $arr[$wheel->uuid] = $wheel;
+                            $checkArray[] = $wheel->uuid;
+                        }else{
                             unset($tmpWheel[$key]);
                         }
                     }
@@ -487,14 +492,15 @@ class MarketSessionController extends Controller
                 }
             }
         }
+        
         $page = isset($request->page) ? $request->page : 1;
         $perPage = 5; // Number of items per page
         
         $offset = ($page * $perPage) - $perPage;
 
         $data =  new LengthAwarePaginator(
-            array_values(array_slice($tmpWheel, $offset, $perPage, true)),
-            count($tmpWheel), // Total items
+            array_values(array_slice($arr, $offset, $perPage, true)),
+            count($arr), // Total items
             $perPage, // Items per page
             $page, // Current page
             ['path' => $request->url(), 'query' => $request->query()]
