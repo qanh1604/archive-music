@@ -467,7 +467,7 @@ class MarketSessionController extends Controller
         $market_detail = MarketSessionDetail::with('marketSession')->whereIn('id', $market_joiner->pluck('market_detail_id')->toArray())->get();
 
         $tmpWheel = [];
-        if($gifts){
+        if($gifts && $market_detail){
             foreach ($market_detail as $market){
                 foreach($gifts as $gift){
                     $tmpWheel = json_decode($gift->wheel);
