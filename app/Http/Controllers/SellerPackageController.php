@@ -537,9 +537,6 @@ class SellerPackageController extends Controller
                 $seller->virtual_assistant_id = $virtual_assistant->id;
                 $seller->save();
             }
-        }else {
-            $seller->has_virtual_assistant = 0;
-            $seller->save();
         }
 
         return $this->purchase_payment_done_api($data, null);
