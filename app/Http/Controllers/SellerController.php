@@ -64,9 +64,7 @@ class SellerController extends Controller
     
             $seller->category = implode(', ', $productCategory);
         }
-
-        dd($sellers);
-
+        
         return view('backend.sellers.index', compact('sellers', 'sort_search', 'approved'));
     }
 
@@ -109,8 +107,7 @@ class SellerController extends Controller
             }
     
             $seller->category = implode(', ', $productCategory);
-        }        
-
+        }
         return view('backend.sellers.inc.seller_body', compact('sellers', 'sort_search', 'approved'));
     }
 
