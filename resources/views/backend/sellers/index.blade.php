@@ -68,7 +68,7 @@
                 </thead>
                 <tbody>
                 @foreach($sellers as $key => $seller)
-                    {{-- @if($seller->user != null && $seller->user->shop != null) --}}
+                    @if($seller->user != null && $seller->user->shop != null)
                         <tr>
                             <!--<td>{{ ($key+1) + ($sellers->currentPage() - 1)*$sellers->perPage() }}</td>-->
                             <td>
@@ -145,7 +145,7 @@
                                 </div>
                             </td>
                         </tr>
-                    {{--@endif--}}
+                    @endif
                 @endforeach
                 </tbody>
             </table>
