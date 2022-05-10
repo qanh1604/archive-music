@@ -907,6 +907,12 @@
                                 </a>
                             </li>
 
+                            <li class="aiz-side-nav-item">
+                                <a href="{{ route('smtp_settings.index') }}" class="aiz-side-nav-link">
+                                    <span class="aiz-side-nav-text">{{translate('SMTP Settings')}}</span>
+                                </a>
+                            </li>
+
                             {{-- <li class="aiz-side-nav-item">
                                 <a href="{{route('currency.index')}}" class="aiz-side-nav-link">
                                     <span class="aiz-side-nav-text">{{translate('Currency')}}</span>
@@ -922,11 +928,7 @@
                                     <span class="aiz-side-nav-text">{{translate('Pickup point')}}</span>
                                 </a>
                             </li>
-                            <li class="aiz-side-nav-item">
-                                <a href="{{ route('smtp_settings.index') }}" class="aiz-side-nav-link">
-                                    <span class="aiz-side-nav-text">{{translate('SMTP Settings')}}</span>
-                                </a>
-                            </li>
+                            
                             <li class="aiz-side-nav-item">
                                 <a href="{{ route('file_system.index') }}" class="aiz-side-nav-link">
                                     <span class="aiz-side-nav-text">{{translate('File System & Cache Configuration')}}</span>

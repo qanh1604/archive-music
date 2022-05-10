@@ -125,10 +125,10 @@
                                         </ul>
                                     @endif
                                 </div>
-                                <div class="text-center">
+                                {{--<div class="text-center">
                                     <p class="text-muted mb-0">{{ translate('Dont have an account?')}}</p>
                                     <a href="{{ route('user.registration') }}">{{ translate('Register Now')}}</a>
-                                </div>
+                                </div>--}}
                             </div>
                         </div>
                     </div>

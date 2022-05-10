@@ -407,6 +407,7 @@ class MarketSessionController extends Controller
         $totalGift = 0;
         for($i = 0; $i < count($request->gift_names); $i++){
             $dataGift[] = [
+                'sender' => $request->sender_name[$i],
                 'image' => $request->gift_images[$i],
                 'name' => $request->gift_names[$i],
                 'amount' => $request->gift_amounts[$i],

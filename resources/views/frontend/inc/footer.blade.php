@@ -1,35 +1,4 @@
-<section class="bg-white border-top mt-auto">
-    <div class="container">
-        <div class="row no-gutters">
-            <div class="col-lg-3 col-md-6">
-                <a class="text-reset border-left text-center p-4 d-block" href="{{ route('terms') }}">
-                    <i class="la la-file-text la-3x text-primary mb-2"></i>
-                    <h4 class="h6">{{ translate('Terms & conditions') }}</h4>
-                </a>
-            </div>
-            <div class="col-lg-3 col-md-6">
-                <a class="text-reset border-left text-center p-4 d-block" href="{{ route('returnpolicy') }}">
-                    <i class="la la-mail-reply la-3x text-primary mb-2"></i>
-                    <h4 class="h6">{{ translate('Return Policy') }}</h4>
-                </a>
-            </div>
-            <div class="col-lg-3 col-md-6">
-                <a class="text-reset border-left text-center p-4 d-block" href="{{ route('supportpolicy') }}">
-                    <i class="la la-support la-3x text-primary mb-2"></i>
-                    <h4 class="h6">{{ translate('Support Policy') }}</h4>
-                </a>
-            </div>
-            <div class="col-lg-3 col-md-6">
-                <a class="text-reset border-left border-right text-center p-4 d-block" href="{{ route('privacypolicy') }}">
-                    <i class="las la-exclamation-circle la-3x text-primary mb-2"></i>
-                    <h4 class="h6">{{ translate('Privacy Policy') }}</h4>
-                </a>
-            </div>
-        </div>
-    </div>
-</section>
-
-<section class="bg-dark py-5 text-light footer-widget">
+{{-- <section class="bg-dark py-5 text-light footer-widget">
     <div class="container">
         <div class="row">
             <div class="col-lg-5 col-xl-4 text-center text-md-left">
@@ -310,7 +279,7 @@
         @endif
         </div>
     </div>
-</div>
+</div> --}}
 @if (Auth::check() && !isAdmin())
     <div class="aiz-mobile-side-nav collapse-sidebar-wrap sidebar-xl d-xl-none z-1035">
         <div class="overlay dark c-pointer overlay-fixed" data-toggle="class-toggle" data-backdrop="static" data-target=".aiz-mobile-side-nav" data-same=".mobile-side-nav-thumb"></div>

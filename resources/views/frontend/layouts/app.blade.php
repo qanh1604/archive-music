@@ -173,7 +173,7 @@
         </div>
     @endif
 
-    @if (get_setting('show_website_popup') == 'on')
+    {{-- @if (get_setting('show_website_popup') == 'on')
         <div class="modal website-popup removable-session d-none" data-key="website-popup" data-value="removed">
             <div class="absolute-full bg-black opacity-60"></div>
             <div class="modal-dialog modal-dialog-centered modal-dialog-zoom modal-md">
@@ -200,7 +200,7 @@
                 </div>
             </div>
         </div>
-    @endif
+    @endif --}}
 
     @include('frontend.partials.modal')
 

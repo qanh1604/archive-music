@@ -68,7 +68,7 @@
 
             <div class="col-5 text-right d-none d-lg-block">
                 <ul class="list-inline mb-0 h-100 d-flex justify-content-end align-items-center">
-                    @if (get_setting('helpline_number'))
+                    {{-- @if (get_setting('helpline_number'))
                         <li class="list-inline-item mr-3 border-right border-left-0 pr-3 pl-0">
                             <a href="tel:{{ get_setting('helpline_number') }}" class="text-reset d-inline-block opacity-60 py-2">
                                 <i class="la la-phone"></i>
@@ -76,14 +76,13 @@
                                 <span>{{ get_setting('helpline_number') }}</span>    
                             </a>
                         </li>
-                    @endif
+                    @endif --}}
                     @auth
                         @if(isAdmin())
                             <li class="list-inline-item mr-3 border-right border-left-0 pr-3 pl-0">
                                 <a href="{{ route('admin.dashboard') }}" class="text-reset d-inline-block opacity-60 py-2">{{ translate('My Panel')}}</a>
                             </li>
                         @else
-
                             <li class="list-inline-item mr-3 border-right border-left-0 pr-3 pl-0 dropdown">
                                 <a class="dropdown-toggle no-arrow text-reset" data-toggle="dropdown" href="javascript:void(0);" role="button" aria-haspopup="false" aria-expanded="false">
                                     <span class="">
@@ -155,9 +154,9 @@
                         <li class="list-inline-item mr-3 border-right border-left-0 pr-3 pl-0">
                             <a href="{{ route('user.login') }}" class="text-reset d-inline-block opacity-60 py-2">{{ translate('Login')}}</a>
                         </li>
-                        <li class="list-inline-item">
+                        <!-- <li class="list-inline-item">
                             <a href="{{ route('user.registration') }}" class="text-reset d-inline-block opacity-60 py-2">{{ translate('Registration')}}</a>
-                        </li>
+                        </li> -->
                     @endauth
                 </ul>
             </div>
