@@ -81,7 +81,7 @@
                                     </div>
                                 </div>
                             </td>
-                            <td>@if($seller->user->banned == 1) <i class="fa fa-ban text-danger" aria-hidden="true"></i> @endif {{$seller->user->shop->name}}</td>
+                            <td>@if($seller->user->banned == 1) <i class="fa fa-ban text-danger" aria-hidden="true"></i> @endif {{ $seller->user->shop?$seller->user->shop->name:'' }}</td>
                             <td>{{$seller->user->phone}}</td>
                             <td>{{$seller->user->email}}</td>
                             <td>
@@ -150,7 +150,7 @@
                 </tbody>
             </table>
             <div class="aiz-pagination">
-              {{ $sellers->appends(request()->input())->links() }}
+                {{ $sellers->appends(request()->input())->links() }}
             </div>
         </div>
     </from>

@@ -292,7 +292,7 @@
 
                               <div style="line-height: 160%; text-align: center; word-wrap: break-word;">
                                 <!-- <p style="font-size: 14px; line-height: 160%;"><span style="font-size: 22px; line-height: 35.2px;">Chào, </span></p> -->
-                                <p style="font-size: 14px; line-height: 160%;"><span style="font-size: 18px; line-height: 28.8px;">Để quản lý tài khoản vui lòng đăng nhập bằng tài khoản được chấp thuận đăng nhập theo đường dẫn dưới đây</span></p>
+                                <p style="font-size: 14px; line-height: 160%;"><span style="font-size: 18px; line-height: 28.8px;">Để quản lý tài khoản vui lòng đăng nhập bằng tài khoản được chấp thuận theo đường dẫn dưới đây</span></p>
                               </div>
 
                             </td>
