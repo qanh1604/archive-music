@@ -17,12 +17,23 @@
                         <div class="form-group">
                             <label>Quà và số lượng</label>
                             <div class="market-gift">
+                                <input type="hidden" name="types[]" value="sender_name">
                                 <input type="hidden" name="types[]" value="gift_images">
                                 <input type="hidden" name="types[]" value="gift_names">
                                 <input type="hidden" name="types[]" value="gift_amounts">
                                 @if ($marketDetail->gift != null)
                                     @foreach (json_decode($marketDetail->gift, true) as $key => $value)
                                         <div class="row gutters-5">
+                                            <div class="col-md">
+                                                <div class="form-group">
+                                                    <input type="hidden" name="types[]" value="sender_name">
+                                                    @if(isset($value['sender']))
+                                                        <input type="text" class="form-control" placeholder="Tên người tặng" name="sender_name[]" value="{{ $value['sender'] }}" required>
+                                                    @else
+                                                        <input type="text" class="form-control" placeholder="Tên người tặng" name="sender_name[]" value="" required>
+                                                    @endif
+                                                </div>
+                                            </div>
                                             <div class="col-md">
                                                 <div class="form-group">
                                                     <input type="hidden" name="types[]" value="gift_names">
@@ -66,6 +77,12 @@
                                 data-toggle="add-more"
                                 data-content='
                                     <div class="row gutters-5">
+                                        <div class="col-md">
+                                                <div class="form-group">
+                                                    <input type="hidden" name="types[]" value="sender_name">
+                                                    <input type="text" class="form-control" placeholder="Tên người tặng" name="sender_name[]" value="" required>
+                                                </div>
+                                            </div>
                                         <div class="col-md">
                                             <div class="form-group">
                                                 <input type="hidden" name="types[]" value="gift_names">
