@@ -67,6 +67,7 @@
                 </tr>
                 </thead>
                 <tbody>
+                @php dd($sellers); @endphp
                 @foreach($sellers as $key => $seller)
                     @if($seller->user != null && $seller->user->shop != null)
                         <tr>
@@ -253,7 +254,7 @@
                     url: '{{ route('sellsers.filter') }}?search='+search,
                     success: function(response) {
                         if(response.length == 0){
-                            // $("#seller-body").append('No data found');
+                            $("#seller-body").append('No data found');
                         }else {
                             $("#seller-body").empty();
                             $("#seller-body").html(response);
