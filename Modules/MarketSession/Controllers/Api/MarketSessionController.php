@@ -244,6 +244,7 @@ class MarketSessionController extends Controller
                 foreach($gifts as $gift){
                     for($i = 0; $i < $gift->amount; $i++){
                         $giftWheel[] = [
+                            'sender' => $gift->sender,
                             'image' => $gift->image,
                             'name' => $gift->name,
                             'uuid' => str_replace('-', '_', (string) Str::uuid())
