@@ -67,7 +67,6 @@
                 </tr>
                 </thead>
                 <tbody>
-                @php dd($sellers); @endphp
                 @foreach($sellers as $key => $seller)
                     @if($seller->user != null && $seller->user->shop != null)
                         <tr>
