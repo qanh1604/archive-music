@@ -294,6 +294,7 @@ class MarketSessionController extends Controller
                     else{
                         $arrayOfWheelSet[] = $rand;
                         $wheelResult[] = [
+                            'sender' => $giftWheel[$i]['sender'],
                             'image' => $giftWheel[$i]['image'],
                             'name' => $giftWheel[$i]['name'],
                             'uuid' => $giftWheel[$i]['uuid'],
