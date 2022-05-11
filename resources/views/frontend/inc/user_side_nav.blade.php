@@ -274,12 +274,12 @@
                             </a>
                         </li>
 
-                        <li class="aiz-side-nav-item">
+                        {{-- <li class="aiz-side-nav-item">
                             <a href="{{ route('withdraw_requests.index') }}" class="aiz-side-nav-link {{ areActiveRoutes(['withdraw_requests.index'])}}">
                                 <i class="las la-money-bill-wave-alt aiz-side-nav-icon"></i>
                                 <span class="aiz-side-nav-text">{{ translate('Money Withdraw') }}</span>
                             </a>
-                        </li>
+                        </li> --}}
 
                         {{-- <li class="aiz-side-nav-item">
                             <a href="{{ route('commission-log.index') }}" class="aiz-side-nav-link">

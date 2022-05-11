@@ -15,6 +15,7 @@ use App\Models\VirtualAssistant;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use App\Utility\PayfastUtility;
+use Illuminate\Support\Str;
 use Auth;
 use Session;
 use Carbon\Carbon;
@@ -539,11 +540,13 @@ class SellerPackageController extends Controller
                 $shop->user_id = Auth::user()->id;
                 $shop->phone = $data['phone'];
                 $shop->name = $data['name'];
+                $shop->slug = Str::slug($data['name']) . '-' . Auth::user()->id;
                 $shop->save();
             }else {
                 $shop->user_id = Auth::user()->id;
                 $shop->phone = $data['phone'];
                 $shop->name = $data['name'];
+                $shop->slug = Str::slug($data['name']) . '-' . Auth::user()->id;
                 $shop->save();
             }
         }
