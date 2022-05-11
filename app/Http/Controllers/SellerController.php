@@ -359,6 +359,7 @@ class SellerController extends Controller
                     }
                 }
                 $seller->isVerified = $request->status;
+                $seller->save();
             }
             Cache::forget('verified_sellers_id');
             return 1;
