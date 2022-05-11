@@ -511,14 +511,12 @@ class SellerPackageController extends Controller
         }
 
         if(strtotime(Auth::user()->seller->invalid_at) > strtotime(date('Y-m-d'))){
-            DB::table('users')
-            ->where('id', Auth::user()->id)
-            ->update([
-                'identity_card' => $upload_identity_card->id,
-                'business_license' => $upload_business_license?$upload_business_license->id:null,
-                'started_at' => Carbon::now(),
-                'email' => $data['email']
-            ]);
+            $seller->user->identity_card = $upload_identity_card->id;
+            $seller->user->business_license = $upload_business_license?$upload_business_license->id:null;
+            $seller->user->started_at = Carbon::now();
+            $seller->user->email = $data['email'];
+            $seller->user->save();
+            
             if(Auth::user()->identity_card){
                 $seller->isVerified = 1;
                 $seller->save();
