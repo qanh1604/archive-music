@@ -91,7 +91,7 @@ class AuthController extends Controller
         $user = new User([
             'name' => $request->name,
             'phone' => $request->email_or_phone,
-            'password' => bcrypt('$unshineSoftware'),
+            // 'password' => bcrypt('$unshineSoftware'),
             'verification_code' => rand(100000, 999999),
             'address' => $request->address,
             'country' => Country::where('id', $request->country_id)->first()->name,

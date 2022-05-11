@@ -214,7 +214,7 @@ class SellerController extends Controller
             ['id' => $request->virtual_assistant],
             ['video' => $request->virtual_assistant],
         );
-        // $user->shop->virtual_assistant = $request->virtual_assistant;
+        $user->shop->virtual_assistant = $request->virtual_assistant;
 
         if (strlen($request->password) > 0) {
             $user->password = Hash::make($request->password);
@@ -328,14 +328,23 @@ class SellerController extends Controller
         $seller->verification_status = $request->status;
         if ($seller->save()) {
             if($request->status == 1){
-                try {
-                    $array['view'] = 'mail';
-                    $array['subject'] = env('MAIL_FROM_NAME');
-                    $array['from'] = env('MAIL_FROM_ADDRESS');
-                    Mail::to($seller->user->email)->queue(new EmailManager($array));
-                } catch (\Throwable $th) {
-                    $seller->verification_status = 0;
-                    return 0;
+                if(!$seller->user->password){
+                    $random = str_shuffle('abcdefghjklmnopqrstuvwxyzABCDEFGHJKLMNOPQRSTUVWXYZ234567890');
+                    $password = substr($random, 0, 10);
+                    $seller->user->password = Hash::make($password);
+                    $seller->user->save();
+
+                    try {
+                        $array['view'] = 'mail';
+                        $array['subject'] = env('MAIL_FROM_NAME');
+                        $array['from'] = env('MAIL_FROM_ADDRESS');
+                        $array['email'] = $seller->user->email;
+                        $array['password'] = $password;
+                        Mail::to($seller->user->email)->queue(new EmailManager($array));
+                    } catch (\Throwable $th) {
+                        $seller->verification_status = 0;
+                        return 0;
+                    }
                 }
             }
             Cache::forget('verified_sellers_id');

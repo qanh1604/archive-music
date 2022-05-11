@@ -10,6 +10,7 @@ use App\Models\Seller;
 use App\Models\Order;
 use App\Models\Upload;
 use App\Models\User;
+use App\Models\Shop;
 use App\Models\VirtualAssistant;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
@@ -483,6 +484,25 @@ class SellerPackageController extends Controller
         $data['identity_card'] = $upload_identity_card->id;
 
         $seller = Seller::where('user_id', Auth::user()->id)->first();
+
+        $users = User::where('banned', 0)->get();
+        foreach($users as $user){
+            if($user && $user->email == $data['email']){
+                if($seller && $seller->user){
+                    if($seller->user->email != $data['email']){
+                        return response()->json([
+                            'result' => false,
+                            'message' => "Email đã được sử dụng"
+                        ]);
+                    }
+                }else {
+                    return response()->json([
+                        'result' => false,
+                        'message' => "Email đã được sử dụng"
+                    ]);
+                }
+            }
+        }
         
         if(!$seller){
             DB::table('sellers')
@@ -499,6 +519,7 @@ class SellerPackageController extends Controller
                 'identity_card' => $upload_identity_card->id,
                 'business_license' => $upload_business_license?$upload_business_license->id:null,
                 'started_at' => Carbon::now(),
+                'email' => $data['email']
             ]);
             if(Auth::user()->identity_card){
                 $seller->isVerified = 1;
@@ -514,6 +535,23 @@ class SellerPackageController extends Controller
                 'identity_card' => $upload_identity_card->id,
                 'business_license' => $upload_business_license?$upload_business_license->id:null
             ]);
+        }
+
+        if($seller_package->type == "seller"){
+            $shop = Shop::where('user_id', Auth::user()->id)->first();
+
+            if(!$shop){
+                $shop = new Shop;
+                $shop->user_id = Auth::user()->id;
+                $shop->phone = $data['phone'];
+                $shop->name = $data['name'];
+                $shop->save();
+            }else {
+                $shop->user_id = Auth::user()->id;
+                $shop->phone = $data['phone'];
+                $shop->name = $data['name'];
+                $shop->save();
+            }
         }
 
         if($data['has_virtual_assistant'] == 1){
