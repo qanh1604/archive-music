@@ -69,7 +69,7 @@
                 <tbody>
                 @foreach($sellers as $key => $seller)
                     @if($seller->user != null && $seller->user->shop != null)
-                        <tr>
+                    <tr>
                             <!--<td>{{ ($key+1) + ($sellers->currentPage() - 1)*$sellers->perPage() }}</td>-->
                             <td>
                                 <div class="form-group">

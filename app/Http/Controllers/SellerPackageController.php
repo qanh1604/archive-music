@@ -505,11 +505,9 @@ class SellerPackageController extends Controller
         }
         
         if(!$seller){
-            DB::table('sellers')
-            ->where('user_id', Auth::user()->id)
-            ->insert([
-                'user_id' => Auth::user()->id,
-            ]);
+            $seller = new Seller;
+            $seller->user_id = Auth::user()->id;
+            $seller->save();
         }
 
         if(strtotime(Auth::user()->seller->invalid_at) > strtotime(date('Y-m-d'))){
