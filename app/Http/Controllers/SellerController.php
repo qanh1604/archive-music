@@ -190,7 +190,8 @@ class SellerController extends Controller
     public function edit($id)
     {
         $seller = Seller::findOrFail(decrypt($id));
-        return view('backend.sellers.edit', compact('seller'));
+        $virtual_assistant = VirtualAssistant::where('id', $seller->virtual_assistant_id)->first();
+        return view('backend.sellers.edit', compact('seller', 'virtual_assistant'));
     }
 
     /**
@@ -209,12 +210,20 @@ class SellerController extends Controller
         $user->shop->meta_description = $request->meta_description;
         $user->shop->background_img = $request->background_img;
         $seller->open_video = $request->open_video;
-        $virtual_assistant = VirtualAssistant::where('id', $request->virtual_assistant)->first();
-        $virtual_assistant = VirtualAssistant::updateOrCreate(
-            ['id' => $request->virtual_assistant],
-            ['video' => $request->virtual_assistant],
-        );
-        $user->shop->virtual_assistant = $request->virtual_assistant;
+        $virtual_assistant = VirtualAssistant::where('id', $seller->virtual_assistant_id)->first();
+        if($virtual_assistant){
+            $virtual_assistant->video = $request->virtual_assistant;
+            $virtual_assistant->description = $request->description;
+            $virtual_assistant->save();
+        }else {
+            $virtual_assistant = new VirtualAssistant;
+            $virtual_assistant->seller_id = $seller->id;
+            $virtual_assistant->video = $request->virtual_assistant;
+            $virtual_assistant->description = $request->description;
+            $virtual_assistant->save();
+        }
+        
+        // $user->shop->virtual_assistant = $request->virtual_assistant;
 
         if (strlen($request->password) > 0) {
             $user->password = Hash::make($request->password);

@@ -550,10 +550,9 @@ class SellerPackageController extends Controller
                 $shop->save();
             }
         }
-
+        
         if($data['has_virtual_assistant'] == 1){
             $virtual_assistant = VirtualAssistant::where('seller_id', $seller->id)->first();
-            
             if(!$virtual_assistant){
                 $virtual_assistant = new VirtualAssistant;
                 $virtual_assistant->seller_id = $seller->id;

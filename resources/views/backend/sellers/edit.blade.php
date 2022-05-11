@@ -81,10 +81,25 @@
                                 <div class="input-group-text bg-soft-secondary font-weight-medium">{{ translate('Browse')}}</div>
                             </div>
                             <div class="form-control file-amount">{{ translate('Choose File') }}</div>
-                            <input type="hidden" name="virtual_assistant" class="selected-files" value="{{ $seller->user->shop->virtual_assistant }}">
+                            @if(isset($virtual_assistant))
+                                <input type="hidden" name="virtual_assistant" class="selected-files" value="{{ $virtual_assistant->video }}">
+                            @else
+                                <input type="hidden" name="virtual_assistant" class="selected-files" value="">
+                            @endif
                         </div>
                         <div class="file-preview box sm">
                         </div>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-3 col-from-label" for="description">Mô tả trợ lý</label>
+                    <div class="col-sm-9">
+                        @if(isset($virtual_assistant))
+                            <input type="description" placeholder="{{translate('Mô tả')}}" id="description" name="description" value="{{ $virtual_assistant->description }}" class="form-control">
+                        @else
+                            <input type="description" placeholder="{{translate('Mô tả')}}" id="description" name="description" value="" class="form-control">
+                        @endif
+                        
                     </div>
                 </div>
                 <div class="form-group mb-0 text-right">
