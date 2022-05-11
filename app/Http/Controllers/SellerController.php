@@ -225,7 +225,7 @@ class SellerController extends Controller
             $virtual_assistant->save();
             $seller->virtual_assistant_id = $virtual_assistant->id;
         }
-        
+        $seller->save();
         // $user->shop->virtual_assistant = $request->virtual_assistant;
 
         if (strlen($request->password) > 0) {
