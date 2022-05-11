@@ -58,7 +58,6 @@
                     <th>{{translate('Name')}}</th>
                     <th data-breakpoints="lg">{{translate('Phone')}}</th>
                     <th data-breakpoints="lg">{{translate('Email Address')}}</th>
-                    <th data-breakpoints="lg">{{translate('Verification Info')}}</th>
                     <th data-breakpoints="lg">{{translate('Approval')}}</th>
                     <th data-breakpoints="lg">{{ translate('Num. of Products') }}</th>
                     {{-- <th data-breakpoints="lg">{{ translate('Due to seller') }}</th> --}}
@@ -84,13 +83,6 @@
                             <td>@if($seller->user->banned == 1) <i class="fa fa-ban text-danger" aria-hidden="true"></i> @endif {{ $seller->user->shop?$seller->user->shop->name:'' }}</td>
                             <td>{{$seller->user->phone}}</td>
                             <td>{{$seller->user->email}}</td>
-                            <td>
-                                @if ($seller->verification_info != null)
-                                    <a href="{{ route('sellers.show_verification_request', $seller->id) }}">
-                                      <span class="badge badge-inline badge-info">{{translate('Show')}}</span>
-                                    </a>
-                                @endif
-                            </td>
                             <td>
                                 <label class="aiz-switch aiz-switch-success mb-0">
                                     <input onchange="update_approved(this)" value="{{ $seller->id }}" type="checkbox" <?php if($seller->verification_status == 1) echo "checked";?> >
