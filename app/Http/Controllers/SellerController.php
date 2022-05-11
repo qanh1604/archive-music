@@ -212,13 +212,13 @@ class SellerController extends Controller
         $seller->open_video = $request->open_video;
         $virtual_assistant = VirtualAssistant::where('id', $seller->virtual_assistant_id)->first();
         if($virtual_assistant){
-            $virtual_assistant->video = $request->virtual_assistant;
+            $virtual_assistant->video = $request->virtual_assistant?$request->virtual_assistant:'';
             $virtual_assistant->description = $request->description;
             $virtual_assistant->save();
         }else {
             $virtual_assistant = new VirtualAssistant;
             $virtual_assistant->seller_id = $seller->id;
-            $virtual_assistant->video = $request->virtual_assistant;
+            $virtual_assistant->video = $request->virtual_assistant?$request->virtual_assistant:'';
             $virtual_assistant->description = $request->description;
             $virtual_assistant->save();
         }
