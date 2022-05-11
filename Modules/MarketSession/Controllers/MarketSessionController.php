@@ -91,7 +91,7 @@ class MarketSessionController extends Controller
         else{
             $startTime = date("Y-m-d H:i:s", strtotime($request->period_time));
         }
-
+        
         $endSessionTime = date("Y-m-d", strtotime(str_replace("/", "-", $request->end_session_date)));
 
         $postData = [
@@ -133,6 +133,7 @@ class MarketSessionController extends Controller
             $market->duration = $request->duration;
             $market->end_date = date("Y-m-d H:i:s", strtotime('+'.$request->duration.' minutes', strtotime($startTime)));
             $market->end_session_date = $endSessionTime;
+            $market->video_slider = $request->slider_video;
 
             if($market->save())
             {

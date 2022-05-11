@@ -306,6 +306,12 @@ class SellerPackageController extends Controller
     public function seller_packages_list_api()
     {
         $seller_packages = SellerPackage::paginate(15);
+        foreach($seller_packages as &$package){
+            $logo = Upload::where('id', $package->logo)->first();
+            if($logo) {
+                $package->logo = $logo->file_name;
+            }
+        }
         return response()->json($seller_packages);
     }
 

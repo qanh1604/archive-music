@@ -18,6 +18,7 @@ use DB;
 use App\Models\User;
 use App\Models\Address;
 use App\Models\Product;
+use App\Models\Seller;
 use App\Models\Category;
 use App\Models\Upload;
 use Illuminate\Support\Str;
@@ -87,11 +88,12 @@ class MarketSessionController extends Controller
          */
         $type = $request->type;
         $marketLists = MarketSessionDetail::with([
-            'marketSession:id,name,zoom_id,duration,join_link,image,type',
+            'marketSession:id,name,zoom_id,duration,join_link,image,type,video_slider',
             'attended:market_detail_id,user_id,open_video,slider_video',
             'attended.joinerUser:id,name,email,avatar', 
-            'attended.shop:id,user_id,name,logo,sliders,phone,address,meta_title,meta_description,background_img,virtual_assistant'
-        ])->has('marketSession');
+            'attended.shop:id,user_id,name,logo,sliders,phone,address,meta_title,meta_description,background_img,virtual_assistant',
+            'attended.seller'
+        ])->has('marketSession')->orwhere('id', 53);
 
         if($type == 'previous')
         {
@@ -107,15 +109,28 @@ class MarketSessionController extends Controller
                         ->where('end_time', '>=', date('Y-m-d H:i:s'));
             // $marketLists = $marketLists->whereRaw('DATE(start_time) = CURDATE()');
         }
-
-        $marketLists = $marketLists->has('marketSession')->orderBy('start_time')->paginate(15);
         
+        $marketLists = $marketLists->has('marketSession')->orderBy('start_time')->paginate(15);
         // $marketLists = $marketLists->orderBy('start_time')->paginate(15);
-
+        $videoList = [];
+        $video_update = [];
         foreach($marketLists as &$marketList){
-            $joiner = MarketSessionJoiner::where('market_detail_id', $marketList->id)->get();
-            $slider_video = $joiner->pluck('slider_video')->toArray();
-            $marketList->slider_video = explode(',',implode(',',array_filter($slider_video)));
+            $marketList['slider_video'] = $marketList->marketSession->video_slider;
+            foreach($marketList->attended as $market){
+                $videoList[] = $market->seller->open_video;
+            }
+            $default_video = explode(',',implode(',',array_filter(array($marketList['slider_video']))));
+            $attended_video = explode(',',implode(',',array_filter($videoList)));
+
+            $marketList['slider_video'] = array_merge($default_video, $attended_video);
+            
+            foreach($marketList->slider_video as $video){
+                $video = Upload::where('id', $video)->first();
+                if($video){
+                    $video_update[] = $video->file_name;
+                }
+            }
+            $marketList['slider_video'] = $video_update;
         }
         return response()->json($marketLists, 200);
     }

@@ -72,6 +72,17 @@
                                 </a>
                             </div>
                         </div>
+                        <div class="form-group row">
+                            <label class="col-lg-3 col-from-label">Video mở đầu </label>
+                            <div class="input-group col-lg-8" data-toggle="aizuploader" data-type="video" data-multiple="true">
+                                <div class="input-group-prepend">
+                                    <div class="input-group-text bg-soft-secondary font-weight-medium">{{ translate('Browse')}}</div>
+                                </div>
+                                <div class="form-control file-amount">{{ translate('Choose File') }}</div>
+                                <input type="hidden" name="slider_video" value="" id="slider_video_" class="selected-files">
+                            </div>
+                            <div class="file-preview box sm"></div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -116,6 +127,11 @@
         $('.copy-button').on('click', function(e){
             e.preventDefault();
         });
+
+        $('[data-toggle="aizuploader1"]').each(function () {
+            $(this).attr('data-toggle', 'aizuploader');
+        });
+        AIZ.uploader.previewGenerate();
 
         $('#type').on('change', function(){
             if($(this).val() == 'weekly'){
