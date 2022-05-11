@@ -216,12 +216,14 @@ class SellerController extends Controller
             $virtual_assistant->video = $request->virtual_assistant?$request->virtual_assistant:'';
             $virtual_assistant->description = $request->description;
             $virtual_assistant->save();
+            $seller->virtual_assistant_id = $virtual_assistant->id;
         }else {
             $virtual_assistant = new VirtualAssistant;
             $virtual_assistant->seller_id = $seller->id;
             $virtual_assistant->video = $request->virtual_assistant?$request->virtual_assistant:'';
             $virtual_assistant->description = $request->description;
             $virtual_assistant->save();
+            $seller->virtual_assistant_id = $virtual_assistant->id;
         }
         
         // $user->shop->virtual_assistant = $request->virtual_assistant;
