@@ -266,6 +266,7 @@ class MarketSessionController extends Controller
             $market->duration = $request->duration;
             $market->end_date = date("Y-m-d H:i:s", strtotime('+'.$request->duration.' minutes', strtotime($startTime)));
             $market->end_session_date = $endSessionTime;
+            $market->slider_video = $request->slider_video;
 
             if($market->save()){
                 flash('Thêm mới thành công')->success();

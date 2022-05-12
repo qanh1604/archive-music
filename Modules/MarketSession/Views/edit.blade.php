@@ -95,7 +95,7 @@
                                 </a>
                             </div>
                         </div>
-                        {{--<div class="form-group row">
+                        <div class="form-group row">
                             <label class="col-lg-3 col-from-label">Video mở đầu </label>
                             <div class="input-group" data-toggle="aizuploader1" data-type="video" data-multiple="true">
                                 <div class="input-group-prepend">
@@ -105,7 +105,7 @@
                                 <input type="hidden" name="slider_video" value="{{ $seller->slider_video }}" id="slider_video_{{ $seller->id }}" class="selected-files">
                             </div>
                             <div class="file-preview box sm"></div>
-                        </div>--}}
+                        </div>
                         
                     </div>
                 </div>
