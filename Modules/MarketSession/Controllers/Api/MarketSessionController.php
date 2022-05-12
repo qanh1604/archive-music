@@ -94,14 +94,16 @@ class MarketSessionController extends Controller
             'attended.shop:id,user_id,name,logo,sliders,phone,address,meta_title,meta_description,background_img,virtual_assistant',
             'attended.seller'
         ])->has('marketSession')->orwhere('id', 53);
-        dd(date('Y-m-d H:i:s'));
+        
         if($type == 'previous')
         {
-            $marketLists = $marketLists->whereRaw('DATE(start_time) < CURDATE()');
+            // $marketLists = $marketLists->whereRaw('DATE(start_time) < CURDATE()');
+            $marketLists = $marketLists->where('start_time', '<' , date('Y-m-d H:i:s'));
         }
         else if($type == 'next')
         {
-            $marketLists = $marketLists->whereRaw('DATE(start_time) > CURDATE()');
+            $marketLists = $marketLists->where('start_time', '>', date('Y-m-d H:i:s'));
+            // $marketLists = $marketLists->whereRaw('DATE(start_time) > CURDATE()');
         }
         else
         {
