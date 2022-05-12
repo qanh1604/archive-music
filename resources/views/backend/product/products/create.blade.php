@@ -63,7 +63,7 @@
                                 <input type="text" class="form-control aiz-tag-input" name="tags[]" placeholder="{{ translate('Type and hit enter to add a tag') }}">
                                 <small class="text-muted">{{translate('This is used for search. Input those words by which cutomer can find this product.')}}</small>
                             </div>
-                        </div> --}
+                        </div> --}}
 
                         @if (addon_is_activated('pos_system'))
                         <div class="form-group row">
