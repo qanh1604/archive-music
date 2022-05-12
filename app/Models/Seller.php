@@ -20,4 +20,8 @@ class Seller extends Model
     public function seller_package(){
         return $this->belongsTo(SellerPackage::class);
     }
+
+    public function virtual_assistant(){
+        return $this->hasOne(VirtualAssistant::class);
+    }
 }

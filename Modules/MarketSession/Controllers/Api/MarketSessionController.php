@@ -15,6 +15,7 @@ use Auth;
 use CoreComponentRepository;
 use Validator;
 use DB;
+use App\Models\VirtualAssistant;
 use App\Models\User;
 use App\Models\Address;
 use App\Models\Product;
@@ -118,20 +119,24 @@ class MarketSessionController extends Controller
         foreach($marketLists as &$marketList){
             $marketList['slider_video'] = $marketList->marketSession->video_slider;
             foreach($marketList->attended as $market){
-                $videoList[] = $market->seller->open_video;
+                if($market->seller->virtual_assistant){
+                    $videoList[] = $market->seller->virtual_assistant->video;
+                }else{
+                    $videoList[] = $market->seller->open_video;
+                }
             }
             $default_video = explode(',',implode(',',array_filter(array($marketList['slider_video']))));
             $attended_video = explode(',',implode(',',array_filter($videoList)));
 
             $marketList['slider_video'] = array_merge($default_video, $attended_video);
             
-            foreach($marketList->slider_video as $video){
-                $video = Upload::where('id', $video)->first();
-                if($video){
-                    $video_update[] = $video->file_name;
-                }
-            }
-            $marketList['slider_video'] = $video_update;
+            // foreach($marketList->slider_video as $video){
+            //     $video = Upload::where('id', $video)->first();
+            //     if($video){
+            //         $video_update[] = $video->file_name;
+            //     }
+            // }
+            // $marketList['slider_video'] = $video_update;
         }
         return response()->json($marketLists, 200);
     }
