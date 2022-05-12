@@ -114,9 +114,9 @@ class MarketSessionController extends Controller
         $marketLists = $marketLists->has('marketSession')->orderBy('start_time')->paginate(15);
         
         // $marketLists = $marketLists->orderBy('start_time')->paginate(15);
-        $videoList = [];
-        $video_update = [];
         foreach($marketLists as &$marketList){
+            $videoList = [];
+            $video_update = [];
             $marketList['slider_video'] = $marketList->marketSession->video_slider;
             foreach($marketList->attended as $market){
                 if($market->seller->virtual_assistant){
