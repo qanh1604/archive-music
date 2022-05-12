@@ -130,13 +130,13 @@ class MarketSessionController extends Controller
 
             $marketList['slider_video'] = array_merge($default_video, $attended_video);
             
-            // foreach($marketList->slider_video as $video){
-            //     $video = Upload::where('id', $video)->first();
-            //     if($video){
-            //         $video_update[] = $video->file_name;
-            //     }
-            // }
-            // $marketList['slider_video'] = $video_update;
+            foreach($marketList->slider_video as $video){
+                $video = Upload::where('id', $video)->first();
+                if($video){
+                    $video_update[] = $video->file_name;
+                }
+            }
+            $marketList['slider_video'] = $video_update;
         }
         return response()->json($marketLists, 200);
     }
