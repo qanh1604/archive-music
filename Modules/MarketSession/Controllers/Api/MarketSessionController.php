@@ -102,9 +102,8 @@ class MarketSessionController extends Controller
         }
         else if($type == 'next')
         {
-            $marketLists = $marketLists->where('start_time', '>', date('Y-m-d H:i:s'))->whereHas('marketSession', function($query) {
-                return $query->where('type', '!=', 'single');
-            });
+            $marketLists = $marketLists->where('start_time', '>', date('Y-m-d H:i:s'))
+                                       ->where('end_time', '>', date('Y-m-d H:i:s'));
             // $marketLists = $marketLists->whereRaw('DATE(start_time) > CURDATE()');
         }
         else
