@@ -93,18 +93,15 @@ class MarketSessionController extends Controller
             'attended.joinerUser:id,name,email,avatar', 
             'attended.shop:id,user_id,name,logo,sliders,phone,address,meta_title,meta_description,background_img,virtual_assistant',
             'attended.seller'
-        ])->has('marketSession')->orwhere('id', 53);
+        ])->has('marketSession');
         
         if($type == 'previous')
         {
-            // $marketLists = $marketLists->whereRaw('DATE(start_time) < CURDATE()');
             $marketLists = $marketLists->where('start_time', '<' , date('Y-m-d H:i:s'));
         }
         else if($type == 'next')
         {
-            $marketLists = $marketLists->where('start_time', '>', date('Y-m-d H:i:s'))
-                                       ->where('end_time', '>', date('Y-m-d H:i:s'));
-            // $marketLists = $marketLists->whereRaw('DATE(start_time) > CURDATE()');
+            $marketLists = $marketLists->where('start_time', '>', date('Y-m-d H:i:s'));
         }
         else
         {
@@ -114,6 +111,7 @@ class MarketSessionController extends Controller
         }
         
         $marketLists = $marketLists->has('marketSession')->orderBy('start_time')->paginate(15);
+        
         // $marketLists = $marketLists->orderBy('start_time')->paginate(15);
         $videoList = [];
         $video_update = [];
