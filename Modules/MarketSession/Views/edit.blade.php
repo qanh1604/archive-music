@@ -97,12 +97,17 @@
                         </div>
                         <div class="form-group row">
                             <label class="col-lg-3 col-from-label">Video mở đầu </label>
-                            <div class="input-group" data-toggle="aizuploader1" data-type="video" data-multiple="true">
+                            <div class="input-group col-lg-8" data-toggle="aizuploader1" data-type="video" data-multiple="true">
                                 <div class="input-group-prepend">
                                     <div class="input-group-text bg-soft-secondary font-weight-medium">{{ translate('Browse')}}</div>
                                 </div>
                                 <div class="form-control file-amount">{{ translate('Choose File') }}</div>
-                                <input type="hidden" name="slider_video" value="{{ $seller->slider_video }}" id="slider_video_{{ $seller->id }}" class="selected-files">
+                                @php
+                                    $videos = explode(',',implode(',',array_filter(array($session->video_slider))));
+                                @endphp
+                                @foreach ($videos as $video)
+                                    <input type="hidden" name="slider_video" value="{{ $video }}" id="slider_video_{{ $video }}" class="selected-files">
+                                @endforeach
                             </div>
                             <div class="file-preview box sm"></div>
                         </div>
@@ -237,12 +242,10 @@
             AIZ.plugins.notify('success', 'Đã sao chép vào bộ nhớ tạm');
         });
 
-        $(document).on('ready.ft.table', function(){
-            $('[data-toggle="aizuploader1"]').each(function () {
-                $(this).attr('data-toggle', 'aizuploader');
-            });
-            AIZ.uploader.previewGenerate();
+        $('[data-toggle="aizuploader1"]').each(function () {
+            $(this).attr('data-toggle', 'aizuploader');
         });
+        AIZ.uploader.previewGenerate();
 
         $('#type').on('change', function(){
             if($(this).val() == 'weekly'){
