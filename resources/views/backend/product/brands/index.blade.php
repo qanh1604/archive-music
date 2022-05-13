@@ -4,7 +4,7 @@
 
 <div class="aiz-titlebar text-left mt-2 mb-3">
 	<div class="align-items-center">
-			<h1 class="h3">{{translate('All Brands')}}</h1>
+			<h1 class="h3">{{translate('Tất cả thương hiệu')}}</h1>
 	</div>
 </div>
 
@@ -18,7 +18,7 @@
 				<div class="col-md-4">
 					<form class="" id="sort_brands" action="" method="GET">
 						<div class="input-group input-group-sm">
-					  		<input type="text" class="form-control" id="search" name="search"@isset($sort_search) value="{{ $sort_search }}" @endisset placeholder="{{ translate('Type name & Enter') }}">
+					  		<input type="text" class="form-control" id="search" name="search"@isset($sort_search) value="{{ $sort_search }}" @endisset placeholder="{{ translate('Nhập tên & Enter') }}">
 						</div>
 					</form>
 				</div>
@@ -62,7 +62,7 @@
 	<div class="col-md-5">
 		<div class="card">
 			<div class="card-header">
-				<h5 class="mb-0 h6">{{ translate('Add New Brand') }}</h5>
+				<h5 class="mb-0 h6">{{ translate('Thêm mới thương hiệu') }}</h5>
 			</div>
 			<div class="card-body">
 				<form action="{{ route('brands.store') }}" method="POST">
@@ -88,7 +88,7 @@
 						<input type="text" class="form-control" name="meta_title" placeholder="{{translate('Meta Title')}}">
 					</div>
 					<div class="form-group mb-3">
-						<label for="name">{{translate('Meta Description')}}</label>
+						<label for="name">{{translate('Miêu tả')}}</label>
 						<textarea name="meta_description" rows="5" class="form-control"></textarea>
 					</div>
 					<div class="form-group mb-3 text-right">

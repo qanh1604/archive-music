@@ -18,7 +18,7 @@
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label class="col-md-3 col-form-label">{{translate('Parent Category')}}</label>
+                        <label class="col-md-3 col-form-label">{{translate('Danh mục')}}</label>
                         <div class="col-md-9">
                             <select class="select2 form-control aiz-selectpicker" name="parent_id" data-toggle="select2" data-placeholder="Choose ..." data-live-search="true">
                                 <option value="0">{{ translate('No Parent') }}</option>

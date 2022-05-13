@@ -4,7 +4,7 @@
 
 <div class="aiz-titlebar text-left mt-2 mb-3">
 	<div class="align-items-center">
-		<h1 class="h3">{{translate('All Attributes')}}</h1>
+		<h1 class="h3">{{translate('Tất cả thuộc tính')}}</h1>
 	</div>
 </div>
 
@@ -55,7 +55,7 @@
 	<div class="col-md-5">
 		<div class="card">
 			<div class="card-header">
-					<h5 class="mb-0 h6">{{ translate('Add New Attribute') }}</h5>
+					<h5 class="mb-0 h6">{{ translate('Thêm mới thuộc tính') }}</h5>
 			</div>
 			<div class="card-body">
 				<form action="{{ route('attributes.store') }}" method="POST">

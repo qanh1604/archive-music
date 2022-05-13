@@ -4,11 +4,11 @@
 <div class="aiz-titlebar text-left mt-2 mb-3">
     <div class="row align-items-center">
         <div class="col-md-6">
-            <h1 class="h3">{{translate('All Categories')}}</h1>
+            <h1 class="h3">{{translate('Tất cả Danh mục')}}</h1>
         </div>
         <div class="col-md-6 text-md-right">
             <a href="{{ route('categories.create') }}" class="btn btn-primary">
-                <span>{{translate('Add New category')}}</span>
+                <span>{{translate('Thêm mới danh mục')}}</span>
             </a>
         </div>
     </div>
@@ -19,7 +19,7 @@
         <form class="" id="sort_categories" action="" method="GET">
             <div class="box-inline pad-rgt pull-left">
                 <div class="" style="min-width: 200px;">
-                    <input type="text" class="form-control" id="search" name="search"@isset($sort_search) value="{{ $sort_search }}" @endisset placeholder="{{ translate('Type name & Enter') }}">
+                    <input type="text" class="form-control" id="search" name="search"@isset($sort_search) value="{{ $sort_search }}" @endisset placeholder="{{ translate('Nhập tên & Enter') }}">
                 </div>
             </div>
         </form>
@@ -30,7 +30,7 @@
                 <tr>
                     <th data-breakpoints="lg">#</th>
                     <th>{{translate('Name')}}</th>
-                    <th data-breakpoints="lg">{{ translate('Parent Category') }}</th>
+                    <th data-breakpoints="lg">{{ translate('Danh mục cha') }}</th>
                     <th data-breakpoints="lg">{{ translate('Order Level') }}</th>
                     <th data-breakpoints="lg">{{ translate('Level') }}</th>
                     <th data-breakpoints="lg">{{translate('Banner')}}</th>

@@ -4,11 +4,11 @@
 <div class="aiz-titlebar mt-2 mb-3">
 	<div class="row align-items-center">
 		<div class="col-md-6">
-			<h1 class="h3">{{translate('All Seller Packages')}}</h1>
+			<h1 class="h3">{{translate('Tất cả gói người bán')}}</h1>
 		</div>
 		<div class="col-md-6 text-md-right">
 			<a href="{{ route('seller_packages.create') }}" class="btn btn-circle btn-info">
-				<span>{{translate('Add New Package')}}</span>
+				<span>{{translate('Thêm mới gói')}}</span>
 			</a>
 		</div>
 	</div>
