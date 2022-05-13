@@ -4,11 +4,11 @@
 <div class="aiz-titlebar text-left mt-2 mb-3">
 	<div class="row align-items-center">
 		<div class="col-md-6">
-			<h1 class="h3">{{translate('All uploaded files')}}</h1>
+			<h1 class="h3">{{translate('Tất cả tệp đã tải lên')}}</h1>
 		</div>
 		<div class="col-md-6 text-md-right">
 			<a href="{{ route('uploaded-files.create') }}" class="btn btn-primary">
-				<span>{{translate('Upload New File')}}</span>
+				<span>{{translate('Tải lên tệp mới')}}</span>
 			</a>
 		</div>
 	</div>
@@ -18,7 +18,7 @@
     <form id="sort_uploads" action="">
         <div class="card-header row gutters-5">
             <div class="col-md-3">
-                <h5 class="mb-0 h6">{{translate('All files')}}</h5>
+                <h5 class="mb-0 h6">{{translate('Tất cả các tệp')}}</h5>
             </div>
             <div class="col-md-3 ml-auto mr-0">
                 <select class="form-control form-control-xs aiz-selectpicker" name="sort" onchange="sort_uploads()">
@@ -55,7 +55,7 @@
     						<div class="dropdown-menu dropdown-menu-right">
     							<a href="javascript:void(0)" class="dropdown-item" onclick="detailsInfo(this)" data-id="{{ $file->id }}">
     								<i class="las la-info-circle mr-2"></i>
-    								<span>{{ translate('Details Info') }}</span>
+    								<span>{{ translate('Chi tiết') }}</span>
     							</a>
     							<a href="{{ my_asset($file->file_name) }}" target="_blank" download="{{ $file_name }}.{{ $file->extension }}" class="dropdown-item">
     								<i class="la la-download mr-2"></i>
@@ -63,7 +63,7 @@
     							</a>
     							<a href="javascript:void(0)" class="dropdown-item" onclick="copyUrl(this)" data-url="{{ my_asset($file->file_name) }}">
     								<i class="las la-clipboard mr-2"></i>
-    								<span>{{ translate('Copy Link') }}</span>
+    								<span>{{ translate('Sao chép đường dẫn') }}</span>
     							</a>
     							<a href="javascript:void(0)" class="dropdown-item confirm-alert" data-href="{{ route('uploaded-files.destroy', $file->id ) }}" data-target="#delete-modal">
     								<i class="las la-trash mr-2"></i>
