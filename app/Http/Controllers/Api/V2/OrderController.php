@@ -191,10 +191,10 @@ class OrderController extends Controller
             || $request->payment_type == 'wallet'
             || strpos($request->payment_type, "manual_payment_") !== false // if payment type like  manual_payment_1 or  manual_payment_25 etc
         ) {
-            // NotificationUtility::sendOrderPlacedNotification($order);
+            NotificationUtility::sendOrderPlacedNotification($order);
         }
 
-        NotificationUtility::sendOrderPlacedNotification($order);
+
         return response()->json([
             'combined_order_id' => $combined_order->id,
             'result' => true,
