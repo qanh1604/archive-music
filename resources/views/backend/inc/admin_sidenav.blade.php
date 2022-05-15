@@ -913,11 +913,12 @@
                                 </a>
                             </li>
 
-                            {{-- <li class="aiz-side-nav-item">
+                            <li class="aiz-side-nav-item">
                                 <a href="{{route('currency.index')}}" class="aiz-side-nav-link">
                                     <span class="aiz-side-nav-text">{{translate('Currency')}}</span>
                                 </a>
                             </li>
+                            {{--
                             <li class="aiz-side-nav-item">
                                 <a href="{{route('tax.index')}}" class="aiz-side-nav-link {{ areActiveRoutes(['tax.index', 'tax.create', 'tax.store', 'tax.show', 'tax.edit'])}}">
                                     <span class="aiz-side-nav-text">{{translate('Vat & TAX')}}</span>
