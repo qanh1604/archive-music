@@ -2,7 +2,7 @@
 
 @section('content')
 <div class="aiz-titlebar text-left mt-2 mb-3">
-    <h1 class="mb-0 h6">{{ 'Chỉnh sửa phiên chợ' }}</h5>
+    <h1 class="mb-0 h6">Chi tiết phiên chợ</h5>
 </div>
 <div class="">
     <form class="form form-horizontal mar-top" action="{{route('market-session.update', $session->id)}}" method="POST" enctype="multipart/form-data" id="choice_form">
@@ -102,12 +102,7 @@
                                     <div class="input-group-text bg-soft-secondary font-weight-medium">{{ translate('Browse')}}</div>
                                 </div>
                                 <div class="form-control file-amount">{{ translate('Choose File') }}</div>
-                                @php
-                                    $videos = explode(',',implode(',',array_filter(array($session->video_slider))));
-                                @endphp
-                                @foreach ($videos as $video)
-                                    <input type="hidden" name="slider_video" value="{{ $video }}" id="slider_video_{{ $video }}" class="selected-files">
-                                @endforeach
+                                <input type="hidden" name="slider_video" value="{{ $session->video_slider }}" id="slider_video_" class="selected-files">
                             </div>
                             <div class="file-preview box sm"></div>
                         </div>

@@ -42,7 +42,7 @@ class MarketSessionController extends Controller
             $type = $request->type;
         }
 
-        $marketSessions = $marketSession->paginate(15);
+        $marketSessions = $marketSession->latest()->paginate(15);
         
         return view('MarketSession::index', compact('marketSessions', 'type', 'sort_search'));
     }
