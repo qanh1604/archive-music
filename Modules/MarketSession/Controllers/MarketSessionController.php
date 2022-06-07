@@ -10,6 +10,7 @@ use Modules\MarketSession\Models\MarketSessionJoiner;
 use Modules\MarketSession\Models\MarketSessionDetail;
 use Modules\MarketSession\Models\HotOrderGift;
 use App\Models\Upload;
+use App\Models\Video;
 use Artisan;
 use Auth;
 use CoreComponentRepository;
@@ -133,10 +134,64 @@ class MarketSessionController extends Controller
             $market->duration = $request->duration;
             $market->end_date = date("Y-m-d H:i:s", strtotime('+'.$request->duration.' minutes', strtotime($startTime)));
             $market->end_session_date = $endSessionTime;
-            $market->video_slider = $request->slider_video;
-
+            // $market->video_slider = $request->slider_video;
             if($market->save())
             {
+                if($request->slider_video_360){
+                    $slider_video = Upload::whereIn('id', explode(',', $request->slider_video_360))->get()->pluck('id')->toArray();
+
+                    foreach($slider_video as $videoId){
+                        $video = new Video();
+                        $video->market_id = $market->id;
+                        $video->name = 360;
+                        $video->url = Upload::where('id', $videoId)->first()->file_name;
+                        $video->file_id = $videoId;
+                        $video->type = "opening_video";
+                        $video->save();
+                    }
+                }
+
+                if($request->slider_video_480){
+                    $slider_video = Upload::whereIn('id', explode(',', $request->slider_video_360))->get()->pluck('id')->toArray();
+
+                    foreach($slider_video as $videoId){
+                        $video = new Video();
+                        $video->market_id = $market->id;
+                        $video->name = 480;
+                        $video->url = Upload::where('id', $videoId)->first()->file_name;
+                        $video->file_id = $videoId;
+                        $video->type = "opening_video";
+                        $video->save();
+                    }
+                }
+
+                if($request->slider_video_720){
+                    $slider_video = Upload::whereIn('id', explode(',', $request->slider_video_360))->get()->pluck('id')->toArray();
+
+                    foreach($slider_video as $videoId){
+                        $video = new Video();
+                        $video->market_id = $market->id;
+                        $video->name = 720;
+                        $video->url = Upload::where('id', $videoId)->first()->file_name;
+                        $video->file_id = $videoId;
+                        $video->type = "opening_video";
+                        $video->save();
+                    }
+                }
+
+                if($request->slider_video_1080){
+                    $slider_video = Upload::whereIn('id', explode(',', $request->slider_video_360))->get()->pluck('id')->toArray();
+
+                    foreach($slider_video as $videoId){
+                        $video = new Video();
+                        $video->market_id = $market->id;
+                        $video->name = 1080;
+                        $video->url = Upload::where('id', $videoId)->first()->file_name;
+                        $video->file_id = $videoId;
+                        $video->type = "opening_video";
+                        $video->save();
+                    }
+                }
                 if($market->type == 'single')
                 {   
                     $marketSessionDetail = new MarketSessionDetail();
@@ -210,14 +265,24 @@ class MarketSessionController extends Controller
 
         $sellers = collect(new MarketSessionJoiner);
 
+        $slider_video_360 = Video::where('market_id', $session->id)->where('name', '360')->where('type', 'opening_video')->get()->pluck('file_id')->toArray();
+        $slider_video_480 = Video::where('market_id', $session->id)->where('name', '480')->where('type', 'opening_video')->get()->pluck('file_id')->toArray();
+        $slider_video_720 = Video::where('market_id', $session->id)->where('name', '720')->where('type', 'opening_video')->get()->pluck('file_id')->toArray();
+        $slider_video_1080 = Video::where('market_id', $session->id)->where('name', '1080')->where('type', 'opening_video')->get()->pluck('file_id')->toArray();
+
         $sessionId = null;
-  
+        
+        $slider_video_360 = implode(',', $slider_video_360);
+        $slider_video_480 = implode(',', $slider_video_480);
+        $slider_video_720 = implode(',', $slider_video_720);
+        $slider_video_1080 = implode(',', $slider_video_1080);
+        
         if($request->session_id){
             $sessionId = $request->session_id;
             $sellers = MarketSessionJoiner::where('market_detail_id', $request->session_id)->paginate(15);
         }
 
-        return view('MarketSession::edit', compact('session', 'lang', 'marketSessionLists', 'sellers', 'sessionId'));
+        return view('MarketSession::edit', compact('session', 'lang', 'marketSessionLists', 'sellers', 'sessionId', 'slider_video_360', 'slider_video_480', 'slider_video_720', 'slider_video_1080'));
     }
 
     public function update(Request $request){

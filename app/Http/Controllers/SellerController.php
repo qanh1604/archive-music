@@ -10,6 +10,8 @@ use App\Models\Product;
 use App\Models\Order;
 use App\Models\VirtualAssistant;
 use App\Models\OrderDetail;
+use App\Models\Video;
+use App\Models\Upload;
 use Illuminate\Support\Facades\Hash;
 use App\Notifications\EmailVerificationNotification;
 use Cache;
@@ -149,9 +151,56 @@ class SellerController extends Controller
 
             $seller = new Seller;
             $seller->user_id = $user->id;
-            $seller->open_video = $request->open_video;
 
             if ($seller->save()) {
+                if($request->open_video_360){
+                    $open_video = Upload::where('id', $request->open_video_360)->first();
+
+                    $video = new Video();
+                    $video->seller_id = $seller->id;
+                    $video->name = 360;
+                    $video->url = $open_video->file_name;
+                    $video->file_id = $open_video->id;
+                    $video->type = "seller_video";
+                    $video->save();
+                }
+
+                if($request->open_video_480){
+                    $open_video = Upload::where('id', $request->open_video_480)->first();
+
+                    $video = new Video();
+                    $video->seller_id = $seller->id;
+                    $video->name = 480;
+                    $video->url = $open_video->file_name;
+                    $video->file_id = $open_video->id;
+                    $video->type = "seller_video";
+                    $video->save();
+                }
+
+                if($request->open_video_720){
+                    $open_video = Upload::where('id', $request->open_video_720)->first();
+
+                    $video = new Video();
+                    $video->seller_id = $seller->id;
+                    $video->name = 720;
+                    $video->url = $open_video->file_name;
+                    $video->file_id = $open_video->id;
+                    $video->type = "seller_video";
+                    $video->save();
+                }
+
+                if($request->open_video_1080){
+                    $open_video = Upload::where('id', $request->open_video_1080)->first();
+
+                    $video = new Video();
+                    $video->seller_id = $seller->id;
+                    $video->name = 1080;
+                    $video->url = $open_video->file_name;
+                    $video->file_id = $open_video->id;
+                    $video->type = "seller_video";
+                    $video->save();
+                }
+
                 $shop = new Shop;
                 $shop->user_id = $user->id;
                 $shop->name = $request->shop_name;
@@ -189,9 +238,66 @@ class SellerController extends Controller
      */
     public function edit($id)
     {
+        $open_video_360 = "";
+        $open_video_480 = "";
+        $open_video_720 = "";
+        $open_video_1080 = "";
+        $virtual_assistant_360 = "";
+        $virtual_assistant_480 = "";
+        $virtual_assistant_720 = "";
+        $virtual_assistant_1080 = "";
+
         $seller = Seller::findOrFail(decrypt($id));
+
+        $open_video_360 = Video::where('seller_id', $seller->id)->where('name', '360')->where('type', 'seller_video')->first();
+        if($open_video_360){
+            $open_video_360 = $open_video_360->file_id;
+        }
+        $open_video_480 = Video::where('seller_id', $seller->id)->where('name', '480')->where('type', 'seller_video')->first();
+        if($open_video_480){
+            $open_video_480 = $open_video_480->file_id;
+        }
+        $open_video_720 = Video::where('seller_id', $seller->id)->where('name', '720')->where('type', 'seller_video')->first();
+        if($open_video_720){
+            $open_video_720 = $open_video_720->file_id;
+        }
+        $open_video_1080 = Video::where('seller_id', $seller->id)->where('name', '1080')->where('type', 'seller_video')->first();
+        if($open_video_1080){
+            $open_video_1080 = $open_video_1080->file_id;
+        }
+
         $virtual_assistant = VirtualAssistant::where('id', $seller->virtual_assistant_id)->first();
-        return view('backend.sellers.edit', compact('seller', 'virtual_assistant'));
+
+        if($virtual_assistant){
+            $virtual_assistant_360 = Video::where('seller_id', $seller->id)->where('name', '360')->where('type', 'virtual_video')->first();
+            if($virtual_assistant_360){
+                $virtual_assistant_360 = $virtual_assistant_360->file_id;
+            }
+            $virtual_assistant_480 = Video::where('seller_id', $seller->id)->where('name', '480')->where('type', 'virtual_video')->first();
+            if($virtual_assistant_480){
+                $virtual_assistant_480 = $virtual_assistant_480->file_id;
+            }
+            $virtual_assistant_720 = Video::where('seller_id', $seller->id)->where('name', '720')->where('type', 'virtual_video')->first();
+            if($virtual_assistant_720){
+                $virtual_assistant_720 = $virtual_assistant_720->file_id;
+            }
+            $virtual_assistant_1080 = Video::where('seller_id', $seller->id)->where('name', '1080')->where('type', 'virtual_video')->first();
+            if($virtual_assistant_1080){
+                $virtual_assistant_1080 = $virtual_assistant_1080->file_id;
+            }
+        }
+        return view('backend.sellers.edit', compact(
+            'seller', 
+            'virtual_assistant', 
+            'open_video_360', 
+            'open_video_480', 
+            'open_video_720', 
+            'open_video_1080',
+            'virtual_assistant_360',
+            'virtual_assistant_480',
+            'virtual_assistant_720',
+            'virtual_assistant_1080'
+        ));
     }
 
     /**
@@ -209,7 +315,99 @@ class SellerController extends Controller
         $user->email = $request->email;
         $user->shop->meta_description = $request->meta_description;
         $user->shop->background_img = $request->background_img;
-        $seller->open_video = $request->open_video;
+
+        if($request->open_video_360){
+            $video_360 = Video::where('seller_id', $seller->id)->where('name', '360')->where('type', 'seller_video')->where('file_id', $request->open_video_360)->first();
+            if($video_360){
+                $video_360->file_id = $request->open_video_360;
+                $video_360->save();
+            }else{
+                $open_video = Upload::where('id', $request->open_video_360)->first();
+
+                $video = new Video();
+                $video->seller_id = $seller->id;
+                $video->name = 360;
+                $video->url = $open_video->file_name;
+                $video->file_id = $open_video->id;
+                $video->type = "seller_video";
+                $video->save();
+            }
+        }else{
+            $video_360 = Video::where('seller_id', $seller->id)->where('name', '360')->where('type', 'seller_video')->first();
+            if($video_360){
+                $video_360->delete();
+            }
+        }
+
+        if($request->open_video_480){
+            $video_480 = Video::where('seller_id', $seller->id)->where('name', '480')->where('type', 'seller_video')->where('file_id', $request->open_video_480)->first();
+            if($video_480){
+                $video_480->file_id = $request->open_video_480;
+                $video_480->save();
+            }else{
+                $open_video = Upload::where('id', $request->open_video_480)->first();
+
+                $video = new Video();
+                $video->seller_id = $seller->id;
+                $video->name = 480;
+                $video->url = $open_video->file_name;
+                $video->file_id = $open_video->id;
+                $video->type = "seller_video";
+                $video->save();
+            }
+        }else{
+            $video_480 = Video::where('seller_id', $seller->id)->where('name', '480')->where('type', 'seller_video')->first();
+            if($video_480){
+                $video_480->delete();
+            }
+        }
+
+        if($request->open_video_720){
+            $video_720 = Video::where('seller_id', $seller->id)->where('name', '720')->where('type', 'seller_video')->where('file_id', $request->open_video_720)->first();
+            if($video_720){
+                $video_720->file_id = $request->open_video_720;
+                $video_720->save();
+            }else{
+                $open_video = Upload::where('id', $request->open_video_720)->first();
+
+                $video = new Video();
+                $video->seller_id = $seller->id;
+                $video->name = 720;
+                $video->url = $open_video->file_name;
+                $video->file_id = $open_video->id;
+                $video->type = "seller_video";
+                $video->save();
+            }
+        }else{
+            $video_720 = Video::where('seller_id', $seller->id)->where('name', '720')->where('type', 'seller_video')->first();
+            if($video_720){
+                $video_720->delete();
+            }
+        }
+
+        if($request->open_video_1080){
+            $video_1080 = Video::where('seller_id', $seller->id)->where('name', '1080')->where('type', 'seller_video')->where('file_id', $request->open_video_1080)->first();
+            if($video_1080){
+                $video_1080->file_id = $request->open_video_1080;
+                $video_1080->save();
+            }else{
+                $open_video = Upload::where('id', $request->open_video_1080)->first();
+
+                $video = new Video();
+                $video->seller_id = $seller->id;
+                $video->name = 1080;
+                $video->url = $open_video->file_name;
+                $video->file_id = $open_video->id;
+                $video->type = "seller_video";
+                $video->save();
+            }
+        }else{
+            $video_1080 = Video::where('seller_id', $seller->id)->where('name', '1080')->where('type', 'seller_video')->first();
+            if($video_1080){
+                $video_1080->delete();
+            }
+        }
+
         $virtual_assistant = VirtualAssistant::where('id', $seller->virtual_assistant_id)->first();
         if($virtual_assistant){
             $virtual_assistant->seller_id = $seller->id;
@@ -217,16 +415,185 @@ class SellerController extends Controller
             $virtual_assistant->description = $request->description;
             $virtual_assistant->save();
             $seller->virtual_assistant_id = $virtual_assistant->id;
+
+            if($request->virtual_assistant_360){
+                $virtual_360 = Video::where('seller_id', $seller->id)->where('name', '360')->where('type', 'virtual_video')->where('file_id', $request->virtual_assistant_360)->first();
+                if($virtual_360){
+                    $virtual_360->file_id = $request->virtual_assistant_360;
+                    $virtual_360->save();
+                }else{
+                    $virtual_assistant_360 = Upload::where('id', $request->virtual_assistant_360)->first();
+
+                    $video = new Video();
+                    $video->seller_id = $seller->id;
+                    $video->name = 360;
+                    $video->url = $virtual_assistant_360->file_name;
+                    $video->file_id = $virtual_assistant_360->id;
+                    $video->type = "virtual_video";
+                    $video->save();
+                }
+            }else{
+                $virtual_360 = Video::where('seller_id', $seller->id)->where('name', '360')->where('type', 'virtual_video')->first();
+                if($virtual_360){
+                    $virtual_360->delete();
+                }
+            }
+    
+            if($request->virtual_assistant_480){
+                $virtual_480 = Video::where('seller_id', $seller->id)->where('name', '480')->where('type', 'virtual_video')->where('file_id', $request->virtual_assistant_480)->first();
+                if($virtual_480){
+                    $virtual_480->file_id = $request->virtual_assistant_480;
+                    $virtual_480->save();
+                }else{
+                    $virtual_assistant_480 = Upload::where('id', $request->virtual_assistant_480)->first();
+
+                    $video = new Video();
+                    $video->seller_id = $seller->id;
+                    $video->name = 480;
+                    $video->url = $virtual_assistant_480->file_name;
+                    $video->file_id = $virtual_assistant_480->id;
+                    $video->type = "virtual_video";
+                    $video->save();
+                }
+            }else{
+                $virtual_480 = Video::where('seller_id', $seller->id)->where('name', '480')->where('type', 'virtual_video')->first();
+                if($virtual_480){
+                    $virtual_480->delete();
+                }
+            }
+    
+            if($request->virtual_assistant_720){
+                $virtual_720 = Video::where('seller_id', $seller->id)->where('name', '720')->where('type', 'virtual_video')->where('file_id', $request->virtual_assistant_720)->first();
+                if($virtual_720){
+                    $virtual_720->file_id = $request->virtual_assistant_720;
+                    $virtual_720->save();
+                }else{
+                    $virtual_assistant_720 = Upload::where('id', $request->virtual_assistant_720)->first();
+
+                    $video = new Video();
+                    $video->seller_id = $seller->id;
+                    $video->name = 720;
+                    $video->url = $virtual_assistant_720->file_name;
+                    $video->file_id = $virtual_assistant_720->id;
+                    $video->type = "virtual_video";
+                    $video->save();
+                }
+            }else{
+                $virtual_720 = Video::where('seller_id', $seller->id)->where('name', '720')->where('type', 'virtual_video')->first();
+                if($virtual_720){
+                    $virtual_720->delete();
+                }
+            }
+    
+            if($request->virtual_assistant_1080){
+                $virtual_1080 = Video::where('seller_id', $seller->id)->where('name', '1080')->where('type', 'virtual_video')->where('file_id', $request->virtual_assistant_1080)->first();
+                if($virtual_1080){
+                    $virtual_1080->file_id = $request->virtual_assistant_1080;
+                    $virtual_1080->save();
+                }else{
+                    $virtual_assistant_1080 = Upload::where('id', $request->virtual_assistant_1080)->first();
+
+                    $video = new Video();
+                    $video->seller_id = $seller->id;
+                    $video->name = 1080;
+                    $video->url = $virtual_assistant_1080->file_name;
+                    $video->file_id = $virtual_assistant_1080->id;
+                    $video->type = "virtual_video";
+                    $video->save();
+                }
+            }else{
+                $virtual_1080 = Video::where('seller_id', $seller->id)->where('name', '1080')->where('type', 'virtual_video')->first();
+                if($virtual_1080){
+                    $virtual_1080->delete();
+                }
+            }
+
         }else {
-            $virtual_assistant = new VirtualAssistant;
-            $virtual_assistant->seller_id = $seller->id;
-            $virtual_assistant->video = $request->virtual_assistant?$request->virtual_assistant:'';
-            $virtual_assistant->description = $request->description;
-            $virtual_assistant->save();
-            $seller->virtual_assistant_id = $virtual_assistant->id;
+            if(!$request->virtual_assistant_360 && !$request->virtual_assistant_480 && !$request->virtual_assistant_720 && !$request->virtual_assistant_1080 && !$request->description){
+                $virtual_ = VirtualAssistant::where('seller_id', $seller->id)->first();
+                if($virtual_){
+                    $virtual_->delete();
+                }
+                $seller->virtual_assistant_id = null;
+            }else{
+                $virtual_assistant = new VirtualAssistant;
+                $virtual_assistant->seller_id = $seller->id;
+                $virtual_assistant->video = $request->virtual_assistant?$request->virtual_assistant:'';
+                $virtual_assistant->description = $request->description;
+                $virtual_assistant->save();
+                $seller->virtual_assistant_id = $virtual_assistant->id;
+    
+                if($request->virtual_assistant_360){
+                    $virtual_assistant_360 = Upload::where('id', $request->virtual_assistant_360)->first();
+    
+                    $video = new Video();
+                    $video->seller_id = $seller->id;
+                    $video->name = 360;
+                    $video->url = $virtual_assistant_360->file_name;
+                    $video->file_id = $virtual_assistant_360->id;
+                    $video->type = "virtual_video";
+                    $video->save();
+                }else{
+                    $virtual_360 = Video::where('seller_id', $seller->id)->where('name', '360')->where('type', 'virtual_video')->first();
+                    if($virtual_360){
+                        $virtual_360->delete();
+                    }
+                }
+    
+                if($request->virtual_assistant_480){
+                    $virtual_assistant_480 = Upload::where('id', $request->virtual_assistant_480)->first();
+    
+                    $video = new Video();
+                    $video->seller_id = $seller->id;
+                    $video->name = 480;
+                    $video->url = $virtual_assistant_480->file_name;
+                    $video->file_id = $virtual_assistant_480->id;
+                    $video->type = "virtual_video";
+                    $video->save();
+                }else{
+                    $virtual_480 = Video::where('seller_id', $seller->id)->where('name', '480')->where('type', 'virtual_video')->first();
+                    if($virtual_480){
+                        $virtual_480->delete();
+                    }
+                }
+    
+                if($request->virtual_assistant_720){
+                    $virtual_assistant_720 = Upload::where('id', $request->virtual_assistant_720)->first();
+    
+                    $video = new Video();
+                    $video->seller_id = $seller->id;
+                    $video->name = 720;
+                    $video->url = $virtual_assistant_720->file_name;
+                    $video->file_id = $virtual_assistant_720->id;
+                    $video->type = "virtual_video";
+                    $video->save();
+                }else{
+                    $virtual_720 = Video::where('seller_id', $seller->id)->where('name', '720')->where('type', 'virtual_video')->first();
+                    if($virtual_720){
+                        $virtual_720->delete();
+                    }
+                }
+    
+                if($request->virtual_assistant_1080){
+                    $virtual_assistant_1080 = Upload::where('id', $request->virtual_assistant_1080)->first();
+    
+                    $video = new Video();
+                    $video->seller_id = $seller->id;
+                    $video->name = 1080;
+                    $video->url = $virtual_assistant_1080->file_name;
+                    $video->file_id = $virtual_assistant_1080->id;
+                    $video->type = "virtual_video";
+                    $video->save();
+                }else{
+                    $virtual_1080 = Video::where('seller_id', $seller->id)->where('name', '1080')->where('type', 'virtual_video')->first();
+                    if($virtual_1080){
+                        $virtual_1080->delete();
+                    }
+                }
+            }
         }
+        
         $seller->save();
-        // $user->shop->virtual_assistant = $request->virtual_assistant;
 
         if (strlen($request->password) > 0) {
             $user->password = Hash::make($request->password);

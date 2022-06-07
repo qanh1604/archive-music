@@ -22,6 +22,7 @@ use App\Models\Product;
 use App\Models\Seller;
 use App\Models\Category;
 use App\Models\Upload;
+use App\Models\Video;
 use Illuminate\Support\Str;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Collection;
@@ -108,35 +109,42 @@ class MarketSessionController extends Controller
         {
             $marketLists = $marketLists->where('start_time', '<=', date('Y-m-d H:i:s'))
                         ->where('end_time', '>=', date('Y-m-d H:i:s'));
-            // $marketLists = $marketLists->whereRaw('DATE(start_time) = CURDATE()');
         }
         
         $marketLists = $marketLists->has('marketSession')->orderBy('start_time')->paginate(15);
+
+        $videoList = [];
+        $video_update = [];
         
-        // $marketLists = $marketLists->orderBy('start_time')->paginate(15);
         foreach($marketLists as &$marketList){
-            $videoList = [];
-            $video_update = [];
-            $marketList['slider_video'] = $marketList->marketSession->video_slider;
+            $videos_360 = Video::where('market_id', $marketList->market_id)->where('type', "opening_video")->where('name', "360")->get()->pluck('url')->toArray();
+            $videos_480 = Video::where('market_id', $marketList->market_id)->where('type', "opening_video")->where('name', "480")->get()->pluck('url')->toArray();
+            $videos_720 = Video::where('market_id', $marketList->market_id)->where('type', "opening_video")->where('name', "720")->get()->pluck('url')->toArray();
+            $videos_1080 = Video::where('market_id', $marketList->market_id)->where('type', "opening_video")->where('name', "1080")->get()->pluck('url')->toArray();
+
             foreach($marketList->attended as $market){
                 if($market->seller->virtual_assistant){
-                    $videoList[] = $market->seller->virtual_assistant->video;
-                }else{
-                    $videoList[] = $market->seller->open_video;
-                }
-            }
-            $default_video = explode(',',implode(',',array_filter(array($marketList['slider_video']))));
-            $attended_video = explode(',',implode(',',array_filter($videoList)));
+                    $virtual_360 = Video::where('seller_id', $market->seller->id)->where('type', "virtual_video")->where('name', "360")->get()->pluck('url')->toArray();
+                    $virtual_480 = Video::where('seller_id', $market->seller->id)->where('type', "virtual_video")->where('name', "480")->get()->pluck('url')->toArray();
+                    $virtual_720 = Video::where('seller_id', $market->seller->id)->where('type', "virtual_video")->where('name', "720")->get()->pluck('url')->toArray();
+                    $virtual_1080 = Video::where('seller_id', $market->seller->id)->where('type', "virtual_video")->where('name', "1080")->get()->pluck('url')->toArray();
 
-            $marketList['slider_video'] = array_merge($default_video, $attended_video);
-            
-            foreach($marketList->slider_video as $video){
-                $video = Upload::where('id', $video)->first();
-                if($video){
-                    $video_update[] = $video->file_name;
+                    $marketList->video_slider_360 = array_merge($videos_360, $virtual_360);
+                    $marketList->video_slider_480 = array_merge($videos_480, $virtual_480);
+                    $marketList->video_slider_720 = array_merge($videos_720, $virtual_720);
+                    $marketList->video_slider_1080 = array_merge($videos_1080, $virtual_1080);
+                }else{
+                    $seller_video_360 = Video::where('seller_id', $market->seller->id)->where('type', "seller_video")->where('name', "360")->get()->pluck('url')->toArray();
+                    $seller_video_480 = Video::where('seller_id', $market->seller->id)->where('type', "seller_video")->where('name', "480")->get()->pluck('url')->toArray();
+                    $seller_video_720 = Video::where('seller_id', $market->seller->id)->where('type', "seller_video")->where('name', "720")->get()->pluck('url')->toArray();
+                    $seller_video_1080 = Video::where('seller_id', $market->seller->id)->where('type', "seller_video")->where('name', "1080")->get()->pluck('url')->toArray();
+                    
+                    $marketList->video_slider_360 = array_merge($videos_360, $seller_video_360);
+                    $marketList->video_slider_480 = array_merge($videos_480, $seller_video_480);
+                    $marketList->video_slider_720 = array_merge($videos_720, $seller_video_720);
+                    $marketList->video_slider_1080 = array_merge($videos_1080, $seller_video_1080);
                 }
             }
-            $marketList['slider_video'] = $video_update;
         }
         return response()->json($marketLists, 200);
     }

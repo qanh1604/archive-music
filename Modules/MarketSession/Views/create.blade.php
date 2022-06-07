@@ -73,13 +73,46 @@
                             </div>
                         </div>
                         <div class="form-group row">
-                            <label class="col-lg-3 col-from-label">Video mở đầu </label>
+                            <label class="col-lg-3 col-from-label">Video mở đầu (480 x 360)</label>
                             <div class="input-group col-lg-8" data-toggle="aizuploader" data-type="video" data-multiple="true">
                                 <div class="input-group-prepend">
                                     <div class="input-group-text bg-soft-secondary font-weight-medium">{{ translate('Browse')}}</div>
                                 </div>
                                 <div class="form-control file-amount">{{ translate('Choose File') }}</div>
-                                <input type="hidden" name="slider_video" value="" id="slider_video_" class="selected-files">
+                                <input type="hidden" name="slider_video_360" value="" class="selected-files">
+                            </div>
+                            <div class="file-preview box sm"></div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-lg-3 col-from-label">Video mở đầu (858 x 480)</label>
+                            <div class="input-group col-lg-8" data-toggle="aizuploader" data-type="video" data-multiple="true">
+                                <div class="input-group-prepend">
+                                    <div class="input-group-text bg-soft-secondary font-weight-medium">{{ translate('Browse')}}</div>
+                                </div>
+                                <div class="form-control file-amount">{{ translate('Choose File') }}</div>
+                                <input type="hidden" name="slider_video_480" value="" class="selected-files">
+                            </div>
+                            <div class="file-preview box sm"></div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-lg-3 col-from-label">Video mở đầu (1280 x 720)</label>
+                            <div class="input-group col-lg-8" data-toggle="aizuploader" data-type="video" data-multiple="true">
+                                <div class="input-group-prepend">
+                                    <div class="input-group-text bg-soft-secondary font-weight-medium">{{ translate('Browse')}}</div>
+                                </div>
+                                <div class="form-control file-amount">{{ translate('Choose File') }}</div>
+                                <input type="hidden" name="slider_video_720" value="" class="selected-files">
+                            </div>
+                            <div class="file-preview box sm"></div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-lg-3 col-from-label">Video mở đầu (1920 x 1080)</label>
+                            <div class="input-group col-lg-8" data-toggle="aizuploader" data-type="video" data-multiple="true">
+                                <div class="input-group-prepend">
+                                    <div class="input-group-text bg-soft-secondary font-weight-medium">{{ translate('Browse')}}</div>
+                                </div>
+                                <div class="form-control file-amount">{{ translate('Choose File') }}</div>
+                                <input type="hidden" name="slider_video_1080" value="" class="selected-files">
                             </div>
                             <div class="file-preview box sm"></div>
                         </div>

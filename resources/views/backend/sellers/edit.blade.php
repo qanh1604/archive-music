@@ -61,20 +61,59 @@
                     </div>
                 </div>
                 <div class="form-group row">
-                    <label class="col-md-3 col-form-label" for="shopOpenVideo">Open Video</label>
+                    <label class="col-md-3 col-form-label" for="shopOpenVideo">Video (480 x 360)</label>
                     <div class="col-md-9">
                         <div class="input-group" data-toggle="aizuploader" data-type="video">
                             <div class="input-group-prepend">
                                 <div class="input-group-text bg-soft-secondary font-weight-medium">{{ translate('Browse')}}</div>
                             </div>
                             <div class="form-control file-amount">{{ translate('Choose File') }}</div>
-                            <input type="hidden" name="open_video" value="{{ $seller->open_video }}" class="selected-files">
+                            <input type="hidden" name="open_video_360" value="{{ $open_video_360?$open_video_360:'' }}" class="selected-files">
                         </div>
                         <div class="file-preview box sm"></div>
                     </div>
                 </div>
                 <div class="form-group row">
-                    <label class="col-md-3 col-form-label" for="shopVAssistant">Video trợ lý ảo</label>
+                    <label class="col-md-3 col-form-label" for="shopOpenVideo">Video (858 x 480)</label>
+                    <div class="col-md-9">
+                        <div class="input-group" data-toggle="aizuploader" data-type="video">
+                            <div class="input-group-prepend">
+                                <div class="input-group-text bg-soft-secondary font-weight-medium">{{ translate('Browse')}}</div>
+                            </div>
+                            <div class="form-control file-amount">{{ translate('Choose File') }}</div>
+                            <input type="hidden" name="open_video_480" value="{{ $open_video_480?$open_video_480:'' }}" class="selected-files">
+                        </div>
+                        <div class="file-preview box sm"></div>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-md-3 col-form-label" for="shopOpenVideo">Video (1280 x 720)</label>
+                    <div class="col-md-9">
+                        <div class="input-group" data-toggle="aizuploader" data-type="video">
+                            <div class="input-group-prepend">
+                                <div class="input-group-text bg-soft-secondary font-weight-medium">{{ translate('Browse')}}</div>
+                            </div>
+                            <div class="form-control file-amount">{{ translate('Choose File') }}</div>
+                            <input type="hidden" name="open_video_720" value="{{ $open_video_720?$open_video_720:'' }}" class="selected-files">
+                        </div>
+                        <div class="file-preview box sm"></div>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-md-3 col-form-label" for="shopOpenVideo">Video (1920 x 1080)</label>
+                    <div class="col-md-9">
+                        <div class="input-group" data-toggle="aizuploader" data-type="video">
+                            <div class="input-group-prepend">
+                                <div class="input-group-text bg-soft-secondary font-weight-medium">{{ translate('Browse')}}</div>
+                            </div>
+                            <div class="form-control file-amount">{{ translate('Choose File') }}</div>
+                            <input type="hidden" name="open_video_1080" value="{{ $open_video_1080?$open_video_1080:'' }}" class="selected-files">
+                        </div>
+                        <div class="file-preview box sm"></div>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-md-3 col-form-label" for="shopVAssistant">Video trợ lý ảo (480 x 360)</label>
                     <div class="col-md-9">
                         <div class="input-group" data-toggle="aizuploader" data-type="video">
                             <div class="input-group-prepend">
@@ -82,9 +121,63 @@
                             </div>
                             <div class="form-control file-amount">{{ translate('Choose File') }}</div>
                             @if(isset($virtual_assistant))
-                                <input type="hidden" name="virtual_assistant" class="selected-files" value="{{ $virtual_assistant->video }}">
+                                <input type="hidden" name="virtual_assistant_360" class="selected-files" value="{{ $virtual_assistant_360 }}">
                             @else
-                                <input type="hidden" name="virtual_assistant" class="selected-files" value="">
+                                <input type="hidden" name="virtual_assistant_360" class="selected-files" value="">
+                            @endif
+                        </div>
+                        <div class="file-preview box sm">
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-md-3 col-form-label" for="shopVAssistant">Video trợ lý ảo (858 x 480)</label>
+                    <div class="col-md-9">
+                        <div class="input-group" data-toggle="aizuploader" data-type="video">
+                            <div class="input-group-prepend">
+                                <div class="input-group-text bg-soft-secondary font-weight-medium">{{ translate('Browse')}}</div>
+                            </div>
+                            <div class="form-control file-amount">{{ translate('Choose File') }}</div>
+                            @if(isset($virtual_assistant))
+                                <input type="hidden" name="virtual_assistant_480" class="selected-files" value="{{ $virtual_assistant_480 }}">
+                            @else
+                                <input type="hidden" name="virtual_assistant_480" class="selected-files" value="">
+                            @endif
+                        </div>
+                        <div class="file-preview box sm">
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-md-3 col-form-label" for="shopVAssistant">Video trợ lý ảo (1280 x 720)</label>
+                    <div class="col-md-9">
+                        <div class="input-group" data-toggle="aizuploader" data-type="video">
+                            <div class="input-group-prepend">
+                                <div class="input-group-text bg-soft-secondary font-weight-medium">{{ translate('Browse')}}</div>
+                            </div>
+                            <div class="form-control file-amount">{{ translate('Choose File') }}</div>
+                            @if(isset($virtual_assistant))
+                                <input type="hidden" name="virtual_assistant_720" class="selected-files" value="{{ $virtual_assistant_720 }}">
+                            @else
+                                <input type="hidden" name="virtual_assistant_720" class="selected-files" value="">
+                            @endif
+                        </div>
+                        <div class="file-preview box sm">
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-md-3 col-form-label" for="shopVAssistant">Video trợ lý ảo (1920 x 1080)</label>
+                    <div class="col-md-9">
+                        <div class="input-group" data-toggle="aizuploader" data-type="video">
+                            <div class="input-group-prepend">
+                                <div class="input-group-text bg-soft-secondary font-weight-medium">{{ translate('Browse')}}</div>
+                            </div>
+                            <div class="form-control file-amount">{{ translate('Choose File') }}</div>
+                            @if(isset($virtual_assistant))
+                                <input type="hidden" name="virtual_assistant_1080" class="selected-files" value="{{ $virtual_assistant_1080 }}">
+                            @else
+                                <input type="hidden" name="virtual_assistant_1080" class="selected-files" value="">
                             @endif
                         </div>
                         <div class="file-preview box sm">

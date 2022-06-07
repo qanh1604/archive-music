@@ -33,14 +33,53 @@
                     </div>
                 </div>
                 <div class="form-group row">
-                    <label class="col-md-3 col-form-label" for="shopOpenVideo">Video</label>
+                    <label class="col-md-3 col-form-label" for="shopOpenVideo">Video (480 x 360)</label>
                     <div class="col-md-9">
                         <div class="input-group" data-toggle="aizuploader" data-type="video">
                             <div class="input-group-prepend">
                                 <div class="input-group-text bg-soft-secondary font-weight-medium">{{ translate('Browse')}}</div>
                             </div>
                             <div class="form-control file-amount">{{ translate('Choose File') }}</div>
-                            <input type="hidden" name="open_video" class="selected-files">
+                            <input type="hidden" name="open_video_360" class="selected-files">
+                        </div>
+                        <div class="file-preview box sm"></div>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-md-3 col-form-label" for="shopOpenVideo">Video (858 x 480)</label>
+                    <div class="col-md-9">
+                        <div class="input-group" data-toggle="aizuploader" data-type="video">
+                            <div class="input-group-prepend">
+                                <div class="input-group-text bg-soft-secondary font-weight-medium">{{ translate('Browse')}}</div>
+                            </div>
+                            <div class="form-control file-amount">{{ translate('Choose File') }}</div>
+                            <input type="hidden" name="open_video_480" class="selected-files">
+                        </div>
+                        <div class="file-preview box sm"></div>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-md-3 col-form-label" for="shopOpenVideo">Video (1280 x 720)</label>
+                    <div class="col-md-9">
+                        <div class="input-group" data-toggle="aizuploader" data-type="video">
+                            <div class="input-group-prepend">
+                                <div class="input-group-text bg-soft-secondary font-weight-medium">{{ translate('Browse')}}</div>
+                            </div>
+                            <div class="form-control file-amount">{{ translate('Choose File') }}</div>
+                            <input type="hidden" name="open_video_720" class="selected-files">
+                        </div>
+                        <div class="file-preview box sm"></div>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-md-3 col-form-label" for="shopOpenVideo">Video (1920 x 1080)</label>
+                    <div class="col-md-9">
+                        <div class="input-group" data-toggle="aizuploader" data-type="video">
+                            <div class="input-group-prepend">
+                                <div class="input-group-text bg-soft-secondary font-weight-medium">{{ translate('Browse')}}</div>
+                            </div>
+                            <div class="form-control file-amount">{{ translate('Choose File') }}</div>
+                            <input type="hidden" name="open_video_1080" class="selected-files">
                         </div>
                         <div class="file-preview box sm"></div>
                     </div>
