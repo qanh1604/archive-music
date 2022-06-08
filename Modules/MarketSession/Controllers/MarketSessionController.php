@@ -152,7 +152,7 @@ class MarketSessionController extends Controller
                 }
 
                 if($request->slider_video_480){
-                    $slider_video = Upload::whereIn('id', explode(',', $request->slider_video_360))->get()->pluck('id')->toArray();
+                    $slider_video = Upload::whereIn('id', explode(',', $request->slider_video_480))->get()->pluck('id')->toArray();
 
                     foreach($slider_video as $videoId){
                         $video = new Video();
@@ -166,7 +166,7 @@ class MarketSessionController extends Controller
                 }
 
                 if($request->slider_video_720){
-                    $slider_video = Upload::whereIn('id', explode(',', $request->slider_video_360))->get()->pluck('id')->toArray();
+                    $slider_video = Upload::whereIn('id', explode(',', $request->slider_video_720))->get()->pluck('id')->toArray();
 
                     foreach($slider_video as $videoId){
                         $video = new Video();
@@ -180,7 +180,7 @@ class MarketSessionController extends Controller
                 }
 
                 if($request->slider_video_1080){
-                    $slider_video = Upload::whereIn('id', explode(',', $request->slider_video_360))->get()->pluck('id')->toArray();
+                    $slider_video = Upload::whereIn('id', explode(',', $request->slider_video_1080))->get()->pluck('id')->toArray();
 
                     foreach($slider_video as $videoId){
                         $video = new Video();
