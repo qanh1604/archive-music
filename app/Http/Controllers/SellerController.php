@@ -508,6 +508,14 @@ class SellerController extends Controller
                 }
             }
 
+            if(!$request->virtual_assistant_360 && !$request->virtual_assistant_480 && !$request->virtual_assistant_720 && !$request->virtual_assistant_1080 && !$request->description){
+                $virtual_ = VirtualAssistant::where('seller_id', $seller->id)->first();
+                if($virtual_){
+                    $virtual_->delete();
+                }
+                $seller->virtual_assistant_id = null;
+            }
+
         }else {
             if(!$request->virtual_assistant_360 && !$request->virtual_assistant_480 && !$request->virtual_assistant_720 && !$request->virtual_assistant_1080 && !$request->description){
                 $virtual_ = VirtualAssistant::where('seller_id', $seller->id)->first();
