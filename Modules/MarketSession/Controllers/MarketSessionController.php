@@ -138,7 +138,7 @@ class MarketSessionController extends Controller
             {
                 if($request->slider_video_360){
                     $slider_videos = explode(',', $request->slider_video_360);
-                    foreach(array_reverse($slider_videos) as $videoId){
+                    foreach($slider_videos as $videoId){
                         $video = new Video();
                         $video->market_id = $market->id;
                         $video->name = 360;
@@ -151,7 +151,7 @@ class MarketSessionController extends Controller
 
                 if($request->slider_video_480){
                     $slider_videos = explode(',', $request->slider_video_480);
-                    foreach(array_reverse($slider_videos) as $videoId){
+                    foreach($slider_videos as $videoId){
                         $video = new Video();
                         $video->market_id = $market->id;
                         $video->name = 480;
@@ -164,7 +164,7 @@ class MarketSessionController extends Controller
 
                 if($request->slider_video_720){
                     $slider_videos = explode(',', $request->slider_video_720);
-                    foreach(array_reverse($slider_videos) as $videoId){
+                    foreach($slider_videos as $videoId){
                         $video = new Video();
                         $video->market_id = $market->id;
                         $video->name = 720;
@@ -177,7 +177,7 @@ class MarketSessionController extends Controller
 
                 if($request->slider_video_1080){
                     $slider_videos = explode(',', $request->slider_video_1080);
-                    foreach(array_reverse($slider_videos) as $videoId){
+                    foreach($slider_videos as $videoId){
                         $video = new Video();
                         $video->market_id = $market->id;
                         $video->name = 1080;
