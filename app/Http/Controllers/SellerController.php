@@ -318,11 +318,15 @@ class SellerController extends Controller
 
         if($request->open_video_360){
             $video_360 = Video::where('seller_id', $seller->id)->where('name', '360')->where('type', 'seller_video')->where('file_id', $request->open_video_360)->first();
+            
             if($video_360){
+                $file_360 = Upload::where('id', $video_360->file_id)->first();
                 $video_360->file_id = $request->open_video_360;
+                $video_360->url = $file_360->file_name;
                 $video_360->save();
             }else{
                 $open_video = Upload::where('id', $request->open_video_360)->first();
+                $video_360 = Video::where('seller_id', $seller->id)->where('name', '360')->where('type', 'seller_video')->delete();
 
                 $video = new Video();
                 $video->seller_id = $seller->id;
@@ -342,10 +346,13 @@ class SellerController extends Controller
         if($request->open_video_480){
             $video_480 = Video::where('seller_id', $seller->id)->where('name', '480')->where('type', 'seller_video')->where('file_id', $request->open_video_480)->first();
             if($video_480){
+                $file_480 = Upload::where('id', $video_480->file_id)->first();
                 $video_480->file_id = $request->open_video_480;
+                $video_480->url = $file_480->file_name;
                 $video_480->save();
             }else{
                 $open_video = Upload::where('id', $request->open_video_480)->first();
+                $video_480 = Video::where('seller_id', $seller->id)->where('name', '480')->where('type', 'seller_video')->delete();
 
                 $video = new Video();
                 $video->seller_id = $seller->id;
@@ -364,11 +371,15 @@ class SellerController extends Controller
 
         if($request->open_video_720){
             $video_720 = Video::where('seller_id', $seller->id)->where('name', '720')->where('type', 'seller_video')->where('file_id', $request->open_video_720)->first();
+            
             if($video_720){
+                $file_720 = Upload::where('id', $video_720->file_id)->first();
                 $video_720->file_id = $request->open_video_720;
+                $video_720->url = $file_720->file_name;
                 $video_720->save();
             }else{
                 $open_video = Upload::where('id', $request->open_video_720)->first();
+                $video_720 = Video::where('seller_id', $seller->id)->where('name', '720')->where('type', 'seller_video')->delete();
 
                 $video = new Video();
                 $video->seller_id = $seller->id;
@@ -387,11 +398,15 @@ class SellerController extends Controller
 
         if($request->open_video_1080){
             $video_1080 = Video::where('seller_id', $seller->id)->where('name', '1080')->where('type', 'seller_video')->where('file_id', $request->open_video_1080)->first();
+            
             if($video_1080){
+                $file_1080 = Upload::where('id', $video_1080->file_id)->first();
                 $video_1080->file_id = $request->open_video_1080;
+                $video_1080->url = $file_1080->file_name;
                 $video_1080->save();
             }else{
                 $open_video = Upload::where('id', $request->open_video_1080)->first();
+                $video_1080 = Video::where('seller_id', $seller->id)->where('name', '1080')->where('type', 'seller_video')->delete();
 
                 $video = new Video();
                 $video->seller_id = $seller->id;
@@ -419,10 +434,13 @@ class SellerController extends Controller
             if($request->virtual_assistant_360){
                 $virtual_360 = Video::where('seller_id', $seller->id)->where('name', '360')->where('type', 'virtual_video')->where('file_id', $request->virtual_assistant_360)->first();
                 if($virtual_360){
+                    $file_360 = Upload::where('id', $virtual_360->file_id)->first();
                     $virtual_360->file_id = $request->virtual_assistant_360;
+                    $virtual_360->url = $file_360->file_name;
                     $virtual_360->save();
                 }else{
                     $virtual_assistant_360 = Upload::where('id', $request->virtual_assistant_360)->first();
+                    $virtual_360 = Video::where('seller_id', $seller->id)->where('name', '360')->where('type', 'virtual_video')->delete();
 
                     $video = new Video();
                     $video->seller_id = $seller->id;
@@ -442,10 +460,13 @@ class SellerController extends Controller
             if($request->virtual_assistant_480){
                 $virtual_480 = Video::where('seller_id', $seller->id)->where('name', '480')->where('type', 'virtual_video')->where('file_id', $request->virtual_assistant_480)->first();
                 if($virtual_480){
+                    $file_480 = Upload::where('id', $virtual_480->file_id)->first();
                     $virtual_480->file_id = $request->virtual_assistant_480;
+                    $virtual_480->url = $file_480->file_name;
                     $virtual_480->save();
                 }else{
                     $virtual_assistant_480 = Upload::where('id', $request->virtual_assistant_480)->first();
+                    $virtual_480 = Video::where('seller_id', $seller->id)->where('name', '480')->where('type', 'virtual_video')->delete();
 
                     $video = new Video();
                     $video->seller_id = $seller->id;
@@ -465,10 +486,13 @@ class SellerController extends Controller
             if($request->virtual_assistant_720){
                 $virtual_720 = Video::where('seller_id', $seller->id)->where('name', '720')->where('type', 'virtual_video')->where('file_id', $request->virtual_assistant_720)->first();
                 if($virtual_720){
+                    $file_720 = Upload::where('id', $virtual_720->file_id)->first();
                     $virtual_720->file_id = $request->virtual_assistant_720;
+                    $virtual_720->url = $file_720->file_name;
                     $virtual_720->save();
                 }else{
                     $virtual_assistant_720 = Upload::where('id', $request->virtual_assistant_720)->first();
+                    $virtual_720 = Video::where('seller_id', $seller->id)->where('name', '720')->where('type', 'virtual_video')->delete();
 
                     $video = new Video();
                     $video->seller_id = $seller->id;
@@ -488,10 +512,13 @@ class SellerController extends Controller
             if($request->virtual_assistant_1080){
                 $virtual_1080 = Video::where('seller_id', $seller->id)->where('name', '1080')->where('type', 'virtual_video')->where('file_id', $request->virtual_assistant_1080)->first();
                 if($virtual_1080){
+                    $file_1080 = Upload::where('id', $virtual_1080->file_id)->first();
                     $virtual_1080->file_id = $request->virtual_assistant_1080;
+                    $virtual_1080->url = $request->file_name;
                     $virtual_1080->save();
                 }else{
                     $virtual_assistant_1080 = Upload::where('id', $request->virtual_assistant_1080)->first();
+                    $virtual_1080 = Video::where('seller_id', $seller->id)->where('name', '1080')->where('type', 'virtual_video')->delete();
 
                     $video = new Video();
                     $video->seller_id = $seller->id;
@@ -533,6 +560,7 @@ class SellerController extends Controller
     
                 if($request->virtual_assistant_360){
                     $virtual_assistant_360 = Upload::where('id', $request->virtual_assistant_360)->first();
+                    $virtual_360 = Video::where('seller_id', $seller->id)->where('name', '360')->where('type', 'virtual_video')->delete();
     
                     $video = new Video();
                     $video->seller_id = $seller->id;
@@ -550,6 +578,7 @@ class SellerController extends Controller
     
                 if($request->virtual_assistant_480){
                     $virtual_assistant_480 = Upload::where('id', $request->virtual_assistant_480)->first();
+                    $virtual_480 = Video::where('seller_id', $seller->id)->where('name', '480')->where('type', 'virtual_video')->delete();
     
                     $video = new Video();
                     $video->seller_id = $seller->id;
@@ -567,6 +596,7 @@ class SellerController extends Controller
     
                 if($request->virtual_assistant_720){
                     $virtual_assistant_720 = Upload::where('id', $request->virtual_assistant_720)->first();
+                    $virtual_720 = Video::where('seller_id', $seller->id)->where('name', '720')->where('type', 'virtual_video')->delete();
     
                     $video = new Video();
                     $video->seller_id = $seller->id;
@@ -584,6 +614,7 @@ class SellerController extends Controller
     
                 if($request->virtual_assistant_1080){
                     $virtual_assistant_1080 = Upload::where('id', $request->virtual_assistant_1080)->first();
+                    $virtual_1080 = Video::where('seller_id', $seller->id)->where('name', '1080')->where('type', 'virtual_video')->delete();
     
                     $video = new Video();
                     $video->seller_id = $seller->id;
