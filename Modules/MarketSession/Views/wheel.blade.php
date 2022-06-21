@@ -90,7 +90,7 @@
             let theWheel = new Winwheel({
                 'outerRadius'     : 400,
                 'innerRadius'     : 75,
-                'textFontSize'    : 24,
+                'textFontSize'    : 36,
                 'responsive'   : true, 
                 'textOrientation' : 'vertical', 
                 'textAlignment'   : 'outer',
