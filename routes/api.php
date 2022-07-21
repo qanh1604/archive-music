@@ -1,15 +1,11 @@
 <?php
 
-Route::group(['prefix' => 'v2/auth', 'middleware' => ['app_language']], function() {
+Route::group(['prefix' => 'auth', 'middleware' => ['app_language']], function() {
     Route::post('login', 'Api\V2\AuthController@login');
-    Route::post('login_phone', 'Api\V2\AuthController@loginOtp');
     Route::post('signup', 'Api\V2\AuthController@signup');
-    Route::post('signup_phone', 'Api\V2\AuthController@signupPhone');
-    Route::post('active-by-otp', 'Api\V2\AuthController@activeByOTP');
     Route::post('social-login', 'Api\V2\AuthController@socialLogin');
     Route::post('password/forget_request', 'Api\V2\PasswordResetController@forgetRequest');
     Route::post('password/confirm_reset', 'Api\V2\PasswordResetController@confirmReset');
-    Route::post('password/resend_code', 'Api\V2\PasswordResetController@resendCode');
     Route::middleware('auth:sanctum')->group(function () {
         Route::get('logout', 'Api\V2\AuthController@logout');
         Route::get('user', 'Api\V2\AuthController@user');

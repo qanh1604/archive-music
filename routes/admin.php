@@ -126,6 +126,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin']], function(
 
     //App Trasnlation
     Route::post('/languages/app-translations/import', 'LanguageController@importEnglishFile')->name('app-translations.import');
+    Route::post('/languages/vn-translations/import', 'LanguageController@importVNFile')->name('vn-translations.import');
     Route::get('/languages/app-translations/show/{id}', 'LanguageController@showAppTranlsationView')->name('app-translations.show');
     Route::post('/languages/app-translations/key_value_store', 'LanguageController@storeAppTranlsation')->name('app-translations.store');
     Route::get('/languages/app-translations/export/{id}', 'LanguageController@exportARBFile')->name('app-translations.export');

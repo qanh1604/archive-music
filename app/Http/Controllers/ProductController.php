@@ -156,7 +156,7 @@ class ProductController extends Controller
             ->with('childrenCategories')
             ->get();
 
-        return view('backend.product.products.create', compact('categories'));
+        return view('backend.product.songs.create', compact('categories'));
     }
 
     public function add_more_choice_option(Request $request) {
@@ -213,12 +213,12 @@ class ProductController extends Controller
         $product->external_link_btn = $request->external_link_btn;
 
         $tags = array();
-        if($request->tags[0] != null){
-            foreach (json_decode($request->tags[0]) as $key => $tag) {
-                array_push($tags, $tag->value);
-            }
-        }
-        $product->tags = implode(',', $tags);
+        // if($request->tags[0] != null){
+        //     foreach (json_decode($request->tags[0]) as $key => $tag) {
+        //         array_push($tags, $tag->value);
+        //     }
+        // }
+        // $product->tags = implode(',', $tags);
 
         $product->description = $request->description;
         $product->video_provider = $request->video_provider;
@@ -553,8 +553,8 @@ class ProductController extends Controller
         $product->photos                 = $request->photos;
         $product->thumbnail_img          = $request->thumbnail_img;
         $product->min_qty                = $request->min_qty;
-        $product->low_stock_quantity     = $request->low_stock_quantity;
-        $product->stock_visibility_state = $request->stock_visibility_state;
+        // $product->low_stock_quantity     = $request->low_stock_quantity;
+        // $product->stock_visibility_state = $request->stock_visibility_state;
         $product->external_link = $request->external_link;
         $product->external_link_btn = $request->external_link_btn;
 

@@ -59,6 +59,34 @@
             </div>
         </div>
     </div>
+    <div class="col-lg-6">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0 h6">{{ translate('Nhập ngôn ngữ') }}</h5>
+            </div>
+            <div class="card-body">
+                <form class="form-horizontal" action="{{ route('vn-translations.import') }}" method="POST" enctype="multipart/form-data">
+                    @csrf
+                    <div class="form-group row">
+                        <div class="col-lg-3">
+                            <label class="col-from-label">{{ translate('Tệp Excel') }}</label>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="custom-file">
+                                <label class="custom-file-label">
+                                    <input type="file" id="lang_file" name="lang_file"  class="custom-file-input" required>
+                                    <span class="custom-file-name">{{ translate('Choose file_vn.xlsx file') }}</span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-lg-3">
+                            <button type="submit" class="btn btn-info">{{translate('Import')}}</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 </div>
 
 <div class="aiz-titlebar text-left mt-2 mb-3">

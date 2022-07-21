@@ -8,20 +8,16 @@ use App\Models\User;
 use App\Models\PasswordReset;
 use App\Notifications\PasswordResetRequest;
 use Illuminate\Support\Str;
+use App\Mail\EmailManager;
 use App\Http\Controllers\OTPVerificationController;
-
+use Mail;
 use Hash;
 
 class PasswordResetController extends Controller
 {
     public function forgetRequest(Request $request)
     {
-        if ($request->send_code_by == 'email') {
-            $user = User::where('email', $request->email_or_phone)->first();
-        } else {
-            $user = User::where('phone', $request->email_or_phone)->first();
-        }
-
+        $user = User::where('email', $request->email)->first();
 
         if (!$user) {
             return response()->json([
@@ -30,15 +26,21 @@ class PasswordResetController extends Controller
         }
 
         if ($user) {
-            $user->verification_code = rand(100000, 999999);
-            $user->save();
-            if ($request->send_code_by == 'phone') {
-
-                $otpController = new OTPVerificationController();
-                $otpController->send_code($user);
-            } else {
-                $user->notify(new AppEmailVerificationNotification());
+            $random = str_shuffle('ABCDEFGHJKLMNOPQRSTUVWXYZ234567890');
+            $code = substr($random, 0, 6);
+            $user->verification_code = $code;
+            
+            try {
+                $array['view'] = 'mail';
+                $array['subject'] = env('MAIL_FROM_NAME');
+                $array['from'] = env('MAIL_FROM_ADDRESS');
+                $array['email'] = $request->email;
+                $array['code'] = $code;
+                Mail::to($request->email)->queue(new EmailManager($array));
+            } catch (\Exception $e) {
             }
+
+            $user->save();
         }
 
         return response()->json([
@@ -69,7 +71,6 @@ class PasswordResetController extends Controller
 
     public function resendCode(Request $request)
     {
-
         if ($request->verify_by == 'email') {
             $user = User::where('email', $request->email_or_phone)->first();
         } else {

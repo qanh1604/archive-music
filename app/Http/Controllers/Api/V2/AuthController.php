@@ -14,60 +14,48 @@ use App\Models\Address;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use App\Models\User;
+use App\Mail\EmailManager;
 use App\Notifications\AppEmailVerificationNotification;
+use Validator;
 use Hash;
-
+use Mail;
 
 class AuthController extends Controller
 {
     public function signup(Request $request)
     {
-        if (User::where('email', $request->email_or_phone)->orWhere('phone', $request->email_or_phone)->first() != null) {
+        if (User::where('email', $request->email)->first() != null) {
             return response()->json([
                 'result' => false,
-                'message' => translate('User already exists.'),
-                'user_id' => 0
+                'message' => translate('Người dùng đã tồn tại')
             ], 201);
         }
 
-        if ($request->register_by == 'email') {
-            $user = new User([
-                'name' => $request->name,
-                'email' => $request->email_or_phone,
-                'password' => bcrypt($request->password),
-                'verification_code' => rand(100000, 999999)
-            ]);
-        } else {
-            $user = new User([
-                'name' => $request->name,
-                'phone' => $request->email_or_phone,
-                'password' => bcrypt($request->password),
-                'verification_code' => rand(100000, 999999)
-            ]);
-        }
+        $random = str_shuffle('ABCDEFGHJKLMNOPQRSTUVWXYZ234567890');
+        $code = substr($random, 0, 6);
 
-        if ($request->register_by == 'email') {
-            if (BusinessSetting::where('type', 'email_verification')->first()->value != 1) {
-                $user->email_verified_at = date('Y-m-d H:m:s');
-            } else{
-                try {
-                    $user->notify(new AppEmailVerificationNotification());
-                } catch (\Exception $e) {
-                    
-                }
-            }
-        } else {
-            $otpController = new OTPVerificationController();
-            $otpController->send_code($user);
+        $user = new User([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => bcrypt($request->password),
+            'verification_code' => $code,
+            'role' => 4,
+            'status' => 0
+        ]);
+
+        try {
+            $array['view'] = 'mail';
+            $array['subject'] = env('MAIL_FROM_NAME');
+            $array['from'] = env('MAIL_FROM_ADDRESS');
+            $array['email'] = $request->email;
+            $array['code'] = $code;
+            Mail::to($request->email)->queue(new EmailManager($array));
+        } catch (\Exception $e) {
+            dd($e);
         }
 
         $user->save();
 
-        $customer = new Customer;
-        $customer->user_id = $user->id;
-        $customer->save();
-
-        //create token
         $user->createToken('tokens')->plainTextToken;
 
         return response()->json([
@@ -91,7 +79,6 @@ class AuthController extends Controller
         $user = new User([
             'name' => $request->name,
             'phone' => $request->email_or_phone,
-            // 'password' => bcrypt('$unshineSoftware'),
             'verification_code' => rand(100000, 999999),
             'address' => $request->address,
             'country' => Country::where('id', $request->country_id)->first()->name,
@@ -150,13 +137,19 @@ class AuthController extends Controller
     public function resendCode(Request $request)
     {
         $user = User::where('id', $request->user_id)->first();
-        $user->verification_code = rand(100000, 999999);
+        $random = str_shuffle('ABCDEFGHJKLMNOPQRSTUVWXYZ234567890');
+        $code = substr($random, 0, 6);
+        $user->verification_code = $code;
 
-        if ($request->verify_by == 'email') {
-            $user->notify(new AppEmailVerificationNotification());
-        } else {
-            $otpController = new OTPVerificationController();
-            $otpController->send_code($user);
+        try {
+            $array['view'] = 'mail';
+            $array['subject'] = env('MAIL_FROM_NAME');
+            $array['from'] = env('MAIL_FROM_ADDRESS');
+            $array['email'] = $user->email;
+            $array['code'] = $code;
+            Mail::to($user->email)->queue(new EmailManager($array));
+        } catch (\Exception $e) {
+            dd($e);
         }
 
         $user->save();
@@ -174,6 +167,7 @@ class AuthController extends Controller
         if ($user->verification_code == $request->verification_code) {
             $user->email_verified_at = date('Y-m-d H:i:s');
             $user->verification_code = null;
+            $user->status = 1;
             $user->save();
             return response()->json([
                 'result' => true,
@@ -189,39 +183,33 @@ class AuthController extends Controller
 
     public function login(Request $request)
     {
-        /*$request->validate([
-            'email' => 'required|string|email',
-            'password' => 'required|string',
-            'remember_me' => 'boolean'
-        ]);*/
-
-        $delivery_boy_condition = $request->has('user_type') && $request->user_type == 'delivery_boy';
-
-        if ($delivery_boy_condition) {
-            $user = User::whereIn('user_type', ['delivery_boy'])->where('email', $request->email)->orWhere('phone', $request->email)->first();
-        } else {
-            $user = User::whereIn('user_type', ['customer', 'seller'])->where('email', $request->email)->orWhere('phone', $request->email)->first();
-        }
-
-        if (!$delivery_boy_condition) {
-            if (\App\Utility\PayhereUtility::create_wallet_reference($request->identity_matrix) == false) {
-                return response()->json(['result' => false, 'message' => 'Identity matrix error', 'user' => null], 401);
-            }
-        }
-
-
-        if ($user != null) {
-            if (Hash::check($request->password, $user->password)) {
-
-                if ($user->email_verified_at == null) {
-                    return response()->json(['message' => translate('Please verify your account'), 'user' => null], 401);
+        $validator = Validator::make($request->all(), [
+            'email' => 'required',
+            'password' => 'required'
+        ]);
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => $validator->errors(),
+            ]);
+        }else{
+            $user = User::where('email', $request->email)->first();
+            if($user){
+                if (Hash::check($request->password, $user->password)) {
+                    if ($user->email_verified_at == null) {
+                        return response()->json(['message' => translate('Please verify your account'), 'user' => null], 401);
+                    }
+                    return $this->loginSuccess($user);
                 }
-                return $this->loginSuccess($user);
-            } else {
-                return response()->json(['result' => false, 'message' => translate('Unauthorized'), 'user' => null], 401);
+                else {
+                    return response()->json(['result' => false, 'message' => translate('Sai mật khẩu'), 'user' => null], 401);
+                }
+            }else{
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Tài khoản không tồn tại',
+                ]); 
             }
-        } else {
-            return response()->json(['result' => false, 'message' => translate('User not found'), 'user' => null], 401);
         }
     }
 
@@ -312,6 +300,7 @@ class AuthController extends Controller
                 'type' => $user->user_type,
                 'name' => $user->name,
                 'email' => $user->email,
+                'role' => 4,
                 'avatar' => $user->avatar,
                 'avatar_original' => api_asset($user->avatar_original),
                 'phone' => $user->phone

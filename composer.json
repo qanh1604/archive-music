@@ -33,6 +33,7 @@
         "osenco/mpesa": "^1.20",
         "paypal/paypal-checkout-sdk": "dev-master",
         "predis/predis": "^1.1",
+        "psr/simple-cache": "1.0",
         "razorpay/razorpay": "2.0.0",
         "sebacarrasco93/laravel-payku": "^1.0",
         "simplesoftwareio/simple-qrcode": "^4.2",

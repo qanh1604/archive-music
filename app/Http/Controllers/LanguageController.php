@@ -7,6 +7,9 @@ use Illuminate\Http\Request;
 use Session;
 use App\Models\Language;
 use App\Models\Translation;
+use App\Models\Translationv2;
+use App\Models\TranslationImport;
+use Maatwebsite\Excel\Facades\Excel;
 use Cache;
 use Storage;
 
@@ -148,6 +151,17 @@ class LanguageController extends Controller
             //throw $th;
         }
 
+        flash(translate('Translation keys has been imported successfully. Go to App Translation for more..'))->success();
+        return back();
+    }
+
+    public function importVNFile(Request $request){
+        $name = $request->file('lang_file')->store('path');
+        try {
+            Excel::import(new TranslationImport, $name);
+        } catch (\Throwable $th) {
+            dd($th);
+        }
         flash(translate('Translation keys has been imported successfully. Go to App Translation for more..'))->success();
         return back();
     }

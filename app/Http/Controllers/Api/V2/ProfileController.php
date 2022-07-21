@@ -18,6 +18,7 @@ use App\Models\Cart;
 use Hash;
 use Illuminate\Support\Facades\File;
 use Storage;
+use Auth;
 
 class ProfileController extends Controller
 {
@@ -76,82 +77,152 @@ class ProfileController extends Controller
         );
 
         try {
-            $image = $request->image;
-            $request->filename;
-            $realImage = base64_decode($image);
+            // $image = $request->image;
+            // $request->filename;
+            // $realImage = base64_decode($image);
 
-            $dir = public_path('uploads/all');
-            $full_path = "$dir/$request->filename";
+            // $dir = public_path('uploads/all');
+            // $full_path = "$dir/$request->filename";
 
-            $file_put = file_put_contents($full_path, $realImage); // int or false
+            // $file_put = file_put_contents($full_path, $realImage); // int or false
 
-            if ($file_put == false) {
+            // if ($file_put == false) {
+            //     return response()->json([
+            //         'result' => false,
+            //         'message' => "File uploading error",
+            //         'path' => ""
+            //     ]);
+            // }
+
+
+            // $upload = new Upload;
+            // $extension = strtolower(File::extension($full_path));
+            // $size = File::size($full_path);
+
+            // if (!isset($type[$extension])) {
+            //     unlink($full_path);
+            //     return response()->json([
+            //         'result' => false,
+            //         'message' => "Only image can be uploaded",
+            //         'path' => ""
+            //     ]);
+            // }
+
+
+            // $upload->file_original_name = null;
+            // $arr = explode('.', File::name($full_path));
+            // for ($i = 0; $i < count($arr) - 1; $i++) {
+            //     if ($i == 0) {
+            //         $upload->file_original_name .= $arr[$i];
+            //     } else {
+            //         $upload->file_original_name .= "." . $arr[$i];
+            //     }
+            // }
+
+            // //unlink and upload again with new name
+            // unlink($full_path);
+            // $newFileName = rand(10000000000, 9999999999) . date("YmdHis") . "." . $extension;
+            // $newFullPath = "$dir/$newFileName";
+
+            // $file_put = file_put_contents($newFullPath, $realImage);
+
+            // if ($file_put == false) {
+            //     return response()->json([
+            //         'result' => false,
+            //         'message' => "Uploading error",
+            //         'path' => ""
+            //     ]);
+            // }
+
+            // $newPath = "uploads/all/$newFileName";
+
+            // if (env('FILESYSTEM_DRIVER') == 's3') {
+            //     Storage::disk('s3')->put($newPath, file_get_contents(base_path('public/') . $newPath));
+            //     unlink(base_path('public/') . $newPath);
+            // }
+
+            // $upload->extension = $extension;
+            // $upload->file_name = $newPath;
+            // $upload->user_id = $request->id;
+            // $upload->type = $type[$upload->extension];
+            // $upload->file_size = $size;
+            // $upload->save();
+
+            // $user  = User::find($request->id);
+            // $user->avatar_original = $upload->id;
+            // $user->save();
+
+            $real_avatar = base64_decode($request->avatar);
+            $dir_avatar = public_path('uploads/avatar');
+            $full_path_avatar = "$dir_avatar/$request->avatar_name";
+
+            if (!file_exists($dir_avatar)) {
+                mkdir($dir_avatar, 0777, true);
+            }
+            $file_put_avatar = file_put_contents($full_path_avatar, $real_avatar);
+            
+            if ($file_put_avatar == false) {
                 return response()->json([
                     'result' => false,
-                    'message' => "File uploading error",
-                    'path' => ""
+                    'message' => "File uploading error"
                 ]);
             }
-
-
+        
             $upload = new Upload;
-            $extension = strtolower(File::extension($full_path));
-            $size = File::size($full_path);
-
-            if (!isset($type[$extension])) {
-                unlink($full_path);
+            $extension_avatar = strtolower(File::extension($full_path_avatar));
+            $size_avatar = File::size($full_path_avatar);
+            
+            if (!isset($type[$extension_avatar])) {
+                unlink($full_path_avatar);
                 return response()->json([
                     'result' => false,
-                    'message' => "Only image can be uploaded",
-                    'path' => ""
+                    'message' => "Only image can be uploaded"
                 ]);
             }
-
-
+    
             $upload->file_original_name = null;
-            $arr = explode('.', File::name($full_path));
-            for ($i = 0; $i < count($arr) - 1; $i++) {
+            $arr_avatar = explode('.', File::name($full_path_avatar));
+            
+            for ($i = 0; $i < count($arr_avatar) - 1; $i++) {
                 if ($i == 0) {
-                    $upload->file_original_name .= $arr[$i];
+                    $upload->file_original_name .= $arr_avatar[$i];
                 } else {
-                    $upload->file_original_name .= "." . $arr[$i];
+                    $upload->file_original_name .= "." . $arr_avatar[$i];
                 }
             }
-
+            
             //unlink and upload again with new name
-            unlink($full_path);
-            $newFileName = rand(10000000000, 9999999999) . date("YmdHis") . "." . $extension;
-            $newFullPath = "$dir/$newFileName";
-
-            $file_put = file_put_contents($newFullPath, $realImage);
-
-            if ($file_put == false) {
+            unlink($full_path_avatar);
+            $newFileName_avatar = rand(10000000000, 9999999999) . date("YmdHis") . "." . $extension_avatar;
+            $newFullPath_avatar = "$dir_avatar/$newFileName_avatar";
+            $file_put_avatar = file_put_contents($newFullPath_avatar, $real_avatar);
+            
+            if ($file_put_avatar == false) {
                 return response()->json([
                     'result' => false,
-                    'message' => "Uploading error",
-                    'path' => ""
+                    'message' => "Uploading error"
                 ]);
             }
-
-            $newPath = "uploads/all/$newFileName";
-
-            if (env('FILESYSTEM_DRIVER') == 's3') {
-                Storage::disk('s3')->put($newPath, file_get_contents(base_path('public/') . $newPath));
-                unlink(base_path('public/') . $newPath);
-            }
-
-            $upload->extension = $extension;
-            $upload->file_name = $newPath;
-            $upload->user_id = $request->id;
+    
+            $newPath_avatar = "uploads/avatar/$newFileName_avatar";
+            
+            // if (env('FILESYSTEM_DRIVER') == 's3') {
+            //     Storage::disk('s3')->put($newPath_identity_card, file_get_contents(base_path('public/') . $newPath_identity_card));
+            //     Storage::disk('s3')->put($newPath_business_license, file_get_contents(base_path('public/') . $newPath_business_license));
+            //     unlink(base_path('public/') . $newPath_identity_card);
+            //     unlink(base_path('public/') . $newPath_business_license);
+            // }
+    
+            $upload->extension = $extension_avatar;
+            $upload->file_original_name = $request->avatar_name;
+            $upload->file_name = $newPath_avatar;
+            $upload->user_id = Auth::user()->id;
             $upload->type = $type[$upload->extension];
-            $upload->file_size = $size;
-            $upload->save();
+            $upload->file_size = $size_avatar;
 
-            $user  = User::find($request->id);
-            $user->avatar_original = $upload->id;
+            $user  = User::find(Auth::user()->id);
+            $user->avatar = $upload->file_name;
             $user->save();
-
-
 
             return response()->json([
                 'result' => true,
@@ -162,7 +233,6 @@ class ProfileController extends Controller
             return response()->json([
                 'result' => false,
                 'message' => $e->getMessage(),
-                'path' => ""
             ]);
         }
     }
