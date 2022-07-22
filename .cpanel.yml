@@ -5,3 +5,4 @@ deployment:
     # - /bin/cp -rf images $DEPLOYPATH
     # - /bin/cp -rf content $DEPLOYPATH
     - /bin/cp -R * $DEPLOYPATH
+    - /bin/cp -R .env $DEPLOYPATH/.env
