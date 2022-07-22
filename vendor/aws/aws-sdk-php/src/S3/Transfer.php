@@ -5,6 +5,7 @@ use Aws;
 use Aws\CommandInterface;
 use Aws\Exception\AwsException;
 use GuzzleHttp\Promise;
+use GuzzleHttp\Promise\PromiseInterface;
 use GuzzleHttp\Promise\PromisorInterface;
 use Iterator;
 
@@ -137,6 +138,8 @@ class Transfer implements PromisorInterface
 
     /**
      * Transfers the files.
+     *
+     * @return PromiseInterface
      */
     public function promise()
     {
@@ -225,6 +228,10 @@ class Transfer implements PromisorInterface
             }
             if ($section === '..') {
                 array_pop($resolved);
+                $destinationDirname = explode('/', $this->destination['path']);
+                if (end($resolved) === end($destinationDirname)) {
+                    array_pop($resolved);
+                }
             } else {
                 $resolved []= $section;
             }
@@ -260,7 +267,7 @@ class Transfer implements PromisorInterface
 
             if (strpos(
                     $this->resolveUri($resolveSink),
-                    $this->destination['path']
+                    $this->destination['path'] . '/'
                 ) !== 0
             ) {
                 throw new AwsException(
@@ -356,7 +363,7 @@ class Transfer implements PromisorInterface
         $args = $this->s3Args;
         $args['Key'] = $this->createS3Key($filename);
         $filename = $filename instanceof \SplFileInfo ? $filename->getPathname() : $filename;
-        
+
         return (new MultipartUploader($this->client, $filename, [
             'bucket'          => $args['Bucket'],
             'key'             => $args['Key'],
