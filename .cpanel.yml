@@ -1,6 +1,8 @@
 ---
 deployment:
   tasks:
-    - export DEPLOYPATH=/home/umfvztzh/repositories/archive-music
-    - /bin/cp -rf images $DEPLOYPATH
-    - /bin/cp -rf content $DEPLOYPATH
+    - export DEPLOYPATH=/home/umfvztzh/public_html
+    # - /bin/cp -rf images $DEPLOYPATH
+    # - /bin/cp -rf content $DEPLOYPATH
+    - /bin/cp -R * $DEPLOYPATH
+    - /bin/cp -R .env $DEPLOYPATH/.env
