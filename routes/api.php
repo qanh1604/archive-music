@@ -14,7 +14,7 @@ Route::group(['prefix' => 'auth', 'middleware' => ['app_language']], function() 
     Route::post('confirm_code', 'Api\V2\AuthController@confirmCode');
 });
 
-Route::group(['prefix' => 'v2', 'middleware' => ['app_language']], function() {
+Route::group(['middleware' => ['app_language']], function() {
     Route::prefix('delivery-boy')->group(function () {
         Route::get('dashboard-summary/{id}', 'Api\V2\DeliveryBoyController@dashboard_summary')->middleware('auth:sanctum');
         Route::get('deliveries/completed/{id}', 'Api\V2\DeliveryBoyController@completed_delivery')->middleware('auth:sanctum');
