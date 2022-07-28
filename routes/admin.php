@@ -292,4 +292,5 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin']], function(
     Route::get('/all-notification', 'NotificationController@index')->name('admin.all-notification');
 
     Route::get('/cache-cache', 'AdminController@clearCache')->name('cache.clear');
+    Route::post('/dropzone/store', 'ProductController@storeMp3')->name('dropzone.store');
 });

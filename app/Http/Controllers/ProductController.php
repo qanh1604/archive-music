@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Product;
+use App\Models\Song;
 use App\Models\ProductTranslation;
 use App\Models\ProductStock;
 use App\Models\Category;
@@ -13,10 +14,14 @@ use App\Models\AttributeValue;
 use App\Models\Cart;
 use App\Models\Color;
 use App\Models\User;
+use App\Models\Upload;
+use App\Models\Recommemdation;
+use Illuminate\Support\Facades\File;
 use Auth;
 use Carbon\Carbon;
 use Combinations;
 use CoreComponentRepository;
+use Validator;
 use Artisan;
 use Cache;
 use Str;
@@ -30,29 +35,26 @@ class ProductController extends Controller
      */
     public function admin_products(Request $request)
     {
-        $type = 'In House';
         $col_name = null;
         $query = null;
         $sort_search = null;
+        
+        $songs = Song::with('user')->where('deleted_at', null);
+        // $products = Product::where('added_by', 'admin')->where('auction_product',0)->where('wholesale_product',0);
 
-        $products = Product::where('added_by', 'admin')->where('auction_product',0)->where('wholesale_product',0);
-
-        if ($request->type != null){
-            $var = explode(",", $request->type);
+        if ($request->col_name != null){
             $col_name = $var[0];
             $query = $var[1];
-            $products = $products->orderBy($col_name, $query);
-            $sort_type = $request->type;
+            $songs = $songs->orderBy($col_name, $query);
         }
         if ($request->search != null){
-            $products = $products
-                        ->where('name', 'like', '%'.$request->search.'%');
+            $songs = $songs->where('name', 'like', '%'.$request->search.'%');
             $sort_search = $request->search;
         }
 
-        $products = $products->where('digital', 0)->orderBy('created_at', 'desc')->paginate(15);
+        $songs = $songs->orderBy('created_at', 'desc')->paginate(15);
 
-        return view('backend.product.products.index', compact('products','type', 'col_name', 'query', 'sort_search'));
+        return view('backend.product.songs.index', compact('songs', 'col_name', 'query', 'sort_search'));
     }
 
     /**
@@ -153,7 +155,6 @@ class ProductController extends Controller
 
         $categories = Category::where('parent_id', 0)
             ->where('digital', 0)
-            ->with('childrenCategories')
             ->get();
 
         return view('backend.product.songs.create', compact('categories'));
@@ -179,265 +180,46 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
-        $product = new Product;
-        $product->name = $request->name;
-        $product->added_by = $request->added_by;
-        if(Auth::user()->user_type == 'seller'){
-            $product->user_id = Auth::user()->id;
-            if(get_setting('product_approve_by_admin') == 1) {
-                $product->approved = 0;
-            }
+        $validator = Validator::make($request->all(), [
+            'name' => 'required',
+            'song_id' => 'required',
+            'category_id' => 'required',
+            'photos' => 'required',
+            'thumbnail_img' => 'required'
+        ]);
+        if ($validator->fails()) {
+            flash(translate($validator->errors()->first()))->error();
+            return back();
         }
-        else{
-            $product->user_id = User::where('user_type', 'admin')->first()->id;
-        }
-        $product->category_id = $request->category_id;
-        $product->brand_id = $request->brand_id;
-        $product->barcode = $request->barcode;
-
-        if (addon_is_activated('refund_request')) {
-            if ($request->refundable != null) {
-                $product->refundable = 1;
-            }
-            else {
-                $product->refundable = 0;
-            }
-        }
-        $product->photos = $request->photos;
-        $product->thumbnail_img = $request->thumbnail_img;
-        $product->unit = $request->unit;
-        $product->min_qty = $request->min_qty;
-        $product->low_stock_quantity = $request->low_stock_quantity;
-        $product->stock_visibility_state = $request->stock_visibility_state;
-        $product->external_link = $request->external_link;
-        $product->external_link_btn = $request->external_link_btn;
-
-        $tags = array();
-        // if($request->tags[0] != null){
-        //     foreach (json_decode($request->tags[0]) as $key => $tag) {
-        //         array_push($tags, $tag->value);
-        //     }
-        // }
-        // $product->tags = implode(',', $tags);
-
-        $product->description = $request->description;
-        $product->video_provider = $request->video_provider;
-        $product->video_link = $request->video_link;
-        $product->unit_price = $request->unit_price;
-        $product->discount = $request->discount;
-        $product->discount_type = $request->discount_type;
-
-        if ($request->date_range != null) {
-            $date_var               = explode(" to ", $request->date_range);
-            $product->discount_start_date = strtotime($date_var[0]);
-            $product->discount_end_date   = strtotime( $date_var[1]);
+        $upload = Upload::where('id', $request->song_id)->first();
+        if(!$upload){
+            flash("Đã có lỗi xảy ra vui lòng thử lại");
+            return back();
         }
 
-        $product->shipping_type = $request->shipping_type;
-        $product->est_shipping_days  = $request->est_shipping_days;
+        $song = new Song;
+        $song->name = $request->name;
+        $song->artist_id = Auth::user()->id;
+        $song->song_url = $upload->file_name;
+        $song->icon = $request->thumbnail_img;
+        $song->image = $request->photos;
+        $song->lyric = $request->lyric;
 
-        if (addon_is_activated('club_point')) {
-            if($request->earn_point) {
-                $product->earn_point = $request->earn_point;
-            }
+        $song->is_publish = 1;
+        if($request->button == 'unpublish') {
+            $song->is_publish = 0;
         }
 
-        if ($request->has('shipping_type')) {
-            if($request->shipping_type == 'free'){
-                $product->shipping_cost = 0;
-            }
-            elseif ($request->shipping_type == 'flat_rate') {
-                $product->shipping_cost = $request->flat_shipping_cost;
-            }
-            elseif ($request->shipping_type == 'product_wise') {
-                $product->shipping_cost = json_encode($request->shipping_cost);
-            }
-        }
-        if ($request->has('is_quantity_multiplied')) {
-            $product->is_quantity_multiplied = 1;
-        }
+        $song->save();
 
-        $product->meta_title = $request->meta_title;
-        $product->meta_description = $request->meta_description;
-
-        if($request->has('meta_img')){
-            $product->meta_img = $request->meta_img;
-        } else {
-            $product->meta_img = $product->thumbnail_img;
-        }
-
-        if($product->meta_title == null) {
-            $product->meta_title = $product->name;
-        }
-
-        if($product->meta_description == null) {
-            $product->meta_description = strip_tags($product->description);
-        }
-
-        if($product->meta_img == null) {
-            $product->meta_img = $product->thumbnail_img;
-        }
-
-        if($request->hasFile('pdf')){
-            $product->pdf = $request->pdf->store('uploads/products/pdf');
-        }
-
-        $slug = $request->slug? Str::slug($request->slug, '-') : Str::slug($request->name, '-');
-        $same_slug_count = Product::where('slug','LIKE',$slug.'%')->count();
-        $slug_suffix = $same_slug_count ? '-'.$same_slug_count+1 : '';
-        $slug .= $slug_suffix;
-
-        $product->slug = $slug;
-
-        if($request->has('colors_active') && $request->has('colors') && count($request->colors) > 0){
-            $product->colors = json_encode($request->colors);
-        }
-        else {
-            $colors = array();
-            $product->colors = json_encode($colors);
-        }
-
-        $choice_options = array();
-
-        if($request->has('choice_no')){
-            foreach ($request->choice_no as $key => $no) {
-                $str = 'choice_options_'.$no;
-
-                $item['attribute_id'] = $no;
-
-                $data = array();
-                // foreach (json_decode($request[$str][0]) as $key => $eachValue) {
-                foreach ($request[$str] as $key => $eachValue) {
-                    // array_push($data, $eachValue->value);
-                    array_push($data, $eachValue);
-                }
-
-                $item['values'] = $data;
-                array_push($choice_options, $item);
-            }
-        }
-
-        if (!empty($request->choice_no)) {
-            $product->attributes = json_encode($request->choice_no);
-        }
-        else {
-            $product->attributes = json_encode(array());
-        }
-
-        $product->choice_options = json_encode($choice_options, JSON_UNESCAPED_UNICODE);
-
-        $product->published = 1;
-        if($request->button == 'unpublish' || $request->button == 'draft') {
-            $product->published = 0;
-        }
-
-        if ($request->has('cash_on_delivery')) {
-            $product->cash_on_delivery = 1;
-        }
         if ($request->has('featured')) {
-            $product->featured = 1;
-        }
-        if ($request->has('todays_deal')) {
-            $product->todays_deal = 1;
-        }
-        $product->cash_on_delivery = 0;
-        if ($request->cash_on_delivery) {
-            $product->cash_on_delivery = 1;
-        }
-        //$variations = array();
+            $recommemdation = new Recommemdation;
+            $recommemdation->song_id = $song->id;
+            $recommemdation->save();
 
-        $product->save();
-
-        //VAT & Tax
-        if($request->tax_id) {
-            foreach ($request->tax_id as $key => $val) {
-                $product_tax = new ProductTax;
-                $product_tax->tax_id = $val;
-                $product_tax->product_id = $product->id;
-                $product_tax->tax = $request->tax[$key];
-                $product_tax->tax_type = $request->tax_type[$key];
-                $product_tax->save();
-            }
+            $song->featured = 1;
+            $song->save();
         }
-        //Flash Deal
-        if($request->flash_deal_id) {
-            $flash_deal_product = new FlashDealProduct;
-            $flash_deal_product->flash_deal_id = $request->flash_deal_id;
-            $flash_deal_product->product_id = $product->id;
-            $flash_deal_product->save();
-        }
-
-        //combinations start
-        $options = array();
-        if($request->has('colors_active') && $request->has('colors') && count($request->colors) > 0) {
-            $colors_active = 1;
-            array_push($options, $request->colors);
-        }
-
-        if($request->has('choice_no')){
-            foreach ($request->choice_no as $key => $no) {
-                $name = 'choice_options_'.$no;
-                $data = array();
-                foreach ($request[$name] as $key => $eachValue) {
-                    array_push($data, $eachValue);
-                }
-                array_push($options, $data);
-            }
-        }
-
-        //Generates the combinations of customer choice options
-        $combinations = Combinations::makeCombinations($options);
-        if(count($combinations[0]) > 0){
-            $product->variant_product = 1;
-            foreach ($combinations as $key => $combination){
-                $str = '';
-                foreach ($combination as $key => $item){
-                    if($key > 0 ){
-                        $str .= '-'.str_replace(' ', '', $item);
-                    }
-                    else{
-                        if($request->has('colors_active') && $request->has('colors') && count($request->colors) > 0){
-                            $color_name = Color::where('code', $item)->first()->name;
-                            $str .= $color_name;
-                        }
-                        else{
-                            $str .= str_replace(' ', '', $item);
-                        }
-                    }
-                }
-                $product_stock = ProductStock::where('product_id', $product->id)->where('variant', $str)->first();
-                if($product_stock == null){
-                    $product_stock = new ProductStock;
-                    $product_stock->product_id = $product->id;
-                }
-
-                $product_stock->variant = $str;
-                $product_stock->price = $request['price_'.str_replace('.', '_', $str)];
-                $product_stock->sku = $request['sku_'.str_replace('.', '_', $str)];
-                $product_stock->qty = $request['qty_'.str_replace('.', '_', $str)];
-                $product_stock->image = $request['img_'.str_replace('.', '_', $str)];
-                $product_stock->save();
-            }
-        }
-        else{
-            $product_stock              = new ProductStock;
-            $product_stock->product_id  = $product->id;
-            $product_stock->variant     = '';
-            $product_stock->price       = $request->unit_price;
-            $product_stock->sku         = $request->sku;
-            $product_stock->qty         = $request->current_stock;
-            $product_stock->save();
-        }
-        //combinations end
-
-	    $product->save();
-
-        // Product Translations
-        $product_translation = ProductTranslation::firstOrNew(['lang' => env('DEFAULT_LANGUAGE'), 'product_id' => $product->id]);
-        $product_translation->name = $request->name;
-        $product_translation->unit = $request->unit;
-        $product_translation->description = $request->description;
-        $product_translation->save();
 
         flash(translate('Product has been inserted successfully'))->success();
 
@@ -455,6 +237,69 @@ class ProductController extends Controller
             }
             return redirect()->route('seller.products');
         }
+    }
+
+    public function storeMp3(Request $request){
+        $mp3 = $request->file('file');
+        $mp3Name = $mp3->getClientOriginalName();
+
+        $dir = public_path('uploads/audio');
+        if (!file_exists($dir)) {
+            mkdir($dir, 0777, true);
+        }
+        $full_path = "$dir/$mp3Name";
+
+        $file_put = $mp3->move($dir, $mp3Name);
+        if ($file_put == false) {
+            return response()->json([
+                'result' => false,
+                'message' => "Uploading error",
+                'path' => ""
+            ]);
+        }
+        
+        $upload = new Upload;
+        $extension = strtolower(File::extension($full_path));
+        $size = File::size($full_path);
+
+        $upload->file_original_name = $mp3Name;
+        $arr = explode('.', File::name($full_path));
+        
+        for ($i = 0; $i < count($arr) - 1; $i++) {
+            if ($i == 0) {
+                $upload->file_original_name .= $arr[$i];
+            } else {
+                $upload->file_original_name .= "." . $arr[$i];
+            }
+        }
+
+        $randString = substr(str_shuffle('0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ'),1,20);
+        $newFileName = $randString . date("YmdHis") . "." . $extension;
+        $newFullPath = "$dir/$newFileName";
+     
+        rename($full_path, $newFullPath);
+        
+        if ($file_put == false) {
+            return response()->json([
+                'result' => false,
+                'message' => "Uploading error",
+                'path' => ""
+            ]);
+        }
+
+        $newPath = "uploads/audio/$newFileName";
+
+        $upload->extension = $extension;
+        $upload->file_name = $newPath;
+        $upload->user_id = $request->id;
+        $upload->type = "audio";
+        $upload->file_size = $size;
+        $upload->save();
+
+        return response()->json([
+            'success' => true,
+            'upload_id' => $upload->id
+        ]);
     }
 
     /**
@@ -476,20 +321,10 @@ class ProductController extends Controller
      */
      public function admin_product_edit(Request $request, $id)
      {
-        CoreComponentRepository::initializeCache();
-
-        $product = Product::findOrFail($id);
-        if($product->digital == 1) {
-            return redirect('digitalproducts/' . $id . '/edit');
-        }
-
-        $lang = $request->lang;
-        $tags = json_decode($product->tags);
-        $categories = Category::where('parent_id', 0)
-            ->where('digital', 0)
-            ->with('childrenCategories')
-            ->get();
-        return view('backend.product.products.edit', compact('product', 'categories', 'tags','lang'));
+        // CoreComponentRepository::initializeCache();
+        $song = Product::findOrFail($id);
+        $categories = Category::get();
+        return view('backend.product.songs.edit', compact('song', 'categories'));
      }
 
     /**
