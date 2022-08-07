@@ -14,7 +14,9 @@ use App\Models\CustomerPackage;
 use App\Models\User;
 use App\Models\Seller;
 use App\Models\Shop;
+use App\Models\Song;
 use App\Models\Order;
+use App\Models\Album;
 use App\Models\BusinessSetting;
 use App\Models\Coupon;
 use Cookie;
@@ -150,7 +152,7 @@ class HomeController extends Controller
      */
     public function dashboard()
     {
-        if(Auth::user()->user_type == 'seller'){
+        if(Auth::user()->user_type == 'artist'){
             return view('frontend.user.seller.dashboard');
         }
         elseif(Auth::user()->user_type == 'customer'){
@@ -327,48 +329,39 @@ class HomeController extends Controller
     public function show_product_upload_form(Request $request)
     {
         $seller = Auth::user()->seller;
-        // if(addon_is_activated('seller_subscription')){
-        //     if($seller->seller_package && $seller->seller_package->product_upload_limit > $seller->user->products()->count()){
-        //         $categories = Category::where('parent_id', 0)
-        //             ->where('digital', 0)
-        //             ->with('childrenCategories')
-        //             ->get();
-        //         return view('frontend.user.seller.product_upload', compact('categories'));
-        //     }
-        //     else {
-        //         flash(translate('Upload limit has been reached. Please upgrade your package.'))->warning();
-        //         return back();
-        //     }
-        // }
+
+        $albums = Album::where('artist_id', Auth::user()->id)->get();
+        
         $categories = Category::where('parent_id', 0)
             ->where('digital', 0)
             ->with('childrenCategories')
             ->get();
-        return view('frontend.user.seller.product_upload', compact('categories'));
+        return view('frontend.user.seller.product_upload', compact('categories', 'albums'));
     }
 
     public function show_product_edit_form(Request $request, $id)
     {
-        $product = Product::findOrFail($id);
+        $song = Song::findOrFail($id);
         $lang = $request->lang;
-        $tags = json_decode($product->tags);
+
+        $albums = Album::where('artist_id', Auth::user()->id)->get();
         $categories = Category::where('parent_id', 0)
             ->where('digital', 0)
             ->with('childrenCategories')
             ->get();
-        return view('frontend.user.seller.product_edit', compact('product', 'categories', 'tags', 'lang'));
+        return view('frontend.user.seller.product_edit', compact('song', 'categories', 'albums', 'lang'));
     }
 
     public function seller_product_list(Request $request)
     {
         $search = null;
-        $products = Product::where('user_id', Auth::user()->id)->where('digital', 0)->orderBy('created_at', 'desc');
+        $songs = Song::where('artist_id', Auth::user()->id)->orderBy('created_at', 'desc');
         if ($request->has('search')) {
             $search = $request->search;
-            $products = $products->where('name', 'like', '%'.$search.'%');
+            $songs = $songs->where('name', 'like', '%'.$search.'%');
         }
-        $products = $products->paginate(10);
-        return view('frontend.user.seller.products', compact('products', 'search'));
+        $songs = $songs->paginate(10);
+        return view('frontend.user.seller.products', compact('songs', 'search'));
     }
 
     public function home_settings(Request $request)

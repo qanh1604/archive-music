@@ -143,7 +143,13 @@
                         </a>
                     </li> --}}
 
-                    @if(Auth::user()->user_type == 'seller')
+                    @if(Auth::user()->user_type == 'artist')
+                        <li class="aiz-side-nav-item">
+                            <a href="{{ route('selleralbum.index') }}" class="aiz-side-nav-link {{ areActiveRoutes(['album.index'])}}">
+                                <i class="lab la-sketch aiz-side-nav-icon"></i>
+                                <span class="aiz-side-nav-text">{{ translate('Albums') }}</span>
+                            </a>
+                        </li>
                         <li class="aiz-side-nav-item">
                             <a href="{{ route('seller.products') }}" class="aiz-side-nav-link {{ areActiveRoutes(['seller.products', 'seller.products.upload', 'seller.products.edit'])}}">
                                 <i class="lab la-sketch aiz-side-nav-icon"></i>
@@ -227,7 +233,7 @@
                         </li>
                     @endif --}}
 
-                    @if(Auth::user()->user_type == 'seller')
+                    @if(Auth::user()->user_type == 'artist')
                         {{-- @if (addon_is_activated('pos_system'))
                             @if (\App\Models\BusinessSetting::where('type', 'pos_activation_for_seller')->first() != null && get_setting('pos_activation_for_seller') != 0)
                                 <li class="aiz-side-nav-item">
@@ -381,7 +387,7 @@
                 </a>
             </div>
         @endif
-        @if(Auth::user()->user_type == 'seller')
+        @if(Auth::user()->user_type == 'artist')
           <hr>
           <h4 class="h5 fw-600 text-center">{{ translate('Sold Amount')}}</h4>
           @php

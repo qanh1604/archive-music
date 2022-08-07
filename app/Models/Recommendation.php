@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use App;
 
-class Recommemdation extends Model
+class Recommendation extends Model
 {
     protected $fillable = ['song_id'];
 

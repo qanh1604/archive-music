@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Customer;
 use App\Models\User;
+use App\Models\Artist;
 use App\Models\Order;
 
 class CustomerController extends Controller
@@ -17,7 +18,7 @@ class CustomerController extends Controller
     public function index(Request $request)
     {
         $sort_search = null;
-        $users = User::where('user_type', 'customer')->where('email_verified_at', '!=', null)->orderBy('created_at', 'desc');
+        $users = User::whereIn('user_type', ['customer', 'artist'])->where('email_verified_at', '!=', null)->orderBy('created_at', 'desc');
         if ($request->has('search')){
             $sort_search = $request->search;
             $users->where(function ($q) use ($sort_search){
@@ -25,6 +26,12 @@ class CustomerController extends Controller
             });
         }
         $users = $users->paginate(15);
+        foreach($users as &$user){
+            if($user->artist && $user->artist->status == 1){
+                $user->verification_status = 1;
+            }
+        }
+
         return view('backend.customer.customers.index', compact('users', 'sort_search'));
     }
 

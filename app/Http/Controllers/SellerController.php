@@ -4,10 +4,12 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Seller;
+use App\Models\Member;
 use App\Models\User;
 use App\Models\Shop;
 use App\Models\Product;
 use App\Models\Order;
+use App\Models\Artist;
 use App\Models\VirtualAssistant;
 use App\Models\OrderDetail;
 use App\Models\Video;
@@ -29,45 +31,23 @@ class SellerController extends Controller
     public function index(Request $request)
     {
         $sort_search = null;
-        $approved = null;
-        $sellers = Seller::whereIn('user_id', function ($query) {
+        $members = Member::whereIn('user_id', function ($query) {
             $query->select('id')
                 ->from(with(new User)->getTable());
         })->orderBy('created_at', 'desc');
 
         if ($request->has('search')) {
             $sort_search = $request->search;
-            $user_ids = User::where('user_type', 'seller')->where(function ($user) use ($sort_search) {
+            $user_ids = User::where('user_type', 'member')->where(function ($user) use ($sort_search) {
                 $user->where('name', 'like', '%' . $sort_search . '%')->orWhere('email', 'like', '%' . $sort_search . '%');
             })->pluck('id')->toArray();
-            $sellers = $sellers->where(function ($seller) use ($user_ids) {
-                $seller->whereIn('user_id', $user_ids);
+            $members = $members->where(function ($member) use ($user_ids) {
+                $member->whereIn('user_id', $user_ids);
             });
         }
-        if ($request->approved_status != null) {
-            $approved = $request->approved_status;
-            $sellers = $sellers->where('verification_status', $approved);
-        }
-        $sellers = $sellers->paginate(15);
-
-        foreach($sellers as &$seller){
-            $products = Product::with('category')->where('user_id', $seller->user_id)->get();
-            $productCategory = [];
-            $productCategoryId = [];
-    
-            foreach($products as $product){
-                if($product->category){
-                    if(!in_array($product->category->id, $productCategoryId)){
-                        $productCategory[] = $product->category->name;
-                        $productCategoryId[] = $product->category->id;
-                    }
-                }
-            }
-    
-            $seller->category = implode(', ', $productCategory);
-        }
+        $members = $members->paginate(15);
         
-        return view('backend.sellers.index', compact('sellers', 'sort_search', 'approved'));
+        return view('backend.sellers.index', compact('members', 'sort_search'));
     }
 
     public function filter(Request $request)
@@ -742,35 +722,50 @@ class SellerController extends Controller
 
     public function updateApproved(Request $request)
     {
-        $seller = Seller::findOrFail($request->id);
-        $seller->verification_status = $request->status;
-        if ($seller->save()) {
-            if($request->status == 1){
-                if(!$seller->user->password){
-                    $random = str_shuffle('abcdefghjklmnopqrstuvwxyzABCDEFGHJKLMNOPQRSTUVWXYZ234567890');
-                    $password = substr($random, 0, 10);
-                    $seller->user->password = Hash::make($password);
-                    $seller->user->save();
-
-                    try {
-                        $array['view'] = 'mail';
-                        $array['subject'] = env('MAIL_FROM_NAME');
-                        $array['from'] = env('MAIL_FROM_ADDRESS');
-                        $array['email'] = $seller->user->email;
-                        $array['password'] = $password;
-                        Mail::to($seller->user->email)->queue(new EmailManager($array));
-                    } catch (\Throwable $th) {
-                        $seller->verification_status = 0;
-                        return 0;
-                    }
-                }
-                $seller->isVerified = $request->status;
-                $seller->save();
+        $user = User::findOrFail($request->id);
+        
+        if($request->status == 1){
+            if($user->artist){
+                $artist = Artist::where('user_id', $user->id)->first();
+                $artist->status = 1;
+            }else{
+                $artist = new Artist();
+                $artist->user_id = $user->id;
+                $artist->status = 1;
+                $artist->avatar = $user->avatar;
+                $artist->name = $user->name;
+                $user->user_type = "artist";
             }
-            Cache::forget('verified_sellers_id');
-            return 1;
+            $artist->save();
+            $user->save();
+            try {
+                $array['view'] = 'artist';
+                $array['subject'] = env('MAIL_FROM_NAME');
+                $array['from'] = env('MAIL_FROM_ADDRESS');
+                $array['email'] = $user->email;
+                Mail::to($user->email)->queue(new EmailManager($array));
+            } catch (\Throwable $th) {
+                return 0;
+            }
+            
+        }else{
+            if($user->artist){
+                $artist = Artist::where('user_id', $user->id)->first();
+                $artist->status = 0;
+                $artist->save();
+
+                try {
+                    $array['view'] = 'artist-ban';
+                    $array['subject'] = env('MAIL_FROM_NAME');
+                    $array['from'] = env('MAIL_FROM_ADDRESS');
+                    $array['email'] = $user->email;
+                    Mail::to($user->email)->queue(new EmailManager($array));
+                } catch (\Throwable $th) {
+                    return 0;
+                }
+            }
         }
-        return 0;
+        return 1;
     }
 
     public function login($id)

@@ -22,10 +22,6 @@
                 <div class="card-body text-center">
 					<img alt="{{ translate('Package Logo')}}" src="{{ uploaded_asset($seller_package->logo) }}" class="mw-100 mx-auto mb-4" height="150px">
 					<p class="mb-3 h6 fw-600">{{ $seller_package->getTranslation('name') }}</p>
-                    <p class="h4">{{single_price($seller_package->amount)}}</p>
-                    <p class="fs-15">{{translate('Product Upload Limit') }}:
-                        <b class="text-bold">{{$seller_package->product_upload_limit}}</b>
-                    </p>
 					<p class="fs-15">{{translate('Package Duration') }}:
                         <b class="text-bold">{{$seller_package->duration}} {{translate('days')}}</b>
                     </p>

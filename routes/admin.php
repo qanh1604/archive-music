@@ -20,7 +20,7 @@ Route::post('/get-chart', 'AdminController@getChart')->name('admin.get-chart')->
 Route::post('/get-admin-chart', 'AdminController@getAdminChart')->name('admin.get-admin-chart')->middleware(['auth', 'admin']);
 Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin']], function() {
     //Update Routes
-
+    
     Route::resource('categories', 'CategoryController');
     Route::get('/categories/edit/{id}', 'CategoryController@edit')->name('categories.edit');
     Route::get('/categories/destroy/{id}', 'CategoryController@destroy')->name('categories.destroy');
@@ -43,7 +43,13 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin']], function(
     Route::post('/products/get_products_by_subcategory', 'ProductController@get_products_by_subcategory')->name('products.get_products_by_subcategory');
     Route::post('/bulk-product-delete', 'ProductController@bulk_product_delete')->name('bulk-product-delete');
 
-
+    Route::get('/albums/all', 'AlbumController@index')->name('album.index');
+    Route::get('/albums/create', 'AlbumController@create')->name('album.create');
+    Route::post('/albums/store', 'AlbumController@store')->name('album.store');
+    Route::get('/albums/update', 'AlbumController@update')->name('album.update');
+    Route::post('/albums/update-album', 'AlbumController@updateAlbum')->name('album.updateAlbum');
+    Route::post('/albums/delete', 'AlbumController@delete')->name('album.delete');
+    Route::post('/albums/duplicate', 'AlbumController@delete')->name('album.duplicate');
 
     Route::resource('sellers', 'SellerController');
     Route::get('/sellsers/create', 'SellerController@create')->name('sellsers.create');
@@ -292,5 +298,4 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin']], function(
     Route::get('/all-notification', 'NotificationController@index')->name('admin.all-notification');
 
     Route::get('/cache-cache', 'AdminController@clearCache')->name('cache.clear');
-    Route::post('/dropzone/store', 'ProductController@storeMp3')->name('dropzone.store');
 });

@@ -35,18 +35,17 @@
                                 </select>
                             </div>
                         </div>
-                        <input type="hidden" name="song_id">
-                        {{--<div class="form-group row" id="brand">
-                            <label class="col-md-3 col-from-label">{{translate('Brand')}}</label>
-                            <div class="col-md-8">
-                                <select class="form-control aiz-selectpicker" name="brand_id" id="brand_id" data-live-search="true">
-                                    <option value="">{{ translate('Select Brand') }}</option>
-                                    @foreach (\App\Models\Brand::all() as $brand)
-                                    <option value="{{ $brand->id }}">{{ $brand->getTranslation('name') }}</option>
+                        <div class="form-group row" id="category">
+                            <label class="col-lg-3 col-from-label">{{translate('Album')}}</label>
+                            <div class="col-lg-8">
+                                <select class="form-control aiz-selectpicker" name="album_id" id="album_id" data-live-search="true">
+                                    @foreach ($albums as $album)
+                                    <option value="{{ $album->id }}">{{ $album->name }}</option>
                                     @endforeach
                                 </select>
                             </div>
-                        </div>--}}
+                        </div>
+                        <input type="hidden" name="song_id">
                     </div>
                 </div>
                 <div class="card">
@@ -64,8 +63,7 @@
                                     <div class="form-control file-amount">{{ translate('Choose File') }}</div>
                                     <input type="hidden" name="photos" class="selected-files">
                                 </div>
-                                <div class="file-preview box sm">
-                                </div>
+                                <div class="file-preview box sm"></div>
                                 <small class="text-muted">{{translate('These images are visible in product details page gallery. Use 600x600 sizes images.')}}</small>
                             </div>
                         </div>
@@ -79,8 +77,7 @@
                                     <div class="form-control file-amount">{{ translate('Choose File') }}</div>
                                     <input type="hidden" name="thumbnail_img" class="selected-files">
                                 </div>
-                                <div class="file-preview box sm">
-                                </div>
+                                <div class="file-preview box sm"></div>
                                 <small class="text-muted">{{translate('This image is visible in all product box. Use 300x300 sizes image. Keep some blank space around main object of your image as we had to crop some edge in different devices to make it responsive.')}}</small>
                             </div>
                         </div>
@@ -100,7 +97,6 @@
                         </div>
                     </div>
                 </div>
-
             </div>
 
             <div class="col-lg-4">
@@ -120,8 +116,8 @@
                         </div>
                     </div>
                 </div>
-
             </div>
+            
             <div class="col-12">
                 <div class="btn-toolbar float-right mb-3" role="toolbar" aria-label="Toolbar with button groups">
                     <div class="btn-group mr-2" role="group" aria-label="First group">

@@ -67,8 +67,18 @@
                                 </a>
                             </li>
                             <li class="aiz-side-nav-item">
+                                <a class="aiz-side-nav-link" href="{{route('album.create')}}">
+                                    <span class="aiz-side-nav-text">{{translate('Add New album')}}</span>
+                                </a>
+                            </li>
+                            <li class="aiz-side-nav-item">
                                 <a href="{{route('products.all')}}" class="aiz-side-nav-link">
                                     <span class="aiz-side-nav-text">{{ translate('All Products') }}</span>
+                                </a>
+                            </li>
+                            <li class="aiz-side-nav-item">
+                                <a href="{{route('album.index')}}" class="aiz-side-nav-link">
+                                    <span class="aiz-side-nav-text">{{ translate('All Albums') }}</span>
                                 </a>
                             </li>
                             {{-- <li class="aiz-side-nav-item">

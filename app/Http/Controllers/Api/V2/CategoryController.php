@@ -10,15 +10,9 @@ use Cache;
 class CategoryController extends Controller
 {
 
-    public function index($parent_id = 0)
+    public function index()
     {
-        if(request()->has('parent_id') && is_numeric (request()->get('parent_id'))){
-          $parent_id = request()->get('parent_id');
-        }
-        
-        return Cache::remember("app.categories-$parent_id", 86400, function() use ($parent_id){
-            return new CategoryCollection(Category::where('parent_id', $parent_id)->get());
-        });
+        return new CategoryCollection(Category::paginate(15));
     }
 
     public function featured()

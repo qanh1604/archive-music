@@ -8,7 +8,6 @@
     </div>
 </div>
 
-
 <div class="card">
     <form class="" id="sort_customers" action="" method="GET">
         <div class="card-header row gutters-5">
@@ -50,8 +49,8 @@
                         <th>{{translate('Name')}}</th>
                         <th data-breakpoints="lg">{{translate('Email Address')}}</th>
                         <th data-breakpoints="lg">{{translate('Phone')}}</th>
-                        <th data-breakpoints="lg">{{translate('Package')}}</th>
-                        <th data-breakpoints="lg">{{translate('Wallet Balance')}}</th>
+                        <th data-breakpoints="lg">{{translate('Artist')}}</th>
+                        <th data-breakpoints="lg">{{translate('Wallet balance')}}</th>
                         <th>{{translate('Options')}}</th>
                     </tr>
                 </thead>
@@ -74,9 +73,10 @@
                                 <td>{{$user->email}}</td>
                                 <td>{{$user->phone}}</td>
                                 <td>
-                                    @if ($user->customer_package != null)
-                                    {{$user->customer_package->getTranslation('name')}}
-                                    @endif
+                                    <label class="aiz-switch aiz-switch-success mb-0">
+                                        <input onchange="update_approved(this)" value="{{ $user->id }}" type="checkbox" <?php if($user->verification_status == 1) echo "checked";?> >
+                                        <span class="slider round"></span>
+                                    </label>
                                 </td>
                                 <td>{{single_price($user->balance)}}</td>
                                 <td class="text-right">
@@ -180,6 +180,23 @@
         {
             $('#confirm-unban').modal('show', {backdrop: 'static'});
             document.getElementById('confirmationunban').setAttribute('href' , url);
+        }
+
+        function update_approved(el){
+            if(el.checked){
+                var status = 1;
+            }
+            else{
+                var status = 0;
+            }
+            $.post('{{ route('sellers.approved') }}', {_token:'{{ csrf_token() }}', id:el.value, status:status}, function(data){
+                if(data == 1){
+                    AIZ.plugins.notify('success', '{{ translate('Users updated successfully') }}');
+                }
+                else{
+                    AIZ.plugins.notify('danger', '{{ translate('Something went wrong') }}');
+                }
+            });
         }
         
         function bulk_delete() {

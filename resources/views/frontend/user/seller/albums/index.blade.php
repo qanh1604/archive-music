@@ -1,10 +1,23 @@
 @extends('frontend.layouts.user_panel')
 
 @section('panel_content')
+
 <div class="aiz-titlebar text-left mt-2 mb-3">
     <div class="row align-items-center">
         <div class="col-auto">
-            <h1 class="h3">{{translate('All songs')}}</h1>
+            <h1 class="h3">{{translate('All albums')}}</h1>
+        </div>
+    </div>
+    <div class="row gutters-10 justify-content-center">
+        <div class="col-md-4 mx-auto mb-3" >
+            <a href="{{ route('selleralbum.create')}}">
+              <div class="p-3 rounded mb-3 c-pointer text-center bg-white shadow-sm hov-shadow-lg has-transition">
+                  <span class="size-60px rounded-circle mx-auto bg-secondary d-flex align-items-center justify-content-center mb-3">
+                      <i class="las la-plus la-3x text-white"></i>
+                  </span>
+                  <div class="fs-18 text-primary">{{ translate('Add New Album') }}</div>
+              </div>
+            </a>
         </div>
     </div>
 </div>
@@ -14,7 +27,7 @@
     <form class="" id="sort_products" action="" method="GET">
         <div class="card-header row gutters-5">
             <div class="col">
-                <h5 class="mb-md-0 h6">{{ translate('All Songs') }}</h5>
+                <h5 class="mb-md-0 h6">{{ translate('All Albums') }}</h5>
             </div>
             
             <div class="dropdown mb-2 mb-md-0">
@@ -25,29 +38,6 @@
                     <a class="dropdown-item" href="#" onclick="bulk_delete()"> {{translate('Delete selection')}}</a>
                 </div>
             </div>
-            
-            {{--@if($type == 'Seller')
-            <div class="col-md-2 ml-auto">
-                <select class="form-control form-control-sm aiz-selectpicker mb-2 mb-md-0" id="user_id" name="user_id" onchange="sort_products()">
-                    <option value="">{{ translate('All Sellers') }}</option>
-                    @foreach (App\Models\Seller::all() as $key => $seller)
-                        @if ($seller->user != null && $seller->user->shop != null)
-                            <option value="{{ $seller->user->id }}" @if ($seller->user->id == $seller_id) selected @endif>{{ $seller->user->shop->name }} ({{ $seller->user->name }})</option>
-                        @endif
-                    @endforeach
-                </select>
-            </div>
-            @endif--}}
-            {{--@if($type == 'All')
-            <div class="col-md-2 ml-auto">
-                <select class="form-control form-control-sm aiz-selectpicker mb-2 mb-md-0" id="user_id" name="user_id" onchange="sort_products()">
-                    <option value="">{{ translate('All Sellers') }}</option>
-                        @foreach (App\Models\User::where('user_type', '=', 'admin')->orWhere('user_type', '=', 'seller')->get() as $key => $seller)
-                            <option value="{{ $seller->id }}" @if ($seller->id == $seller_id) selected @endif>{{ $seller->name }}</option>
-                        @endforeach
-                </select>
-            </div>
-            @endif--}}
             <div class="col-md-2 ml-auto">
                 <select class="form-control form-control-sm aiz-selectpicker mb-2 mb-md-0" name="type" id="type" onchange="sort_products()">
                     <option value="">{{ translate('Sort By') }}</option>
@@ -85,18 +75,16 @@
                         <th data-breakpoints="lg">{{translate('Added By')}}</th>
                         <th data-breakpoints="sm">{{translate('View')}}</th>
                         <th data-breakpoints="md">{{translate('Total Stock')}}</th>
-                        <th data-breakpoints="lg">{{translate('Published')}}</th>
-                        <th data-breakpoints="lg">{{translate('Featured')}}</th>
                         <th data-breakpoints="sm" class="text-right">{{translate('Options')}}</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach($songs as $key => $song)
+                    @foreach($albums as $key => $album)
                     <tr>
                         <td>
                             <div class="form-group d-inline-block">
                                 <label class="aiz-checkbox">
-                                    <input type="checkbox" class="check-one" name="id[]" value="{{$song->id}}">
+                                    <input type="checkbox" class="check-one" name="id[]" value="{{$album->id}}">
                                     <span class="aiz-square-check"></span>
                                 </label>
                             </div>
@@ -104,37 +92,25 @@
                         <td>
                             <div class="row gutters-5 w-200px mw-100">
                                 <div class="col-auto">
-                                    <img src="{{ uploaded_asset($song->icon)}}" alt="Image" class="size-50px img-fit">
+                                    <img src="{{ uploaded_asset($album->image)}}" alt="Image" class="size-50px img-fit">
                                 </div>
                                 <div class="col">
-                                    <span class="text-muted text-truncate-2">{{ $song->name }}</span>
+                                    <span class="text-muted text-truncate-2">{{ $album->name }}</span>
                                 </div>
                             </div>
                         </td>
-                        <td>{{ $song->user?$song->user->name:'' }}</td>
-                        <td>{{ $song->view }}</td>
-                        <td>{{ $song->like }}</td>
-                        <td>
-                            <label class="aiz-switch aiz-switch-success mb-0">
-                                <input onchange="update_published(this)" value="{{ $song->id }}" type="checkbox" <?php if ($song->is_publish == 1) echo "checked"; ?> >
-                                <span class="slider round"></span>
-                            </label>
-                        </td>
-                        <td>
-                            <label class="aiz-switch aiz-switch-success mb-0">
-                                <input onchange="update_featured(this)" value="{{ $song->id }}" type="checkbox" <?php if ($song->featured == 1) echo "checked"; ?> >
-                                <span class="slider round"></span>
-                            </label>
-                        </td>
+                        <td>{{ $album->user?$album->user->name:'' }}</td>
+                        <td>{{ $album->total_views }}</td>
+                        <td>{{ $album->total_songs }}</td>
                         <td class="text-right">
-                            <a class="btn btn-soft-primary btn-icon btn-circle btn-sm" href="{{route('seller.products.edit', ['id'=>$song->id]  )}}" title="{{ translate('Edit') }}">
+                            <a class="btn btn-soft-primary btn-icon btn-circle btn-sm" href="{{route('selleralbum.update', ['id'=>$album->id]  )}}" title="{{ translate('Edit') }}">
                                 <i class="las la-edit"></i>
                             </a>
                             
-                            <a class="btn btn-soft-warning btn-icon btn-circle btn-sm" href="{{route('products.duplicate', ['id'=>$song->id]  )}}" title="{{ translate('Duplicate') }}">
+                            <a class="btn btn-soft-warning btn-icon btn-circle btn-sm" href="{{route('selleralbum.duplicate', ['id'=>$album->id]  )}}" title="{{ translate('Duplicate') }}">
                                 <i class="las la-copy"></i>
                             </a>
-                            <a href="#" class="btn btn-soft-danger btn-icon btn-circle btn-sm confirm-delete" data-href="{{route('products.destroy', $song->id)}}" title="{{ translate('Delete') }}">
+                            <a href="#" class="btn btn-soft-danger btn-icon btn-circle btn-sm confirm-delete" data-href="{{route('album.delete', $album->id)}}" title="{{ translate('Delete') }}">
                                 <i class="las la-trash"></i>
                             </a>
                         </td>
@@ -143,7 +119,7 @@
                 </tbody>
             </table>
             <div class="aiz-pagination">
-                {{ $songs->appends(request()->input())->links() }}
+                {{ $albums->appends(request()->input())->links() }}
             </div>
         </div>
     </form>

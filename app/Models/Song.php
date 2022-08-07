@@ -26,7 +26,7 @@ class Song extends Model
 
     public function category()
     {
-        return $this->belongsTo(Category::class);
+        return $this->belongsTo(Category::class, 'category_id', 'id');
     }
 
     // public function brand()
@@ -37,6 +37,11 @@ class Song extends Model
     public function user()
     {
         return $this->belongsTo(User::class, 'artist_id', 'id');
+    }
+
+    public function album()
+    {
+        return $this->belongsTo(Album::class, 'album_id', 'id');
     }
 
     // public function orderDetails()

@@ -5,6 +5,11 @@
     <h1 class="mb-0 h6">{{ translate('Edit Song') }}</h5>
 </div>
 <div class="">
+    <div>Dữ nguyên nếu không thay đổi</div>
+    <form method="post" action="{{ route('dropzone.store') }}" enctype="multipart/form-data"
+        class="dropzone uploadmp3" id="dropzone">
+        @csrf
+    </form>
     <form class="form form-horizontal mar-top" action="{{route('products.update', $song->id)}}" method="POST" enctype="multipart/form-data" id="choice_form">
         <div class="row gutters-5">
             <div class="col-lg-8">
@@ -39,16 +44,14 @@
                                 </select>
                             </div>
                         </div>
-                        <div class="form-group row">
-                            <label class="col-lg-3 col-from-label">{{translate('View')}} <i class="las la-language text-danger" title="{{translate('Translatable')}}"></i> </label>
+                        <div class="form-group row" id="category">
+                            <label class="col-lg-3 col-from-label">{{translate('Album')}}</label>
                             <div class="col-lg-8">
-                                <input type="text" class="form-control" name="view" placeholder="{{ translate('View') }}" value="{{ $song->view }}" required>
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <label class="col-lg-3 col-from-label">{{translate('Like')}}</label>
-                            <div class="col-lg-8">
-                                <input type="number" lang="en" class="form-control" name="like" value="{{ $song->like }}" min="1" required>
+                                <select class="form-control aiz-selectpicker" name="album_id" id="album_id" data-selected="{{ $song->album_id }}" data-live-search="true">
+                                    @foreach ($albums as $album)
+                                    <option value="{{ $album->id }}">{{ $album->name }}</option>
+                                    @endforeach
+                                </select>
                             </div>
                         </div>
                     </div>
@@ -107,6 +110,20 @@
                         </div>--}}
                     </div>
                 </div>
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0 h6">{{translate('Song Lyric')}}</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="form-group row">
+                            <label class="col-md-3 col-from-label">{{translate('Lyric')}}</label>
+                            <div class="col-md-8">
+                                <textarea class="aiz-text-editor" name="lyric">{{ $song->lyric }}</textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <div class="col-lg-4">
                 <div class="card">
                     <div class="card-header">
@@ -128,7 +145,6 @@
                         </div>
                     </div>
                 </div>
-
             </div>
             <div class="col-12">
                 <div class="mb-3 text-right">
@@ -142,7 +158,8 @@
 @endsection
 
 @section('script')
-
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.5.0/min/dropzone.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.5.0/dropzone.js"></script>
 <script type="text/javascript">
     $(document).ready(function (){
         show_hide_shipping_div();
@@ -251,36 +268,27 @@
         });
     });
 
-    $('#choice_attributes').on('change', function() {
-        $.each($("#choice_attributes option:selected"), function(j, attribute){
-            flag = false;
-            $('input[name="choice_no[]"]').each(function(i, choice_no) {
-                if($(attribute).val() == $(choice_no).val()){
-                    flag = true;
-                }
-            });
-            if(!flag){
-                add_more_customer_choice_option($(attribute).val(), $(attribute).text());
-            }
-        });
-
-        var str = @php echo $product->attributes @endphp;
-
-        $.each(str, function(index, value){
-            flag = false;
-            $.each($("#choice_attributes option:selected"), function(j, attribute){
-                if(value == $(attribute).val()){
-                    flag = true;
-                }
-            });
-            if(!flag){
-                $('input[name="choice_no[]"][value="'+value+'"]').parent().parent().remove();
-            }
-        });
-
-        update_sku();
-    });
-
 </script>
-
+<script type="text/javascript">
+    Dropzone.options.dropzone =
+    {
+        maxFilesize: 10,
+        renameFile: function (file) {
+            var dt = new Date();
+            var time = dt.getTime();
+            return time + file.name;
+        },
+        acceptedFiles: ".mp3",
+        addRemoveLinks: true,
+        timeout: 60000,
+        success: function (file, response) {
+            if(response.success){
+                $("input[name=song_id]").val(response.upload_id);
+            }
+        },
+        error: function (file, response) {
+            return false;
+        }
+    };
+</script>
 @endsection

@@ -1,19 +1,14 @@
 @extends('frontend.layouts.user_panel')
 
 @section('panel_content')
-
 <div class="aiz-titlebar text-left mt-2 mb-3">
-    <h5 class="mb-0 h6">{{translate('Add New Song')}}</h5>
+    <h5 class="mb-0 h6">{{translate('Add New Album')}}</h5>
 </div>
 <div class="">
-    <div class="card-header">
-        <h5 class="mb-0 h6">{{translate('Song Information')}}</h5>
-    </div>
-    <form method="post" action="{{ route('dropzone.store') }}" enctype="multipart/form-data"
-        class="dropzone uploadmp3" id="dropzone">
-        @csrf
-    </form>
-    <form class="form form-horizontal mar-top" action="{{route('products.store')}}" method="POST" enctype="multipart/form-data" id="choice_form">
+    <form class="form form-horizontal mar-top" action="{{route('selleralbum.store')}}" method="POST" enctype="multipart/form-data" id="choice_form">
+        <div class="card-header">
+            <h5 class="mb-0 h6">{{translate('Album Information')}}</h5>
+        </div>    
         <div class="row gutters-5">
             <div class="col-lg-8">
                 @csrf
@@ -21,37 +16,16 @@
                 <div class="card">
                     <div class="card-body">
                         <div class="form-group row">
-                            <label class="col-md-3 col-from-label">{{translate('Song Name')}} <span class="text-danger">*</span></label>
+                            <label class="col-md-3 col-from-label">{{translate('Album Name')}} <span class="text-danger">*</span></label>
                             <div class="col-md-8">
                                 <input type="text" class="form-control" name="name" placeholder="{{ translate('Song Name') }}" onchange="update_sku()" required>
                             </div>
                         </div>
-                        <div class="form-group row" id="category">
-                            <label class="col-md-3 col-from-label">{{translate('Category')}} <span class="text-danger">*</span></label>
-                            <div class="col-md-8">
-                                <select class="form-control aiz-selectpicker" name="category_id" id="category_id" data-live-search="true" required>
-                                    @foreach ($categories as $category)
-                                    <option value="{{ $category->id }}">{{ $category->getTranslation('name') }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                        </div>
-                        <div class="form-group row" id="category">
-                            <label class="col-lg-3 col-from-label">{{translate('Album')}}</label>
-                            <div class="col-lg-8">
-                                <select class="form-control aiz-selectpicker" name="album_id" id="album_id" data-live-search="true">
-                                    @foreach ($albums as $album)
-                                    <option value="{{ $album->id }}">{{ $album->name }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                        </div>
-                        <input type="hidden" name="song_id">
                     </div>
                 </div>
                 <div class="card">
                     <div class="card-header">
-                        <h5 class="mb-0 h6">{{translate('Song Images')}}</h5>
+                        <h5 class="mb-0 h6">{{translate('Album Images')}}</h5>
                     </div>
                     <div class="card-body">
                         <div class="form-group row">
@@ -62,24 +36,10 @@
                                         <div class="input-group-text bg-soft-secondary font-weight-medium">{{ translate('Browse')}}</div>
                                     </div>
                                     <div class="form-control file-amount">{{ translate('Choose File') }}</div>
-                                    <input type="hidden" name="photos" class="selected-files">
+                                    <input type="hidden" name="image" class="selected-files">
                                 </div>
                                 <div class="file-preview box sm"></div>
                                 <small class="text-muted">{{translate('These images are visible in product details page gallery. Use 600x600 sizes images.')}}</small>
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <label class="col-md-3 col-form-label" for="signinSrEmail">{{translate('Thumbnail Image')}} <small>(300x300)</small></label>
-                            <div class="col-md-8">
-                                <div class="input-group" data-toggle="aizuploader" data-type="image">
-                                    <div class="input-group-prepend">
-                                        <div class="input-group-text bg-soft-secondary font-weight-medium">{{ translate('Browse')}}</div>
-                                    </div>
-                                    <div class="form-control file-amount">{{ translate('Choose File') }}</div>
-                                    <input type="hidden" name="thumbnail_img" class="selected-files">
-                                </div>
-                                <div class="file-preview box sm"></div>
-                                <small class="text-muted">{{translate('This image is visible in all product box. Use 300x300 sizes image. Keep some blank space around main object of your image as we had to crop some edge in different devices to make it responsive.')}}</small>
                             </div>
                         </div>
                     </div>
@@ -87,20 +47,20 @@
                 
                 <div class="card">
                     <div class="card-header">
-                        <h5 class="mb-0 h6">{{translate('Song Lyric')}}</h5>
+                        <h5 class="mb-0 h6">{{translate('Mô tả')}}</h5>
                     </div>
                     <div class="card-body">
                         <div class="form-group row">
-                            <label class="col-md-3 col-from-label">{{translate('Lyric')}}</label>
+                            <label class="col-md-3 col-from-label">{{translate('Mô tả')}}</label>
                             <div class="col-md-8">
-                                <textarea class="aiz-text-editor" name="lyric"></textarea>
+                                <textarea class="aiz-text-editor" name="description"></textarea>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div class="col-lg-4">
+            {{--<div class="col-lg-4">
                 <div class="card">
                     <div class="card-header">
                         <h5 class="mb-0 h6">{{translate('Featured')}}</h5>
@@ -117,7 +77,7 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </div>--}}
             
             <div class="col-12">
                 <div class="btn-toolbar float-right mb-3" role="toolbar" aria-label="Toolbar with button groups">

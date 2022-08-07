@@ -133,8 +133,7 @@ class ProfileController extends Controller
             if ($file_put == false) {
                 return response()->json([
                     'result' => false,
-                    'message' => "Uploading error",
-                    'path' => ""
+                    'message' => "Uploading error"
                 ]);
             }
 

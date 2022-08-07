@@ -7,6 +7,7 @@ use App\Models\SellerPackage;
 use App\Models\SellerPackageTranslation;
 use App\Models\SellerPackagePayment;
 use App\Models\Seller;
+use App\Models\Member;
 use App\Models\Order;
 use App\Models\Upload;
 use App\Models\User;
@@ -54,19 +55,10 @@ class SellerPackageController extends Controller
     {
         $seller_package = new SellerPackage;
         $seller_package->name = $request->name;
-        $seller_package->amount = $request->amount;
-        $seller_package->product_upload_limit = $request->product_upload_limit;
         $seller_package->duration = $request->duration;
         $seller_package->logo = $request->logo;
-        $seller_package->discount = $request->discount;
-        $seller_package->discount_type = $request->discount_type;
         $seller_package->type = $request->type;
         if($seller_package->save()){
-
-            $seller_package_translation = SellerPackageTranslation::firstOrNew(['lang' => env('DEFAULT_LANGUAGE'), 'seller_package_id' => $seller_package->id]);
-            $seller_package_translation->name = $request->name;
-            $seller_package_translation->save();
-
             flash(translate('Package has been inserted successfully'))->success();
             return redirect()->route('seller_packages.index');
         }
@@ -113,17 +105,9 @@ class SellerPackageController extends Controller
         if($request->lang == env("DEFAULT_LANGUAGE")){
             $seller_package->name = $request->name;
         }
-        $seller_package->amount = $request->amount;
-        $seller_package->product_upload_limit = $request->product_upload_limit;
         $seller_package->duration = $request->duration;
         $seller_package->logo = $request->logo;
-        $seller_package->discount = $request->discount;
-        $seller_package->discount_type = $request->discount_type;
-        $seller_package->type = $request->type;
         if($seller_package->save()){
-            $seller_package_translation = SellerPackageTranslation::firstOrNew(['lang' => $request->lang, 'seller_package_id' => $seller_package->id]);
-            $seller_package_translation->name = $request->name;
-            $seller_package_translation->save();
             flash(translate('Package has been inserted successfully'))->success();
             return redirect()->route('seller_packages.index');
         }
@@ -142,9 +126,6 @@ class SellerPackageController extends Controller
     public function destroy($id)
     {
         $seller_package = SellerPackage::findOrFail($id);
-        foreach ($seller_package->seller_package_translations as $key => $seller_package_translation) {
-            $seller_package_translation->delete();
-        }
         SellerPackage::destroy($id);
         flash(translate('Package has been deleted successfully'))->success();
         return redirect()->route('seller_packages.index');
@@ -308,299 +289,56 @@ class SellerPackageController extends Controller
         $seller_packages = SellerPackage::paginate(15);
         foreach($seller_packages as &$package){
             $logo = Upload::where('id', $package->logo)->first();
-            if($logo) {
-                $package->logo = $logo->file_name;
-            }
+            $package->logo = $logo?$logo->file_name:'';
         }
         return response()->json($seller_packages);
     }
 
     public function purchase_package_api(Request $request)
-    {   
-        // $data['payment_method'] = $request->payment_option;
-        $type = [
-            "jpg"=>"image",
-            "jpeg"=>"image",
-            "png"=>"image",
-            "svg"=>"image",
-            "webp"=>"image",
-            "gif"=>"image",
-        ];
-        
-        $data['name'] = $request->name;
-        $data['phone'] = $request->phone;
-        $data['email'] = $request->email;
-        $data['seller_package_id'] = $request->seller_package_id;
-        $data['has_virtual_assistant'] = $request->has_virtual_assistant;
-        $data['virtual_assistant_description'] = $request->virtual_assistant_description;
-
+    {
         $validator = Validator::make($request->all(), [
-            'name' => 'required',
-            'phone' => 'required',
             'email' => 'required',
-            'seller_package_id' => 'required',
-            'identity_card' => 'required'
+            'package_id' => 'required',
         ]);
 
-        $upload_identity_card = null;
-        $upload_business_license = null;
-        
         if($validator->fails()){
             return response()->json([
-                'result' => false,
+                'success' => false,
                 'message' => $validator->errors()
-            ], 401);
+            ]);
+        }
+
+        $data['email'] = $request->email;
+        $data['package_id'] = $request->package_id;
+
+        $member = Member::where('user_id', Auth::user()->id)->first();
+        
+        if(!$member){
+            $member = new Member;
+            $member->user_id = Auth::user()->id;
+            $member->started_at = Carbon::now();
+            $member->package_id = $data['package_id'];
+            $member->save();
         }else{
-            $identity_card = $request->identity_card;
-            $business_license = $request->business_license;
-
-            $identity_card_name = $request->identity_card_name;
-            $business_license_name = $request->business_license_name;
-
-            if($identity_card && $identity_card_name || $identity_card != "null" && $identity_card_name != "null" && $identity_card && $identity_card_name){
-                $real_identity_card = base64_decode($identity_card);
-                $dir_identity_card = public_path('uploads/all');
-                $full_path_identity_card = "$dir_identity_card/$identity_card_name";
-                $file_put_identity_card = file_put_contents($full_path_identity_card, $real_identity_card);
-                
-                if ($file_put_identity_card == false) {
-                    return response()->json([
-                        'result' => false,
-                        'message' => "File uploading error"
-                    ]);
-                }
-            
-                $upload_identity_card = new Upload;
-                $extension_identity_card = strtolower(File::extension($full_path_identity_card));
-                $size_identity_card = File::size($full_path_identity_card);
-                
-                if (!isset($type[$extension_identity_card])) {
-                    unlink($full_path_identity_card);
-                    return response()->json([
-                        'result' => false,
-                        'message' => "Only image can be uploaded"
-                    ]);
-                }
-
-                $upload_identity_card->file_original_name = null;
-                $arr_identity_card = explode('.', File::name($full_path_identity_card));
-                
-                for ($i = 0; $i < count($arr_identity_card) - 1; $i++) {
-                    if ($i == 0) {
-                        $upload_identity_card->file_original_name .= $arr_identity_card[$i];
-                    } else {
-                        $upload_identity_card->file_original_name .= "." . $arr_identity_card[$i];
-                    }
-                }
-                
-                //unlink and upload again with new name
-                unlink($full_path_identity_card);
-                $newFileName_identity_card = rand(10000000000, 9999999999) . date("YmdHis") . "." . $extension_identity_card;
-                $newFullPath_identity_card = "$dir_identity_card/$newFileName_identity_card";
-                $file_put_identity_card = file_put_contents($newFullPath_identity_card, $real_identity_card);
-                
-                if ($file_put_identity_card == false) {
-                    return response()->json([
-                        'result' => false,
-                        'message' => "Uploading error"
-                    ]);
-                }
-
-                $newPath_identity_card = "uploads/all/$newFileName_identity_card";
-                
-                if (env('FILESYSTEM_DRIVER') == 's3') {
-                    Storage::disk('s3')->put($newPath_identity_card, file_get_contents(base_path('public/') . $newPath_identity_card));
-                    Storage::disk('s3')->put($newPath_business_license, file_get_contents(base_path('public/') . $newPath_business_license));
-                    unlink(base_path('public/') . $newPath_identity_card);
-                    unlink(base_path('public/') . $newPath_business_license);
-                }
-
-                $upload_identity_card->extension = $extension_identity_card;
-                $upload_identity_card->file_original_name = $identity_card_name;
-                $upload_identity_card->file_name = $newPath_identity_card;
-                $upload_identity_card->user_id = Auth::user()->id;
-                $upload_identity_card->type = $type[$upload_identity_card->extension];
-                $upload_identity_card->file_size = $size_identity_card;
-            }
-            
-            if($business_license != "null" && $business_license_name != "null" && $business_license && $business_license_name){
-                $real_business_license = base64_decode($business_license);
-                $dir_business_license = public_path('uploads/all');
-                
-                $full_path_business_license = "$dir_business_license/$business_license_name";
-                $file_put_business_license = file_put_contents($full_path_business_license, $real_business_license);
-
-                if ($file_put_business_license == false) {
-                    return response()->json([
-                        'result' => false,
-                        'message' => "File uploading error"
-                    ]);
-                }
-
-                $upload_business_license = new Upload;
-                $extension_business_license = strtolower(File::extension($full_path_business_license));
-                $size_business_license = File::size($full_path_business_license);
-
-                if (!isset($type[$extension_business_license])) {
-                    unlink($full_path_business_license);
-                    return response()->json([
-                        'result' => false,
-                        'message' => "Only image can be uploaded"
-                    ]);
-                }
-
-                $upload_business_license->file_original_name = null;
-                $arr_business_license = explode('.', File::name($full_path_business_license));
-
-                for ($i = 0; $i < count($arr_business_license) - 1; $i++) {
-                    if ($i == 0) {
-                        $upload_business_licens->file_original_name .= $arr_business_license[$i];
-                    } else {
-                        $upload_business_licens->file_original_name .= "." . $arr_business_license[$i];
-                    }
-                }
-
-                unlink($full_path_business_license);
-                $newFileName_business_license = rand(10000000000, 9999999999) . date("YmdHis") . "." . $extension_business_license;
-                $newFullPath_business_license = "$dir_business_license/$newFileName_business_license";
-                $file_put_business_license = file_put_contents($newFullPath_business_license, $real_business_license);
-                $newPath_business_license = "uploads/all/$newFileName_business_license";
-            
-                if (env('FILESYSTEM_DRIVER') == 's3') {
-                    Storage::disk('s3')->put($newPath_business_license, file_get_contents(base_path('public/') . $newPath_business_license));
-                    unlink(base_path('public/') . $newPath_business_license);
-                }
-
-                $upload_business_license->extension = $extension_identity_card;
-                $upload_business_license->file_original_name = $business_license_name;
-                $upload_business_license->file_name = $newPath_identity_card;
-                $upload_business_license->user_id = Auth::user()->id;
-                $upload_business_license->type = $type[$upload_business_license->extension];
-                $upload_business_license->file_size = $size_identity_card;
-            }
+            $member->started_at = Carbon::now();
+            $member->package_id = $data['package_id'];
+            $member->save();
         }
-        
-        $seller_package = SellerPackage::findOrFail($data['seller_package_id']);
-
-        $upload_identity_card->save();
-        if($business_license != "null" && $business_license_name != "null" && $business_license && $business_license_name){
-            $upload_business_license->save();
-            $data['business_license'] = $upload_business_license->id;
-        }
-
-        $data['identity_card'] = $upload_identity_card->id;
-
-        $seller = Seller::where('user_id', Auth::user()->id)->first();
-
-        $users = User::where('banned', 0)->get();
-        foreach($users as $user){
-            if($user && $user->email == $data['email']){
-                if($seller && $seller->user){
-                    if($seller->user->email != $data['email']){
-                        return response()->json([
-                            'result' => false,
-                            'message' => "Email đã được sử dụng"
-                        ]);
-                    }
-                }else {
-                    return response()->json([
-                        'result' => false,
-                        'message' => "Email đã được sử dụng"
-                    ]);
-                }
-            }
-        }
-        
-        if(!$seller){
-            $seller = new Seller;
-            $seller->user_id = Auth::user()->id;
-            $seller->save();
-        }
-
-        if(strtotime(Auth::user()->seller->invalid_at) > strtotime(date('Y-m-d'))){
-            $seller->user->identity_card = $upload_identity_card->id;
-            $seller->user->business_license = $upload_business_license?$upload_business_license->id:null;
-            $seller->user->started_at = Carbon::now();
-            $seller->user->email = $data['email'];
-            $seller->user->save();
-        }else {
-            $seller->user->identity_card = $upload_identity_card->id;
-            $seller->user->business_license = $upload_business_license?$upload_business_license->id:null;
-            $seller->user->email = $data['email'];
-            $seller->user->save();
-        }
-
-        if($seller_package->type == "seller"){
-            $shop = Shop::where('user_id', Auth::user()->id)->first();
-
-            if(!$shop){
-                $shop = new Shop;
-                $shop->user_id = Auth::user()->id;
-                $shop->phone = $data['phone'];
-                $shop->name = $data['name'];
-                $shop->slug = Str::slug($data['name']) . '-' . Auth::user()->id;
-                $shop->save();
-            }else {
-                $shop->user_id = Auth::user()->id;
-                $shop->phone = $data['phone'];
-                $shop->name = $data['name'];
-                $shop->slug = Str::slug($data['name']) . '-' . Auth::user()->id;
-                $shop->save();
-            }
-        }
-        
-        if($data['has_virtual_assistant'] == 1){
-            $virtual_assistant = VirtualAssistant::where('seller_id', $seller->id)->first();
-            if(!$virtual_assistant){
-                $virtual_assistant = new VirtualAssistant;
-                $virtual_assistant->seller_id = $seller->id;
-                $virtual_assistant->description = $data['virtual_assistant_description'];
-                $virtual_assistant->save();
-                
-                $seller->has_virtual_assistant = 1;
-                $seller->virtual_assistant_id = $virtual_assistant->id;
-                $seller->save();
-            }else {
-                $virtual_assistant->seller_id = $seller->id;
-                $virtual_assistant->description = $data['virtual_assistant_description'];
-                $virtual_assistant->save();
-
-                $seller->has_virtual_assistant = 1;
-                $seller->virtual_assistant_id = $virtual_assistant->id;
-                $seller->save();
-            }
-        }
-
         return $this->purchase_payment_done_api($data, null);
     }
 
     public function purchase_payment_done_api($payment_data, $payment){
-        $seller = Auth::user()->seller;
-        $seller->seller_package_id = $payment_data['seller_package_id'];
-        $seller_package = SellerPackage::findOrFail($payment_data['seller_package_id']);
+        $member = Auth::user()->member;
+        $member->package_id = $payment_data['package_id'];
+        $package = SellerPackage::findOrFail($payment_data['package_id']);
 
-        if(Auth::user()->user_type == "seller" && $seller_package->type == "pro"){
-            return response()->json([
-                'result' => false,
-                'message' => "Tài khoản đang là seller"
-            ]);
-        }
-
-        if($seller_package->type == "seller"){
-            $package_type = "seller";
-        }elseif($seller_package->type == "pro"){
-            $package_type = "pro";
-        }
-
-        if(strtotime(Auth::user()->seller->invalid_at) > strtotime(date('Y-m-d'))){
-            $seller->invalid_at = date('Y-m-d', strtotime( $seller->invalid_at. ' +'. $seller_package->duration .'days'));
-            $seller->save();
-
-            $remaining_uploads = Auth::user()->remaining_uploads + $seller_package->product_upload_limit;
+        if(strtotime(Auth::user()->member->invalid_at) > strtotime(date('Y-m-d'))){
+            $member->invalid_at = date('Y-m-d', strtotime( $member->invalid_at. ' +'. $package->duration .'days'));
+            $member->save();
 
             $seller_package = new SellerPackagePayment;
             $seller_package->user_id = Auth::user()->id;
-            $seller_package->seller_package_id = $payment_data['seller_package_id'];
+            $seller_package->seller_package_id = $payment_data['package_id'];
             $seller_package->payment_method = null;
             $seller_package->payment_details = null;
             $seller_package->approval = 1;
@@ -609,14 +347,12 @@ class SellerPackageController extends Controller
             $seller_package->save();
             $message = "Package extended successful";
         }else {
-            $seller->invalid_at = date('Y-m-d', strtotime( $seller->invalid_at. ' +'. $seller_package->duration .'days'));
-            $seller->save();
-
-            $remaining_uploads = $seller_package->product_upload_limit;
+            $member->invalid_at = date('Y-m-d', strtotime( $member->invalid_at. ' +'. $package->duration .'days'));
+            $member->save();
     
             $seller_package = new SellerPackagePayment;
             $seller_package->user_id = Auth::user()->id;
-            $seller_package->seller_package_id = $payment_data['seller_package_id'];
+            $seller_package->seller_package_id = $payment_data['package_id'];
             $seller_package->payment_method = null;
             $seller_package->payment_details = null;
             $seller_package->approval = 1;
@@ -624,15 +360,12 @@ class SellerPackageController extends Controller
             $seller_package->reciept = null;
             $seller_package->save();
             $message = "Package purchasing successfull";
-            
         }
-        DB::table('users')
-            ->where('id', Auth::user()->id)
-            ->update([
-                'user_type' => $package_type,
-                'finished_at' => $seller->invalid_at,
-                'remaining_uploads' => $remaining_uploads
-            ]);
+
+        $user = User::where('id', Auth::user()->id)->first();
+        $user->user_type = "member";
+        $user->save();
+
         return response()->json([
             'result' => true,
             'message' => translate($message)

@@ -47,6 +47,7 @@ Route::group(['middleware' => ['app_language']], function() {
 
     Route::apiResource('business-settings', 'Api\V2\BusinessSettingController')->only('index');
 
+    Route::get('categories', 'Api\V2\CategoryController@index');
     Route::get('categories/featured', 'Api\V2\CategoryController@featured');
     Route::get('categories/home', 'Api\V2\CategoryController@home');
     Route::get('categories/top', 'Api\V2\CategoryController@top');
@@ -73,7 +74,10 @@ Route::group(['middleware' => ['app_language']], function() {
     Route::get('filter/categories', 'Api\V2\FilterController@categories');
     Route::get('filter/brands', 'Api\V2\FilterController@brands');
 
+    Route::get('products', 'Api\V2\ProductController@index');
     Route::get('products/admin', 'Api\V2\ProductController@admin');
+    Route::get('products/artist/{id}', 'Api\V2\ProductController@artist');
+    Route::get('products/recommendations', 'Api\V2\ProductController@recommendations');
     Route::get('products/seller/{id}', 'Api\V2\ProductController@seller');
     Route::get('products/category/{id}', 'Api\V2\ProductController@category')->name('api.products.category');
     Route::get('products/sub-category/{id}', 'Api\V2\ProductController@subCategory')->name('products.subCategory');
@@ -81,8 +85,13 @@ Route::group(['middleware' => ['app_language']], function() {
     Route::get('products/brand/{id}', 'Api\V2\ProductController@brand')->name('api.products.brand');
     Route::get('products/todays-deal', 'Api\V2\ProductController@todaysDeal');
     Route::get('products/featured', 'Api\V2\ProductController@featured');
+    Route::get('products/albums', 'Api\V2\ProductController@albums');
+    Route::get('products/albums/{id}', 'Api\V2\ProductController@albumDetail');
     Route::get('products/best-seller', 'Api\V2\ProductController@bestSeller');
     Route::get('products/related/{id}', 'Api\V2\ProductController@related')->name('products.related');
+    Route::get('products/listen/{id}', 'Api\V2\ProductController@listen')->middleware('auth:sanctum');
+    Route::get('products/listened-songs', 'Api\V2\ProductController@listenedSong')->middleware('auth:sanctum');
+    Route::get('products/like-song/{id}', 'Api\V2\ProductController@likeSong')->middleware('auth:sanctum');
 
     Route::get('products/featured-from-seller/{id}', 'Api\V2\ProductController@newFromSeller')->name('products.featuredromSeller');
     Route::get('products/search', 'Api\V2\ProductController@search');
@@ -236,10 +245,10 @@ Route::group(['middleware' => ['app_language']], function() {
     //Pickup Point list
     Route::get('pickup-list', 'Api\V2\ShippingController@pickup_list');
 
-    Route::get('/seller-packages', 'SellerPackageController@seller_packages_list_api')->name('seller_packages_list_api');
+    Route::get('/packages', 'SellerPackageController@seller_packages_list_api')->name('seller_packages_list_api');
     Route::get('/get_seller_user', 'Api\V2\SellerController@index');
     Route::middleware('auth:sanctum')->group(function () {
-        Route::post('/seller_packages/purchase', 'SellerPackageController@purchase_package_api')->name('seller_packages.purchase_api');
+        Route::post('/packages/purchase', 'SellerPackageController@purchase_package_api')->name('seller_packages.purchase_api');
     });
     
 });

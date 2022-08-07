@@ -18,33 +18,9 @@
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label class="col-sm-2 col-from-label" for="amount">{{translate('Amount')}}</label>
-                        <div class="col-sm-10">
-                            <input type="number" min="0" step="0.01" placeholder="{{translate('Amount')}}" id="amount" name="amount" class="form-control" required>
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <label class="col-sm-2 col-from-label" for="product_upload_limit">{{translate('Product Upload Limit')}}</label>
-                        <div class="col-sm-10">
-                            <input type="number" min="0" step="1" placeholder="{{translate('Product Upload Limit')}}" id="product_upload_limit" name="product_upload_limit" class="form-control" required>
-                        </div>
-                    </div>
-                    <div class="form-group row">
                         <label class="col-sm-2 col-from-label" for="duration">{{translate('Duration')}}</label>
                         <div class="col-sm-10">
                             <input type="number" min="0" step="1" placeholder="{{translate('Validity in number of days')}}" id="duration" name="duration" class="form-control" required>
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <label class="col-md-2 col-from-label">{{translate('Discount')}} <span class="text-danger">*</span></label>
-                        <div class="col-md-6">
-                            <input type="number" lang="en" min="0" value="0" step="0.01" placeholder="{{ translate('Discount') }}" name="discount" class="form-control" required>
-                        </div>
-                        <div class="col-md-4">
-                            <select class="form-control aiz-selectpicker" name="discount_type">
-                                <option value="amount">{{translate('Flat')}}</option>
-                                <option value="percent">{{translate('Percent')}}</option>
-                            </select>
                         </div>
                     </div>
                     <div class="form-group row">
@@ -59,15 +35,6 @@
                             </div>
                             <div class="file-preview box sm">
                             </div>
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <label class="col-md-2 col-from-label">{{translate('Type')}} <span class="text-danger">*</span></label>
-                        <div class="col-md-4">
-                            <select class="form-control aiz-selectpicker" name="type">
-                                <option value="pro">{{translate('Pro')}}</option>
-                                <option value="seller">{{translate('Seller')}}</option>
-                            </select>
                         </div>
                     </div>
                     <div class="form-group mb-0 text-right">

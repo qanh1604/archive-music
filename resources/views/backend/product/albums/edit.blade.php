@@ -1,16 +1,10 @@
-@extends('frontend.layouts.user_panel')
+@extends('backend.layouts.app')
 
-@section('panel_content')
-
+@section('content')
 <div class="aiz-titlebar text-left mt-2 mb-3">
     <h1 class="mb-0 h6">{{ translate('Edit Song') }}</h5>
 </div>
 <div class="">
-    <div>Dữ nguyên nếu không thay đổi</div>
-    <form method="post" action="{{ route('dropzone.store') }}" enctype="multipart/form-data"
-        class="dropzone uploadmp3" id="dropzone">
-        @csrf
-    </form>
     <form class="form form-horizontal mar-top" action="{{route('products.update', $song->id)}}" method="POST" enctype="multipart/form-data" id="choice_form">
         <div class="row gutters-5">
             <div class="col-lg-8">
@@ -50,7 +44,7 @@
                             <div class="col-lg-8">
                                 <select class="form-control aiz-selectpicker" name="album_id" id="album_id" data-selected="{{ $song->album_id }}" data-live-search="true">
                                     @foreach ($albums as $album)
-                                    <option value="{{ $album->id }}">{{ $album->name }}</option>
+                                    <option value="{{ $album->id }}">{{ $category->getTranslation('name') }}</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -159,8 +153,7 @@
 @endsection
 
 @section('script')
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.5.0/min/dropzone.min.css">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.5.0/dropzone.js"></script>
+
 <script type="text/javascript">
     $(document).ready(function (){
         show_hide_shipping_div();
@@ -270,26 +263,5 @@
     });
 
 </script>
-<script type="text/javascript">
-    Dropzone.options.dropzone =
-    {
-        maxFilesize: 10,
-        renameFile: function (file) {
-            var dt = new Date();
-            var time = dt.getTime();
-            return time + file.name;
-        },
-        acceptedFiles: ".mp3",
-        addRemoveLinks: true,
-        timeout: 60000,
-        success: function (file, response) {
-            if(response.success){
-                $("input[name=song_id]").val(response.upload_id);
-            }
-        },
-        error: function (file, response) {
-            return false;
-        }
-    };
-</script>
+
 @endsection

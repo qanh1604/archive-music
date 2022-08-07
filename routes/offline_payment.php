@@ -37,11 +37,3 @@ Route::group(['middleware' => ['user', 'verified']], function(){
 	Route::post('/offline-wallet-recharge', 'WalletController@offline_recharge')->name('wallet_recharge.make_payment');
 
 });
-
-// customer package purchase
-Route::post('/offline-customer-package-purchase-modal', 'ManualPaymentMethodController@offline_customer_package_purchase_modal')->name('offline_customer_package_purchase_modal');
-Route::post('/offline-customer-package-paymnet', 'CustomerPackageController@purchase_package_offline')->name('customer_package.make_offline_payment');
-
-// Seller Package purchase
-Route::post('/offline-seller-package-purchase-modal', 'ManualPaymentMethodController@offline_seller_package_purchase_modal')->name('offline_seller_package_purchase_modal');
-Route::post('/offline-seller-package-paymnet', 'SellerPackageController@purchase_package_offline')->name('seller_package.make_offline_payment');

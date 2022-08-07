@@ -186,6 +186,15 @@ Route::group(['prefix' => 'seller', 'middleware' => ['seller', 'verified', 'user
     Route::get('/products', 'HomeController@seller_product_list')->name('seller.products');
     Route::get('/product/upload', 'HomeController@show_product_upload_form')->name('seller.products.upload');
     Route::get('/product/{id}/edit', 'HomeController@show_product_edit_form')->name('seller.products.edit');
+
+    Route::get('/albums/all', 'SellerAlbumController@index')->name('selleralbum.index');
+    Route::get('/albums/create', 'SellerAlbumController@create')->name('selleralbum.create');
+    Route::post('/albums/store', 'SellerAlbumController@store')->name('selleralbum.store');
+    Route::get('/albums/update', 'SellerAlbumController@edit')->name('selleralbum.update');
+    Route::post('/albums/update-album', 'SellerAlbumController@update')->name('selleralbum.updateAlbum');
+    Route::post('/albums/delete', 'SellerAlbumController@delete')->name('selleralbum.delete');
+    Route::post('/albums/duplicate', 'SellerAlbumController@delete')->name('selleralbum.duplicate');
+    
     Route::resource('payments', 'PaymentController');
 
     Route::get('/shop/apply_for_verification', 'ShopController@verify_form')->name('shop.verify');
@@ -214,6 +223,7 @@ Route::group(['prefix' => 'seller', 'middleware' => ['seller', 'verified', 'user
 });
 
 Route::group(['middleware' => ['auth']], function() {
+    Route::post('/dropzone/store', 'ProductController@storeMp3')->name('dropzone.store');
     Route::post('/products/store/', 'ProductController@store')->name('products.store');
     Route::post('/products/update/{id}', 'ProductController@update')->name('products.update');
     Route::get('/products/destroy/{id}', 'ProductController@destroy')->name('products.destroy');

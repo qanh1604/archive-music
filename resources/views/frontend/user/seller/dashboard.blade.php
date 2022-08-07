@@ -63,11 +63,11 @@
             <div class="bg-grad-3 text-white rounded-lg mb-4 overflow-hidden">
               <div class="px-3 pt-3">
                   @php
-                  $orders = \App\Models\Order::where('user_id', Auth::user()->id)->get();
-                  $total = 0;
-                  foreach ($orders as $key => $order) {
-                  $total += count($order->orderDetails);
-                  }
+                    $orders = \App\Models\Order::where('user_id', Auth::user()->id)->get();
+                    $total = 0;
+                    foreach ($orders as $key => $order) {
+                        $total += count($order->orderDetails);
+                    }
                   @endphp
                   <div class="h3 fw-700">
                       {{ count(\App\Models\OrderDetail::where('seller_id', Auth::user()->id)->where('delivery_status', 'delivered')->get()) }}
@@ -81,7 +81,7 @@
         </div>
     </div>
 
-    <div class="row">
+    {{--<div class="row">
         <div class="col-md-7">
           <div class="card">
               <div class="card-header">
@@ -109,22 +109,8 @@
               </div>
           </div>
         </div>
-        <div class="col-md-5">
-          <div class="card p-5 text-center">
-              <div class="mb-3">
-                  @if(Auth::user()->seller->verification_status == 0)
-                      <img loading="lazy"  src="{{ static_asset('assets/img/non_verified.png') }}" alt="" width="130">
-                  @else
-                      <img loading="lazy"  src="{{ static_asset('assets/img/verified.png') }}" alt="" width="130">
-                  @endif
-              </div>
-              @if(Auth::user()->seller->verification_status == 0)
-                  <a href="{{ route('shop.verify') }}" class="btn btn-primary">{{ translate('Verify Now')}}</a>
-              @endif
-          </div>
-        </div>
     </div>
-
+--}}
     <div class="row">
       <div class="col-md-8">
           <div class="card">
@@ -156,28 +142,7 @@
               </div>
           </div>
       </div>
-      <div class="col-md-4">
-          @if (addon_is_activated('seller_subscription'))
-
-              <div class="card">
-                  <div class="card-header">
-                      <h6 class="mb-0">{{ translate('Purchased Package') }}</h6>
-                  </div>
-                  <div class="card-body text-center">
-                      @if(Auth::user()->seller->seller_package)
-                        <img src="{{ uploaded_asset(Auth::user()->seller->seller_package->logo) }}" class="img-fluid mb-4 h-110px">
-                        <p class="mb-1 text-muted">{{ translate('Product Upload Limit') }}: {{ Auth::user()->seller->seller_package->product_upload_limit }} {{ translate('Times')}}</p>
-                        <p class="text-muted mb-4">{{ translate('Package Expires at') }}: {{ Auth::user()->seller->invalid_at }}</p>
-                        <h6 class="fw-600 mb-3 text-primary">{{ translate('Current Package') }}: {{ Auth::user()->seller->seller_package->name }}</h6>
-                      @else
-                          <h6 class="fw-600 mb-3 text-primary">{{translate('Package Not Found')}}</h6>
-                      @endif
-                      <div class="text-center">
-                          <a href="{{ route('seller_packages_list') }}" class="btn btn-soft-primary">{{ translate('Upgrade Package')}}</a>
-                      </div>
-                  </div>
-              </div>
-          @endif
+      {{--<div class="col-md-4">
           <div class="card mb-4 p-4 text-center">
               <div class="h5 fw-600">{{ translate('Shop')}}</div>
               <p>{{ translate('Manage & organize your shop')}}</p>
@@ -188,7 +153,7 @@
               <p>{{ translate('Configure your payment method')}}</p>
               <a href="{{ route('profile') }}" class="btn btn-soft-primary">{{ translate('Configure Now')}}</a>
           </div>
-      </div>
+      </div>--}}
     </div>
 
 @endsection

@@ -9,27 +9,41 @@ use App\Http\Resources\V2\FlashDealCollection;
 use App\Models\FlashDeal;
 use App\Models\Product;
 use App\Models\Shop;
+use App\Models\Recommendation;
 use App\Models\Color;
+use App\Models\Album;
+use App\Models\Song;
+use App\Models\Upload;
+use App\Models\ListenedSong;
+use App\Models\Favourite;
 use Illuminate\Http\Request;
 use App\Utility\CategoryUtility;
 use App\Utility\SearchUtility;
+use Auth;
 use Cache;
 
 class ProductController extends Controller
 {
     public function index()
     {
-        return new ProductMiniCollection(Product::latest()->paginate(10));
+        return new ProductMiniCollection(Song::latest()->paginate(10));
     }
 
     public function show($id)
     {
-        return new ProductDetailCollection(Product::where('id', $id)->get());
+        return new ProductDetailCollection(Song::where('id', $id)->get());
     }
 
     public function admin()
     {
         return new ProductCollection(Product::where('added_by', 'admin')->latest()->paginate(10));
+    }
+
+    public function artist($id)
+    {
+        $songs = Song::where('artist_id', $id)->where('is_publish', 1)->get();
+        
+        return new ProductDetailCollection($songs);
     }
 
     public function seller($id, Request $request)
@@ -44,20 +58,22 @@ class ProductController extends Controller
         return new ProductMiniCollection($products->latest()->paginate(10));
     }
 
-    public function category($id, Request $request)
+    public function category($category_id)
     {
-        $category_ids = CategoryUtility::children_ids($id);
-        $category_ids[] = $id;
-
-        $products = Product::whereIn('category_id', $category_ids)->physical();
-
-        if ($request->name != "" || $request->name != null) {
-            $products = $products->where('name', 'like', '%' . $request->name . '%');
-        }
-        $products->where('published', 1);
-        return new ProductMiniCollection(filter_products($products)->latest()->paginate(10));
+        $songs = Song::where('category_id', $category_id)->where('is_publish', 1)->paginate(10);
+        return new ProductMiniCollection($songs);
     }
 
+    public function albums()
+    {
+        $albums = Album::paginate(10);
+        return response()->json($albums);
+    }
+
+    public function albumDetail($id){
+        $songs = Song::where('album_id', $id)->where('is_publish', 1)->paginate(10);
+        return new ProductMiniCollection($songs);
+    }
 
     public function brand($id, Request $request)
     {
@@ -101,11 +117,9 @@ class ProductController extends Controller
 
     public function related($id)
     {
-        return Cache::remember("app.related_products-$id", 86400, function() use ($id){
-            $product = Product::find($id);
-            $products = Product::where('category_id', $product->category_id)->where('id', '!=', $id)->physical();
-            return new ProductMiniCollection(filter_products($products)->limit(10)->get());
-        });
+        $product = Song::find($id);
+        $products = Song::where('category_id', $product->category_id)->where('id', '!=', $id)->latest()->limit(10)->get();
+        return new ProductMiniCollection($products);
     }
 
     public function topFromSeller($id)
@@ -117,7 +131,6 @@ class ProductController extends Controller
             return new ProductMiniCollection(filter_products($products)->limit(10)->get());
         });
     }
-
 
     public function search(Request $request)
     {
@@ -136,7 +149,6 @@ class ProductController extends Controller
         $name = $request->name;
         $min = $request->min;
         $max = $request->max;
-
 
         $products = Product::query();
 
@@ -255,8 +267,6 @@ class ProductController extends Controller
             $price += $product->tax;
         }
 
-
-
         return response()->json([
             'product_id' => $product->id,
             'variant' => $str,
@@ -271,4 +281,73 @@ class ProductController extends Controller
     {
         return new ProductCollection(Product::inRandomOrder()->physical()->take(50)->get());
     }
+
+    public function recommendations()
+    {
+        $recommendations = Recommendation::paginate(10);
+        foreach($recommendations as $item){
+            $icon = Upload::where('id', $item->song->icon)->first();
+            $imageList = explode(",", $item->song->image);
+            $image = Upload::select('file_name')->whereIn('id', $imageList)->get();
+            $album = Album::where('id', $item->song->album_id)->first();
+
+            $item->song->icon = $icon?$icon->file_name:'';
+            $item->song->image = $image;
+            $item->song->category_name = $item->song->category->name;
+            $item->song->album = $album;
+        }
+        return response()->json([
+            'success' => true,
+            'data' => $recommendations
+        ]);
+    }
+
+    public function listen($id){
+        $song = Song::find($id);
+
+        if($song){
+            $listened_song = new ListenedSong;
+            $listened_song->user_id = Auth::user()->id;
+            $listened_song->song_id = $id;
+            $listened_song->save();
+
+            return response()->json([
+                'success' => true,
+                'data' => $listened_song
+            ]);
+        }
+    }
+
+    public function listenedSong(){
+        $listened_song = ListenedSong::where('user_id', Auth::user()->id)->get();
+        if($listened_song){
+            $songs = Song::whereIn('id', $listened_song->pluck('song_id')->toArray())->where('is_publish', 1)->paginate(15);
+        }
+        return new ProductMiniCollection($songs);
+    }
+
+    public function likeSong($id){
+        $song = Song::find($id); 
+        if(!$song){
+            return response()->json([
+                'success' => false,
+                'message' => "Không tìm thấy bài hát"
+            ]);
+        }
+
+        $favouriteCheck = Favourite::where('user_id', Auth::user()->id)->where('song_id', $id)->first();
+        if($favouriteCheck){
+            $favouriteCheck->delete();
+        }
+
+        $favourite = new Favourite;
+        $favourite->user_id = Auth::user()->id;
+        $favourite->song_id = $id;
+        $favourite->save();
+        return response()->json([
+            'success' => true,
+            'data' => $favourite
+        ]);
+    }
+    
 }

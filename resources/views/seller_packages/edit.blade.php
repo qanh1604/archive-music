@@ -29,24 +29,12 @@
                     </div>
                 </div>
                 <div class="form-group row">
-                    <label class="col-sm-2 col-from-label" for="amount">{{translate('Amount')}}</label>
-                    <div class="col-sm-10">
-                        <input type="number" min="0" step="0.01" placeholder="{{translate('Amount')}}" value="{{ $seller_package->amount }}" id="amount" name="amount" class="form-control" required>
-                    </div>
-                </div>
-                <div class="form-group row">
-                    <label class="col-sm-2 col-from-label" for="product_upload_limit">{{translate('Product Upload Limit')}}</label>
-                    <div class="col-sm-10">
-                        <input type="number" min="0" step="1" placeholder="{{translate('Product Upload Limit')}}" value="{{ $seller_package->product_upload_limit }}" id="product_upload_limit" name="product_upload_limit" class="form-control" required>
-                    </div>
-                </div>
-                <div class="form-group row">
                     <label class="col-sm-2 col-from-label" for="duration">{{translate('Duration')}}</label>
                     <div class="col-sm-10">
                         <input type="number" min="0" step="1" placeholder="{{translate('Validity in number of days')}}" value="{{ $seller_package->duration }}" id="duration" name="duration" class="form-control" required>
                     </div>
                 </div>
-                <div class="form-group row">
+                {{--<div class="form-group row">
                     <label class="col-lg-2 col-from-label">{{translate('Discount')}}</label>
                     <div class="col-lg-6">
                         <input type="number" lang="en" min="0" step="0.01" placeholder="{{translate('Discount')}}" name="discount" class="form-control" value="{{ $seller_package->discount }}" required>
@@ -57,7 +45,7 @@
                             <option value="percent" <?php if ($seller_package->discount_type == 'percent') echo "selected"; ?> >{{translate('Percent')}}</option>
                         </select>
                     </div>
-                </div>
+                </div>--}}
                 <div class="form-group row">
                     <label class="col-md-2 col-form-label" for="signinSrEmail">{{translate('Package Logo')}}</label>
                     <div class="col-md-10">
@@ -72,7 +60,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="form-group row">
+                {{--<div class="form-group row">
                     <label class="col-lg-2 col-from-label">{{translate('Type')}}</label>
                     <div class="col-lg-4">
                         <select class="form-control aiz-selectpicker" name="type" required>
@@ -80,7 +68,7 @@
                             <option value="seller" <?php if ($seller_package->type == 'seller') echo "selected"; ?> >{{translate('Seller')}}</option>
                         </select>
                     </div>
-                </div>
+                </div>--}}
                 <div class="form-group mb-0 text-right">
                     <button type="submit" class="btn btn-sm btn-primary">{{translate('Save')}}</button>
                 </div>

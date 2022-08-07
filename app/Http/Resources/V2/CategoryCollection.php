@@ -4,6 +4,7 @@ namespace App\Http\Resources\V2;
 
 use Illuminate\Http\Resources\Json\ResourceCollection;
 use App\Utility\CategoryUtility;
+use App\Models\Upload;
 
 class CategoryCollection extends ResourceCollection
 {
@@ -11,16 +12,13 @@ class CategoryCollection extends ResourceCollection
     {
         return [
             'data' => $this->collection->map(function($data) {
+                $icon = Upload::where('id', $data->icon)->first();
+                $banner = Upload::where('id', $data->banner)->first();
                 return [
                     'id' => $data->id,
                     'name' => $data->getTranslation('name'),
-                    'banner' => api_asset($data->banner),
-                    'icon' => api_asset($data->icon),
-                    'number_of_children' => CategoryUtility::get_immediate_children_count($data->id),
-                    'links' => [
-                        'products' => route('api.products.category', $data->id),
-                        'sub_categories' => route('subCategories.index', $data->id)
-                    ]
+                    'banner' => $banner?$banner->file_name:'',
+                    'icon' => $icon?$icon->file_name:''
                 ];
             })
         ];

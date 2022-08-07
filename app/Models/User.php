@@ -51,6 +51,16 @@ class User extends Authenticatable implements MustVerifyEmail
     return $this->hasOne(Seller::class);
     }
 
+    public function artist()
+    {
+    return $this->hasOne(Artist::class);
+    }
+
+    public function member()
+    {
+    return $this->hasOne(Member::class);
+    }
+
     public function affiliate_user()
     {
     return $this->hasOne(AffiliateUser::class);
