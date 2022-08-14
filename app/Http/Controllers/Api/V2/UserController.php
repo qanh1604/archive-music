@@ -4,11 +4,11 @@ namespace App\Http\Controllers\Api\V2;
 
 use App\Http\Resources\V2\UserCollection;
 use App\Models\User;
+use App\Models\Artist;
+use App\Models\Follower;
 use Illuminate\Http\Request;
-
 use Laravel\Sanctum\PersonalAccessToken;
-
-
+use Auth;
 class UserController extends Controller
 {
     public function info($id)
@@ -29,7 +29,6 @@ class UserController extends Controller
 
     public function getUserInfoByAccessToken(Request $request)
     {
-
         $false_response = [
             'result' => false,
             'id' => 0,
@@ -39,8 +38,6 @@ class UserController extends Controller
             'avatar_original' => "",
             'phone' => ""
         ];
-        
-
 
         $token = PersonalAccessToken::findToken($request->access_token);
         if (!$token) {
@@ -48,9 +45,6 @@ class UserController extends Controller
         }
         
         $user = $token->tokenable;
-
-        
-
         if ($user == null) {
             return response()->json($false_response);
 
@@ -65,6 +59,41 @@ class UserController extends Controller
             'avatar_original' => api_asset($user->avatar_original),
             'phone' => $user->phone
         ]);
+    }
 
+    public function follow(Request $request)
+    {
+        $artist = Artist::findOrFail($request->artist_id);
+
+        if(!$artist){
+            return response()->json([
+                'success' => false,
+                'message' => "Không tìm thấy nghệ sĩ"
+            ]);
+        }
+
+        $check = Follower::where('user_id', Auth::user()->id)->where('artist_id', $request->artist_id)->first();
+        if($check){
+            $check->delete();
+            $artist->follower--;
+            $artist->save();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Hủy theo dõi thành công'
+            ]);
+        }
+
+        $follower = new Follower;
+        $follower->user_id = Auth::user()->id;
+        $follower->artist_id = $request->artist_id;
+        $follower->save();
+        $artist->follower++;
+        $artist->save();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Theo dõi thành công'
+        ]);
     }
 }

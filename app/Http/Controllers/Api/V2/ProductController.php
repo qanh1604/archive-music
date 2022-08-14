@@ -16,9 +16,13 @@ use App\Models\Song;
 use App\Models\Upload;
 use App\Models\ListenedSong;
 use App\Models\Favourite;
+use App\Models\Search;
 use Illuminate\Http\Request;
 use App\Utility\CategoryUtility;
 use App\Utility\SearchUtility;
+use Stripe\Exception\CardException;
+use Stripe\PaymentIntent;
+use Stripe\Stripe;
 use Auth;
 use Cache;
 
@@ -134,89 +138,92 @@ class ProductController extends Controller
 
     public function search(Request $request)
     {
-        $category_ids = [];
-        $brand_ids = [];
-
-        if ($request->categories != null && $request->categories != "") {
-            $category_ids = explode(',', $request->categories);
-        }
-
-        if ($request->brands != null && $request->brands != "") {
-            $brand_ids = explode(',', $request->brands);
-        }
-
-        $sort_by = $request->sort_key;
         $name = $request->name;
-        $min = $request->min;
-        $max = $request->max;
+        $type = $request->type;
 
-        $products = Product::query();
+        $products = Song::query();
 
-        $products->where('published', 1)->physical();
-
-        if (!empty($brand_ids)) {
-            $products->whereIn('brand_id', $brand_ids);
-        }
-
-        if (!empty($category_ids)) {
-            $n_cid = [];
-            foreach ($category_ids as $cid) {
-                $n_cid = array_merge($n_cid, CategoryUtility::children_ids($cid));
-            }
-
-            if (!empty($n_cid)) {
-                $category_ids = array_merge($category_ids, $n_cid);
-            }
-
-            $products->whereIn('category_id', $category_ids);
-        }
+        $products->where('is_publish', 1);
 
         if ($name != null && $name != "") {
-            $products->where(function ($query) use ($name) {
-                foreach (explode(' ', trim($name)) as $word) {
-                    $query->where('name', 'like', '%'.$word.'%')->orWhere('tags', 'like', '%'.$word.'%')->orWhereHas('product_translations', function($query) use ($word){
-                        $query->where('name', 'like', '%'.$word.'%');
-                    });
-                }
-            });
-            SearchUtility::store($name);
+            if(isset($type) && $type == "artist"){
+                $products->where(function ($query) use ($name) {
+                    foreach (explode(' ', trim($name)) as $word) {
+                        $query->WhereHas('user', function($query) use ($word){
+                            $query->where('name', 'like', '%'.$word.'%');
+                        });
+                    }
+                });
+            }
+    
+            if(isset($type) && $type == "album"){
+                $products->where(function ($query) use ($name) {
+                    foreach (explode(' ', trim($name)) as $word) {
+                        $query->WhereHas('album', function($query) use ($word){
+                            $query->where('name', 'like', '%'.$word.'%');
+                        });
+                    }
+                });
+            }
+
+            if(isset($type) && $type == "category"){
+                $products->where(function ($query) use ($name) {
+                    foreach (explode(' ', trim($name)) as $word) {
+                        $query->WhereHas('category', function($query) use ($word){
+                            $query->where('name', 'like', '%'.$word.'%');
+                        });
+                    }
+                });
+            }
+
+            if(isset($type) && $type == "all"){
+                $products->where(function ($query) use ($name) {
+                    foreach (explode(' ', trim($name)) as $word) {
+                        $query->where('name', 'like', '%'.$word.'%')
+                            ->orWhereHas('user', function($query) use ($word){
+                                $query->where('name', 'like', '%'.$word.'%');
+                            })->orWhereHas('album', function($query) use ($word){
+                                $query->where('name', 'like', '%'.$word.'%');
+                            })->orWhereHas('category', function($query) use ($word){
+                                $query->where('name', 'like', '%'.$word.'%');
+                            });
+                    }
+                });
+            }
+            
+            $search = Search::where('query', $name)->first();
+
+            if($search){
+                $search->count++;
+                $search->save();
+            }else{
+                $search = new Search;
+                $search->user_id = Auth::user()->id;
+                $search->query = $name;
+                $search->save();
+            }
         }
 
-        if ($min != null && $min != "" && is_numeric($min)) {
-            $products->where('unit_price', '>=', $min);
-        }
+        return new ProductMiniCollection($products->paginate(10));
+    }
 
-        if ($max != null && $max != "" && is_numeric($max)) {
-            $products->where('unit_price', '<=', $max);
-        }
+    public function searchHistory(Request $request){
+        $search = Search::where('user_id', Auth::user()->id)->latest()->limit(5)->get();
 
-        switch ($sort_by) {
-            case 'price_low_to_high':
-                $products->orderBy('unit_price', 'asc');
-                break;
+        return response()->json([
+            'success' => true,
+            'data' => $search
+        ]);
+    }
 
-            case 'price_high_to_low':
-                $products->orderBy('unit_price', 'desc');
-                break;
+    public function topSearch(Request $request){
 
-            case 'new_arrival':
-                $products->orderBy('created_at', 'desc');
-                break;
+        $topSearches = Search::orderByRaw("CAST(count as UNSIGNED) DESC")->limit(5)->get();
 
-            case 'popularity':
-                $products->orderBy('num_of_sale', 'desc');
-                break;
-
-            case 'top_rated':
-                $products->orderBy('rating', 'desc');
-                break;
-
-            default:
-                $products->orderBy('created_at', 'desc');
-                break;
-        }
-
-        return new ProductMiniCollection(filter_products($products)->paginate(10));
+        return response()->json([
+            'success' => true,
+            'data' => $topSearches
+        ]);
     }
 
     public function variantPrice(Request $request)
@@ -306,10 +313,19 @@ class ProductController extends Controller
         $song = Song::find($id);
 
         if($song){
-            $listened_song = new ListenedSong;
-            $listened_song->user_id = Auth::user()->id;
-            $listened_song->song_id = $id;
-            $listened_song->save();
+            $listened_song = ListenedSong::where('user_id', Auth::user()->id)->where('song_id', $id)->first();
+            if($listened_song){
+                $listened_song->count++;
+                $listened_song->save();
+            }else{
+                $listened_song = new ListenedSong;
+                $listened_song->user_id = Auth::user()->id;
+                $listened_song->song_id = $id;
+                $listened_song->count = 1;
+                $listened_song->save();
+            }
+            $song->view++;
+            $song->save();
 
             return response()->json([
                 'success' => true,
@@ -319,7 +335,7 @@ class ProductController extends Controller
     }
 
     public function listenedSong(){
-        $listened_song = ListenedSong::where('user_id', Auth::user()->id)->get();
+        $listened_song = ListenedSong::where('user_id', Auth::user()->id)->latest()->limit(5)->get();
         if($listened_song){
             $songs = Song::whereIn('id', $listened_song->pluck('song_id')->toArray())->where('is_publish', 1)->paginate(15);
         }
@@ -338,16 +354,32 @@ class ProductController extends Controller
         $favouriteCheck = Favourite::where('user_id', Auth::user()->id)->where('song_id', $id)->first();
         if($favouriteCheck){
             $favouriteCheck->delete();
+            $song->like--;
+            $song->save();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Hủy like thành công'
+            ]);
         }
 
         $favourite = new Favourite;
         $favourite->user_id = Auth::user()->id;
         $favourite->song_id = $id;
         $favourite->save();
+        $song->like++;
+        $song->save();
+
         return response()->json([
             'success' => true,
-            'data' => $favourite
+            'message' => 'Like thành công'
         ]);
+    }
+
+    public function stripeTest(Request $request){
+        // \Stripe\Stripe::setApiKey(env('STRIPE_SECRET'));
+        $stripe = new \Stripe\StripeClient(env('STRIPE_SECRET'));dd($stripe);
+        $stripe->customers->all(['limit' => 3]);
     }
     
 }

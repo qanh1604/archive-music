@@ -92,12 +92,31 @@ Route::group(['middleware' => ['app_language']], function() {
     Route::get('products/listen/{id}', 'Api\V2\ProductController@listen')->middleware('auth:sanctum');
     Route::get('products/listened-songs', 'Api\V2\ProductController@listenedSong')->middleware('auth:sanctum');
     Route::get('products/like-song/{id}', 'Api\V2\ProductController@likeSong')->middleware('auth:sanctum');
+    Route::post('products/test_payment', 'Api\V2\ProductController@stripeTest')->middleware('auth:sanctum');
 
     Route::get('products/featured-from-seller/{id}', 'Api\V2\ProductController@newFromSeller')->name('products.featuredromSeller');
-    Route::get('products/search', 'Api\V2\ProductController@search');
+    Route::post('products/search', 'Api\V2\ProductController@search')->middleware('auth:sanctum');
+    Route::post('products/search-history', 'Api\V2\ProductController@searchHistory')->middleware('auth:sanctum');
+    Route::post('products/search/top', 'Api\V2\ProductController@topSearch')->middleware('auth:sanctum');
     Route::get('products/variant/price', 'Api\V2\ProductController@variantPrice');
     Route::get('products/home', 'Api\V2\ProductController@home');
     Route::apiResource('products', 'Api\V2\ProductController')->except(['store', 'update', 'destroy']);
+
+    Route::get('albums/newest', 'Api\V2\AlbumController@newest');
+    Route::get('playlists', 'Api\V2\PlaylistController@index')->middleware('auth:sanctum');
+    Route::post('playlists/create', 'Api\V2\PlaylistController@create')->middleware('auth:sanctum');
+    Route::post('playlists/delete', 'Api\V2\PlaylistController@delete')->middleware('auth:sanctum');
+    Route::post('playlists/detail', 'Api\V2\PlaylistController@detail')->middleware('auth:sanctum');
+    Route::post('playlists/add', 'Api\V2\PlaylistController@add')->middleware('auth:sanctum');
+    Route::post('playlists/remove-song', 'Api\V2\PlaylistController@removeSong')->middleware('auth:sanctum');
+    
+    Route::get('artists', 'Api\V2\ArtistController@index')->middleware('auth:sanctum');
+    Route::post('artists/detail', 'Api\V2\ArtistController@detail')->middleware('auth:sanctum');
+    Route::post('artists/albums', 'Api\V2\ArtistController@albums')->middleware('auth:sanctum');
+
+    Route::post('explore/chart', 'Api\V2\ExploreController@chart')->middleware('auth:sanctum');
+    Route::post('explore/chart/top5', 'Api\V2\ExploreController@chartTop5')->middleware('auth:sanctum');
+    Route::post('explore/trending', 'Api\V2\ExploreController@trending')->middleware('auth:sanctum');
 
     Route::get('cart-summary/{user_id}', 'Api\V2\CartController@summary')->middleware('auth:sanctum');
     Route::post('carts/process', 'Api\V2\CartController@process')->middleware('auth:sanctum');
@@ -148,6 +167,7 @@ Route::group(['middleware' => ['app_language']], function() {
     Route::post('user/shipping/update-location', 'Api\V2\AddressController@updateShippingAddressLocation')->middleware('auth:sanctum');
     Route::post('user/shipping/make_default', 'Api\V2\AddressController@makeShippingAddressDefault')->middleware('auth:sanctum');
     Route::get('user/shipping/delete/{id}', 'Api\V2\AddressController@deleteShippingAddress')->middleware('auth:sanctum');
+    Route::post('user/follow', 'Api\V2\UserController@follow')->middleware('auth:sanctum');
 
     Route::get('clubpoint/get-list/{id}', 'Api\V2\ClubpointController@get_list')->middleware('auth:sanctum');
     Route::post('clubpoint/convert-into-wallet', 'Api\V2\ClubpointController@convert_into_wallet')->middleware('auth:sanctum');
@@ -170,6 +190,7 @@ Route::group(['middleware' => ['app_language']], function() {
 
 
     Route::any('stripe', 'Api\V2\StripeController@stripe');
+    Route::any('/stripe/test-payment', 'Api\V2\StripeController@testStripe');
     Route::any('/stripe/create-checkout-session', 'Api\V2\StripeController@create_checkout_session')->name('api.stripe.get_token');
     Route::any('/stripe/payment/callback', 'Api\V2\StripeController@callback')->name('api.stripe.callback');
     Route::any('/stripe/success', 'Api\V2\StripeController@success')->name('api.stripe.success');

@@ -21,7 +21,7 @@ class ProductMiniCollection extends ResourceCollection
                 
                 return [
                     'id' => $data->id,
-                    'artist_id' => $data->user?$data->user->name:'',
+                    'artist_name' => $data->user?$data->user->name:'',
                     'name' => $data->name,
                     'category' => $category?$category->name:'',
                     'icon' => $icon?$icon->file_name:'',

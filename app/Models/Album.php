@@ -17,4 +17,9 @@ class Album extends Model
     {
         return $this->belongsTo(User::class, 'artist_id', 'id');
     }
+
+    public function image_url()
+    {
+        return $this->belongsTo(Upload::class, 'image', 'id');
+    }
 }
