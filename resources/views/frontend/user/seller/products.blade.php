@@ -6,6 +6,9 @@
         <div class="col-auto">
             <h1 class="h3">{{translate('All songs')}}</h1>
         </div>
+        <div class="text-center">
+            <a href="{{ route('seller.products.upload')}}" class="btn btn-primary d-inline-block">{{ translate('Add New Product')}}</a>
+        </div>
     </div>
 </div>
 <br>

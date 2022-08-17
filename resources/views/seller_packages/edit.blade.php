@@ -34,18 +34,12 @@
                         <input type="number" min="0" step="1" placeholder="{{translate('Validity in number of days')}}" value="{{ $seller_package->duration }}" id="duration" name="duration" class="form-control" required>
                     </div>
                 </div>
-                {{--<div class="form-group row">
-                    <label class="col-lg-2 col-from-label">{{translate('Discount')}}</label>
-                    <div class="col-lg-6">
-                        <input type="number" lang="en" min="0" step="0.01" placeholder="{{translate('Discount')}}" name="discount" class="form-control" value="{{ $seller_package->discount }}" required>
+                <div class="form-group row">
+                    <label class="col-sm-2 col-from-label" for="price">{{translate('Package Price')}}</label>
+                    <div class="col-sm-10">
+                        <input type="text" placeholder="{{translate('Price')}}" value="{{ $seller_package->price }}" id="price" name="price" class="form-control" required>
                     </div>
-                    <div class="col-lg-4">
-                        <select class="form-control aiz-selectpicker" name="discount_type" required>
-                            <option value="amount" <?php if ($seller_package->discount_type == 'amount') echo "selected"; ?> >{{translate('Flat')}}</option>
-                            <option value="percent" <?php if ($seller_package->discount_type == 'percent') echo "selected"; ?> >{{translate('Percent')}}</option>
-                        </select>
-                    </div>
-                </div>--}}
+                </div>
                 <div class="form-group row">
                     <label class="col-md-2 col-form-label" for="signinSrEmail">{{translate('Package Logo')}}</label>
                     <div class="col-md-10">
@@ -60,15 +54,6 @@
                         </div>
                     </div>
                 </div>
-                {{--<div class="form-group row">
-                    <label class="col-lg-2 col-from-label">{{translate('Type')}}</label>
-                    <div class="col-lg-4">
-                        <select class="form-control aiz-selectpicker" name="type" required>
-                            <option value="pro" <?php if ($seller_package->type == 'pro') echo "selected"; ?> >{{translate('Pro')}}</option>
-                            <option value="seller" <?php if ($seller_package->type == 'seller') echo "selected"; ?> >{{translate('Seller')}}</option>
-                        </select>
-                    </div>
-                </div>--}}
                 <div class="form-group mb-0 text-right">
                     <button type="submit" class="btn btn-sm btn-primary">{{translate('Save')}}</button>
                 </div>

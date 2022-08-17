@@ -105,13 +105,13 @@
                         $delivery_viewed = App\Models\Order::where('user_id', Auth::user()->id)->where('delivery_viewed', 0)->get()->count();
                         $payment_status_viewed = App\Models\Order::where('user_id', Auth::user()->id)->where('payment_status_viewed', 0)->get()->count();
                     @endphp
-                    <li class="aiz-side-nav-item">
+                    {{--<li class="aiz-side-nav-item">
                         <a href="{{ route('purchase_history.index') }}" class="aiz-side-nav-link {{ areActiveRoutes(['purchase_history.index'])}}">
                             <i class="las la-file-alt aiz-side-nav-icon"></i>
                             <span class="aiz-side-nav-text">{{ translate('Purchase History') }}</span>
                             @if($delivery_viewed > 0 || $payment_status_viewed > 0)<span class="badge badge-inline badge-success">{{ translate('New') }}</span>@endif
                         </a>
-                    </li>
+                    </li>--}}
 
                     {{-- <li class="aiz-side-nav-item">
                         <a href="{{ route('digital_purchase_history.index') }}" class="aiz-side-nav-link {{ areActiveRoutes(['digital_purchase_history.index'])}}">
@@ -244,12 +244,12 @@
                                 </li>
                             @endif
                         @endif --}}
-                        <li class="aiz-side-nav-item">
+                        {{--<li class="aiz-side-nav-item">
                             <a href="{{ route('orders.index') }}" class="aiz-side-nav-link {{ areActiveRoutes(['orders.index'])}}">
                                 <i class="las la-money-bill aiz-side-nav-icon"></i>
                                 <span class="aiz-side-nav-text">{{ translate('Orders') }}</span>
                             </a>
-                        </li>
+                        </li>--}}
 
                         {{-- @if (addon_is_activated('refund_request'))
                             <li class="aiz-side-nav-item">
@@ -266,19 +266,19 @@
                             </a>
                         </li> --}}
 
-                        <li class="aiz-side-nav-item">
+                        {{--<li class="aiz-side-nav-item">
                             <a href="{{ route('shops.index') }}" class="aiz-side-nav-link {{ areActiveRoutes(['shops.index'])}}">
                                 <i class="las la-cog aiz-side-nav-icon"></i>
                                 <span class="aiz-side-nav-text">{{ translate('Shop Setting') }}</span>
                             </a>
-                        </li>
+                        </li>--}}
 
-                        <li class="aiz-side-nav-item">
+                        {{--<li class="aiz-side-nav-item">
                             <a href="{{ route('payments.index') }}" class="aiz-side-nav-link {{ areActiveRoutes(['payments.index'])}}">
                                 <i class="las la-history aiz-side-nav-icon"></i>
                                 <span class="aiz-side-nav-text">{{ translate('Payment History') }}</span>
                             </a>
-                        </li>
+                        </li>--}}
 
                         {{-- <li class="aiz-side-nav-item">
                             <a href="{{ route('withdraw_requests.index') }}" class="aiz-side-nav-link {{ areActiveRoutes(['withdraw_requests.index'])}}">
@@ -387,7 +387,7 @@
                 </a>
             </div>
         @endif
-        @if(Auth::user()->user_type == 'artist')
+        {{--@if(Auth::user()->user_type == 'artist')
           <hr>
           <h4 class="h5 fw-600 text-center">{{ translate('Sold Amount')}}</h4>
           @php
@@ -437,7 +437,7 @@
                 </table>
             </div>
         </div>
-        @endif
+        @endif--}}
 
     </div>
 

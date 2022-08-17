@@ -50,7 +50,7 @@
         <div class="card-header mb-3 card-header-with-background" id="headingOne">
             <h5 class="mb-0">
                 <button class="btn btn-link card-collapse-button" data-toggle="collapse" data-target="#collapseCFDN" aria-expanded="true" aria-controls="collapseCFDN">
-                    <span class="accicon mr-1"><i class="las la-chevron-down rotate-icon"></i></span>Thống kê CFDN
+                    <span class="accicon mr-1"><i class="las la-chevron-down rotate-icon"></i></span>Thống kê
                 </button>
             </h5>
         </div>
@@ -83,7 +83,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-md-6">
+                {{--<div class="col-md-6">
                     <div class="card">
                         <div class="card-header row">
                             <div class="col-md-6">
@@ -108,7 +108,7 @@
                             <canvas id="chart-revenue" class="w-100" height="200"></canvas>
                         </div>
                     </div>
-                </div>
+                </div>--}}
             </div>
             <div class="row gutters-5">
                 <div class="col-md-4">
@@ -130,7 +130,6 @@
                                     </div>
                                     <div class="col d-flex flex-column">
                                         <strong>{{ $topSell->name }}</strong>
-                                        <!-- <span>Gói thành viên</span> -->
                                     </div>
                                     <div class="col-md-3 statistic-number">
                                         {{ $topSell->total }}
@@ -145,25 +144,24 @@
                     <div class="card">
                         <div class="card-header row">
                             <div class="col">
-                                <h6 class="mb-0">Thương hiệu được quan tâm</h6>
+                                <h6 class="mb-0">Nghệ sĩ được theo dõi</h6>
                             </div>
                         </div>
                         <div class="card-body">
-                            @foreach($topSellBrand as $topSell)
+                            @foreach($topFollowArtist as $topArtist)
                                 <div class="row align-items-center">
                                     <div class="col-md-2">
-                                        @if($topSell->file_name)
-                                            <img class="statistic-image" src="/public/{{ $topSell->file_name }}" onerror="this.onerror=null;this.src='{{ static_asset('assets/img/san-pham-2.svg') }}';">
+                                        @if($topArtist->avatar)
+                                            <img class="statistic-image" src="/public/{{ $topArtist->avatar }}" onerror="this.onerror=null;this.src='{{ static_asset('assets/img/san-pham-2.svg') }}';">
                                         @else
                                             <img class="statistic-image" src="{{ static_asset('assets/img/san-pham-2.svg') }}">
                                         @endif   
                                     </div>
                                     <div class="col d-flex flex-column">
-                                        <strong>{{ $topSell->name }}</strong>
-                                        <!-- <span>Gói thành viên</span> -->
+                                        <strong>{{ $topArtist->name }}</strong>
                                     </div>
                                     <div class="col-md-3 statistic-number">
-                                        {{ $topSell->total }}
+                                        {{ $topArtist->follower }}
                                     </div>
                                 </div>
                                 <br>
@@ -175,25 +173,24 @@
                     <div class="card">
                         <div class="card-header row">
                             <div class="col">
-                                <h6 class="mb-0">Ngành hàng được quan tâm</h6>
+                                <h6 class="mb-0">Bài hát được ưu thích</h6>
                             </div>
                         </div>
                         <div class="card-body">
-                            @foreach($topSellCategory as $topSell)
+                            @foreach($topSongs as $topSong)
                                 <div class="row align-items-center">
                                     <div class="col-md-2">
-                                        @if($topSell->file_name)
-                                            <img class="statistic-image" src="/public/{{ $topSell->file_name }}" onerror="this.onerror=null;this.src='{{ static_asset('assets/img/san-pham-2.svg') }}';">
+                                        @if($topSong->icon)
+                                            <img class="statistic-image" src="/public/{{ $topSong->url->file_name }}" onerror="this.onerror=null;this.src='{{ static_asset('assets/img/san-pham-2.svg') }}';">
                                         @else
                                             <img class="statistic-image" src="{{ static_asset('assets/img/san-pham-2.svg') }}">
                                         @endif     
                                     </div>
                                     <div class="col d-flex flex-column">
-                                        <strong>{{ $topSell->name }}</strong>
-                                        <!-- <span>Gói thành viên</span> -->
+                                        <strong>{{ $topSong->name }}</strong>
                                     </div>
                                     <div class="col-md-3 statistic-number">
-                                        {{ $topSell->total }}
+                                        {{ $topSong->like }}
                                     </div>
                                 </div>
                                 <br>

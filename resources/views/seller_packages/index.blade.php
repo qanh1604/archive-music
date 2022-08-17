@@ -25,6 +25,7 @@
 					<p class="fs-15">{{translate('Package Duration') }}:
                         <b class="text-bold">{{$seller_package->duration}} {{translate('days')}}</b>
                     </p>
+                    <p class="mb-3 h6 fw-600">{{ format_price($seller_package->price) }}</p>
                     <div class="mar-top">
 						<a href="{{route('seller_packages.edit', ['id'=>$seller_package->id, 'lang'=>env('DEFAULT_LANGUAGE')] )}}" class="btn btn-sm btn-info">{{translate('Edit')}}</a>
                         <a href="#" data-href="{{route('seller_packages.destroy', $seller_package->id)}}" class="btn btn-sm btn-danger confirm-delete">{{translate('Delete')}}</a>

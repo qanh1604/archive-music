@@ -24,6 +24,12 @@
                         </div>
                     </div>
                     <div class="form-group row">
+                        <label class="col-sm-2 col-from-label" for="price">{{translate('Duration')}}</label>
+                        <div class="col-sm-10">
+                            <input type="number" min="0" step="1" placeholder="{{translate('Price')}}" id="price" name="price" class="form-control" required>
+                        </div>
+                    </div>
+                    <div class="form-group row">
                         <label class="col-md-2 col-form-label" for="signinSrEmail">{{translate('Package Logo')}}</label>
                         <div class="col-md-10">
                             <div class="input-group" data-toggle="aizuploader" data-type="image" data-multiple="false">

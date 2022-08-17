@@ -57,7 +57,7 @@ class SellerPackageController extends Controller
         $seller_package->name = $request->name;
         $seller_package->duration = $request->duration;
         $seller_package->logo = $request->logo;
-        $seller_package->type = $request->type;
+        $seller_package->price = $request->price;
         if($seller_package->save()){
             flash(translate('Package has been inserted successfully'))->success();
             return redirect()->route('seller_packages.index');
@@ -107,6 +107,7 @@ class SellerPackageController extends Controller
         }
         $seller_package->duration = $request->duration;
         $seller_package->logo = $request->logo;
+        $seller_package->price = $request->price;
         if($seller_package->save()){
             flash(translate('Package has been inserted successfully'))->success();
             return redirect()->route('seller_packages.index');

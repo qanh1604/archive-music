@@ -17,6 +17,7 @@ use App\Models\Shop;
 use App\Models\Song;
 use App\Models\Order;
 use App\Models\Album;
+use App\Models\Upload;
 use App\Models\BusinessSetting;
 use App\Models\Coupon;
 use Cookie;
@@ -195,22 +196,18 @@ class HomeController extends Controller
             $user->password = Hash::make($request->new_password);
         }
 
-        $user->avatar_original = $request->photo;
+        $avatar = Upload::where('id', $request->photo)->first();
+        $user->avatar = $avatar->file_name;
 
-        $seller = $user->seller;
+        $artist = $user->artist;
 
-        if($seller){
-            $seller->cash_on_delivery_status = $request->cash_on_delivery_status;
-            $seller->bank_payment_status = $request->bank_payment_status;
-            $seller->bank_name = $request->bank_name;
-            $seller->bank_acc_name = $request->bank_acc_name;
-            $seller->bank_acc_no = $request->bank_acc_no;
-            $seller->bank_routing_no = $request->bank_routing_no;
+        if($artist){
+            $artist->name = $request->name;
+            $artist->avatar = $avatar->file_name;
 
-            $seller->save();
+            $artist->save();
         }
 
-        $user->save();
 
         flash(translate('Your Profile has been updated successfully!'))->success();
         return back();

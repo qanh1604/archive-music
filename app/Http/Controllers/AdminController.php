@@ -13,6 +13,8 @@ use Modules\MarketSession\Models\HotOrder;
 use App\Models\User;
 use App\Models\Order;
 use App\Models\Shop;
+use App\Models\Song;
+use App\Models\Artist;
 use App\Models\SellerPackage;
 use App\Models\SellerPackagePayment;
 use App\Models\Seller;
@@ -31,39 +33,12 @@ class AdminController extends Controller
     public function admin_dashboard(Request $request)
     {   
         CoreComponentRepository::initializeCache();
-        // $root_categories = Category::where('level', 0)->get();
-
-        // $cached_graph_data = Cache::remember('cached_graph_data', 86400, function() use ($root_categories){
-        //     $num_of_sale_data = null;
-        //     $qty_data = null;
-        //     foreach ($root_categories as $key => $category){
-        //         $category_ids = \App\Utility\CategoryUtility::children_ids($category->id);
-        //         $category_ids[] = $category->id;
-
-        //         $products = Product::with('stocks')->whereIn('category_id', $category_ids)->get();
-        //         $qty = 0;
-        //         $sale = 0;
-        //         foreach ($products as $key => $product) {
-        //             $sale += $product->num_of_sale;
-        //             foreach ($product->stocks as $key => $stock) {
-        //                 $qty += $stock->qty;
-        //             }
-        //         }
-        //         $qty_data .= $qty.',';
-        //         $num_of_sale_data .= $sale.',';
-        //     }
-        //     $item['num_of_sale_data'] = $num_of_sale_data;
-        //     $item['qty_data'] = $qty_data;
-
-        //     return $item;
-        // });
 
         $marketSessions = MarketSessionDetail::get();
         $totalSession = count($marketSessions);
 
-        $totalCustomer = User::whereIn('user_type', ['customer', 'seller'])->count();
-        $totalProduct = Product::where('added_by', 'seller')->where('auction_product',0)
-                    ->where('wholesale_product',0)->count();
+        $totalCustomer = User::whereIn('user_type', ['customer', 'artist'])->count();
+        $totalProduct = Song::count();
 
         $revenueOrder = Order::where('payment_status', 'paid')->sum('grand_total');
         $revenueHotOrder = HotOrder::where('payment_status', 'paid')->sum('grand_total');
@@ -143,33 +118,8 @@ class AdminController extends Controller
             LIMIT 6
         ");
 
-        $topSellCategory = DB::SELECT("
-            SELECT
-                COUNT(*) AS total, products.category_id, uploads.file_name, categories.name
-            FROM
-                order_details
-            LEFT JOIN products ON products.id = order_details.product_id
-            LEFT JOIN categories ON categories.id = products.category_id
-            LEFT JOIN uploads ON uploads.id = categories.icon
-            WHERE auction_product = 0 AND wholesale_product = 0
-            GROUP BY products.category_id
-            ORDER BY total DESC
-            LIMIT 6
-        ");
-
-        $topSellBrand = DB::SELECT("
-            SELECT
-                COUNT(*) AS total, products.brand_id, uploads.file_name, brands.name
-            FROM
-                order_details
-            LEFT JOIN products ON products.id = order_details.product_id
-            LEFT JOIN brands ON brands.id = products.brand_id
-            LEFT JOIN uploads ON uploads.id = brands.logo
-            WHERE brand_id IS NOT NULL
-            GROUP BY products.category_id
-            ORDER BY total DESC
-            LIMIT 6
-        ");
+        $topFollowArtist = Artist::orderByRaw("CAST(follower as UNSIGNED) DESC")->limit(6)->get();
+        $topSongs = Song::orderBy('like', 'DESC')->limit(6)->get();
 
         return view('backend.dashboard', compact(
             'totalSession', 
@@ -180,8 +130,8 @@ class AdminController extends Controller
             'marketSessions',
             'chartData',
             'topSellPackage',
-            'topSellCategory',
-            'topSellBrand'
+            'topFollowArtist',
+            'topSongs'
         ));
     }
 
