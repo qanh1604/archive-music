@@ -297,7 +297,7 @@ class RouteServiceProvider extends ServiceProvider
 
         RateLimiter::for('customer_limit', function (Request $request) {
             if($request->user()->user_type == "customer"){
-                return Limit::perMinute(5)->by(optional($request->user())->id ?: $request->ip());
+                return Limit::perDay(5)->by(optional($request->user())->id ?: $request->ip());
             }
             
             return Limit::perMinute(600)->by(optional($request->user())->id ?: $request->ip());
