@@ -96,4 +96,18 @@ class UserController extends Controller
             'message' => 'Theo dõi thành công'
         ]);
     }
+
+    public function followingArtist(Request $request){
+        $followers = Follower::select('artist_id')->where('user_id', Auth::user()->id)->get()->pluck('artist_id')->toArray();
+        
+        $artists = [];
+        if(!empty($followers)){
+            $artists = Artist::whereIn('id', $followers)->get();
+        }
+
+        return response()->json([
+            'success' => true,
+            'data' => $artists
+        ]);
+    }
 }

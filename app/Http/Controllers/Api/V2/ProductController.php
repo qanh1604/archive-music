@@ -71,6 +71,9 @@ class ProductController extends Controller
     public function albums()
     {
         $albums = Album::paginate(10);
+        foreach($albums as &$album){
+            $album->image = $album->image_url->file_name;
+        }
         return response()->json($albums);
     }
 

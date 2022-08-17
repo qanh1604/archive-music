@@ -89,7 +89,7 @@ Route::group(['middleware' => ['app_language']], function() {
     Route::get('products/albums/{id}', 'Api\V2\ProductController@albumDetail');
     Route::get('products/best-seller', 'Api\V2\ProductController@bestSeller');
     Route::get('products/related/{id}', 'Api\V2\ProductController@related')->name('products.related');
-    Route::get('products/listen/{id}', 'Api\V2\ProductController@listen')->middleware('auth:sanctum');
+    Route::get('products/listen/{id}', 'Api\V2\ProductController@listen')->middleware('auth:sanctum', 'throttle:customer_limit');
     Route::get('products/listened-songs', 'Api\V2\ProductController@listenedSong')->middleware('auth:sanctum');
     Route::get('products/like-song/{id}', 'Api\V2\ProductController@likeSong')->middleware('auth:sanctum');
     Route::post('products/test_payment', 'Api\V2\ProductController@stripeTest')->middleware('auth:sanctum');
@@ -168,6 +168,7 @@ Route::group(['middleware' => ['app_language']], function() {
     Route::post('user/shipping/make_default', 'Api\V2\AddressController@makeShippingAddressDefault')->middleware('auth:sanctum');
     Route::get('user/shipping/delete/{id}', 'Api\V2\AddressController@deleteShippingAddress')->middleware('auth:sanctum');
     Route::post('user/follow', 'Api\V2\UserController@follow')->middleware('auth:sanctum');
+    Route::post('user/following-artist', 'Api\V2\UserController@followingArtist')->middleware('auth:sanctum');
 
     Route::get('clubpoint/get-list/{id}', 'Api\V2\ClubpointController@get_list')->middleware('auth:sanctum');
     Route::post('clubpoint/convert-into-wallet', 'Api\V2\ClubpointController@convert_into_wallet')->middleware('auth:sanctum');

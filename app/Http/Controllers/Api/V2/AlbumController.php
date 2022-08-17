@@ -30,6 +30,10 @@ class AlbumController extends Controller
     public function newest()
     {
         $albums = Album::latest()->limit(5)->get();
+        
+        foreach($albums as &$album){
+            $album->image = $album->image_url->file_name;
+        }
 
         return response()->json([
             'success' => true,
