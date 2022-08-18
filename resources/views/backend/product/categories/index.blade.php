@@ -44,7 +44,7 @@
                 @foreach($categories as $key => $category)
                     <tr>
                         <td>{{ ($key+1) + ($categories->currentPage() - 1)*$categories->perPage() }}</td>
-                        <td>{{ $category->getTranslation('name') }}</td>
+                        <td>{{ $category->name }}</td>
                         <td>
                             @php
                                 $parent = \App\Models\Category::where('id', $category->parent_id)->first();
