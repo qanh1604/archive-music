@@ -56,13 +56,6 @@ class HomeController extends Controller
      */
     public function index()
     {
-        $featured_categories = Cache::rememberForever('featured_categories', function () {
-            return Category::where('featured', 1)->get();
-        });
-
-        $todays_deal_products = Cache::rememberForever('todays_deal_products', function () {
-            return filter_products(Product::where('published', 1)->where('todays_deal', '1'))->get();
-        });
 
         // return view('frontend.index', compact('featured_categories', 'todays_deal_products'));
         if(Auth::check() && Auth::user()->user_type == 'admin'){
