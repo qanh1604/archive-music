@@ -329,10 +329,7 @@ class HomeController extends Controller
 
         $albums = Album::where('artist_id', Auth::user()->id)->get();
         
-        $categories = Category::where('parent_id', 0)
-            ->where('digital', 0)
-            ->with('childrenCategories')
-            ->get();
+        $categories = Category::all();
         return view('frontend.user.seller.product_upload', compact('categories', 'albums'));
     }
 
