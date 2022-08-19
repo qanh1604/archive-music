@@ -14,10 +14,39 @@ use App\Notifications\EmailVerificationNotification;
 
 class AlbumController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $albums = Album::paginate(15);
-        return view('backend.product.albums.index', ['albums' => $albums]);
+        $col_name = null;
+        $query = null;
+        $type = null;
+        $sort_type = null;
+        $sort_search = null;
+
+        $albums = Album::query();
+
+        if ($request->search != null){
+            $albums = $albums
+                        ->where('name', 'like', '%'.$request->search.'%');
+            $sort_search = $request->search;
+        }
+
+        if($request->type){
+            $var = explode(",", $request->type);
+            $col_name = $var[0];
+            $query = $var[1];
+            $albums = $albums->orderBy($col_name, $query);
+            $sort_type = $request->type;
+        }
+
+        $albums = $albums->paginate(20);
+
+        return view('backend.product.albums.index', [
+            'albums' => $albums, 
+            'sort_type' => $sort_type, 
+            'col_name' => $col_name,
+            'sort_type' => $sort_type,
+            'sort_search' => $sort_search
+        ]);
     }
 
     /**
@@ -84,11 +113,16 @@ class AlbumController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(Request $request)
     {
-        //
+        if(Auth::check() && Auth::user()->user_type == 'admin'){
+            $album = Album::where('id', $request->id)->first();
+            return view('backend.product.albums.edit', ['album' => $album]);
+        }
+        else{
+            return back();
+        }
     }
-
     /**
      * Update the specified resource in storage.
      *
@@ -96,49 +130,24 @@ class AlbumController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function updateAlbum(Request $request, $id)
     {
-        $shop = Shop::find($id);
+        $request->validate([
+            'name' => 'required',
+            'image' => 'required',
+        ]);
 
-        if($request->has('name') && $request->has('address')){
-            if ($request->has('shipping_cost')) {
-                $shop->shipping_cost = $request->shipping_cost;
-            }
-            
-            $shop->name             = $request->name;
-            $shop->address          = $request->address;
-            $shop->phone            = $request->phone;
-            $shop->slug             = preg_replace('/\s+/', '-', $request->name).'-'.$shop->id;
-            $shop->meta_title       = $request->meta_title;
-            $shop->meta_description = $request->meta_description;
-            $shop->logo             = $request->logo;
-        }
+        $album = Album::find($request->id);
+        $album->name = $request->name;
+        $album->image = $request->image;
+        $album->description = $request->description;
 
-        if($request->has('delivery_pickup_longitude') && 
-            $request->has('delivery_pickup_latitude')) {
-
-            $shop->delivery_pickup_longitude    = $request->delivery_pickup_longitude;
-            $shop->delivery_pickup_latitude     = $request->delivery_pickup_latitude;
-
-        }
-
-        elseif($request->has('facebook') || $request->has('google') || $request->has('twitter') || $request->has('youtube') || $request->has('instagram')){
-            $shop->facebook = $request->facebook;
-            $shop->google = $request->google;
-            $shop->twitter = $request->twitter;
-            $shop->youtube = $request->youtube;
-        }
-
-        else{
-            $shop->sliders = $request->sliders;
-        }
-
-        if($shop->save()){
-            flash(translate('Your Shop has been updated successfully!'))->success();
+        if($album->save()){
+            flash(translate('Album đã được thêm mới thành công!'))->success();
             return back();
         }
 
-        flash(translate('Sorry! Something went wrong.'))->error();
+        flash(translate('Đã có lỗi xảy ra. Cập nhập thất bại'))->error();
         return back();
     }
 

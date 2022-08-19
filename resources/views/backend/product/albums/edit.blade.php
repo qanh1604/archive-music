@@ -2,14 +2,14 @@
 
 @section('content')
 <div class="aiz-titlebar text-left mt-2 mb-3">
-    <h1 class="mb-0 h6">{{ translate('Edit Song') }}</h5>
+    <h1 class="mb-0 h6">{{ translate('Edit Album') }}</h5>
 </div>
 <div class="">
-    <form class="form form-horizontal mar-top" action="{{route('products.update', $song->id)}}" method="POST" enctype="multipart/form-data" id="choice_form">
+    <form class="form form-horizontal mar-top" action="{{route('album.updateAlbum', $album->id)}}" method="POST" enctype="multipart/form-data" id="choice_form">
         <div class="row gutters-5">
             <div class="col-lg-8">
                 <input name="_method" type="hidden" value="POST">
-                <input type="hidden" name="id" value="{{ $song->id }}">
+                <input type="hidden" name="id" value="{{ $album->id }}">
                 @csrf
                 <div class="card">
                     {{--<ul class="nav nav-tabs nav-fill border-light">
@@ -24,36 +24,16 @@
                     </ul>--}}
                     <div class="card-body">
                         <div class="form-group row">
-                            <label class="col-lg-3 col-from-label">{{translate('Song Name')}} <i class="las la-language text-danger" title="{{translate('Translatable')}}"></i></label>
+                            <label class="col-lg-3 col-from-label">{{translate('Album Name')}} <i class="las la-language text-danger" title="{{translate('Translatable')}}"></i></label>
                             <div class="col-lg-8">
-                                <input type="text" class="form-control" name="name" placeholder="{{translate('Song Name')}}" value="{{ $song->name }}" required>
-                            </div>
-                        </div>
-                        <div class="form-group row" id="category">
-                            <label class="col-lg-3 col-from-label">{{translate('Category')}}</label>
-                            <div class="col-lg-8">
-                                <select class="form-control aiz-selectpicker" name="category_id" id="category_id" data-selected="{{ $song->category_id }}" data-live-search="true" required>
-                                    @foreach ($categories as $category)
-                                    <option value="{{ $category->id }}">{{ $category->getTranslation('name') }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                        </div>
-                        <div class="form-group row" id="category">
-                            <label class="col-lg-3 col-from-label">{{translate('Album')}}</label>
-                            <div class="col-lg-8">
-                                <select class="form-control aiz-selectpicker" name="album_id" id="album_id" data-selected="{{ $song->album_id }}" data-live-search="true">
-                                    @foreach ($albums as $album)
-                                    <option value="{{ $album->id }}">{{ $category->getTranslation('name') }}</option>
-                                    @endforeach
-                                </select>
+                                <input type="text" class="form-control" name="name" placeholder="{{translate('Album Name')}}" value="{{ $album->name }}" required>
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="card">
                     <div class="card-header">
-                        <h5 class="mb-0 h6">{{translate('Product Images')}}</h5>
+                        <h5 class="mb-0 h6">{{translate('Album Images')}}</h5>
                     </div>
                     <div class="card-body">
 
@@ -65,77 +45,23 @@
                                         <div class="input-group-text bg-soft-secondary font-weight-medium">{{ translate('Browse')}}</div>
                                     </div>
                                     <div class="form-control file-amount">{{ translate('Choose File') }}</div>
-                                    <input type="hidden" name="image" value="{{ $song->image }}" class="selected-files">
+                                    <input type="hidden" name="image" value="{{ $album->image }}" class="selected-files">
                                 </div>
                                 <div class="file-preview box sm">
                                 </div>
                             </div>
                         </div>
-                        <div class="form-group row">
-                            <label class="col-md-3 col-form-label" for="signinSrEmail">{{translate('Thumbnail Image')}} <small>(290x300)</small></label>
-                            <div class="col-md-8">
-                                <div class="input-group" data-toggle="aizuploader" data-type="image">
-                                    <div class="input-group-prepend">
-                                        <div class="input-group-text bg-soft-secondary font-weight-medium">{{ translate('Browse')}}</div>
-                                    </div>
-                                    <div class="form-control file-amount">{{ translate('Choose File') }}</div>
-                                    <input type="hidden" name="icon" value="{{ $song->icon }}" class="selected-files">
-                                </div>
-                                <div class="file-preview box sm">
-                                </div>
-                            </div>
-                        </div>
-                        {{--<div class="form-group row">
-                            <label class="col-lg-3 col-from-label">{{translate('Gallery Images')}}</label>
-                            <div class="col-lg-8">
-                                <div id="photos">
-                                    @if(is_array(json_decode($product->photos)))
-                                    @foreach (json_decode($product->photos) as $key => $photo)
-                                    <div class="col-md-4 col-sm-4 col-xs-6">
-                                        <div class="img-upload-preview">
-                                            <img loading="lazy"  src="{{ uploaded_asset($photo) }}" alt="" class="img-responsive">
-                                            <input type="hidden" name="previous_photos[]" value="{{ $photo }}">
-                                            <button type="button" class="btn btn-danger close-btn remove-files"><i class="fa fa-times"></i></button>
-                                        </div>
-                                    </div>
-                                    @endforeach
-                                    @endif
-                                </div>
-                            </div>
-                        </div>--}}
                     </div>
                 </div>
                 <div class="card">
                     <div class="card-header">
-                        <h5 class="mb-0 h6">{{translate('Song Lyric')}}</h5>
+                        <h5 class="mb-0 h6">{{translate('Mô tả')}}</h5>
                     </div>
                     <div class="card-body">
                         <div class="form-group row">
-                            <label class="col-md-3 col-from-label">{{translate('Lyric')}}</label>
+                            <label class="col-md-3 col-from-label">{{translate('Mô tả')}}</label>
                             <div class="col-md-8">
-                                <textarea class="aiz-text-editor" name="lyric">{{ $song->lyric }}</textarea>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-4">
-                <div class="card">
-                    <div class="card-header">
-                        <h5 class="mb-0 h6">{{translate('Featured')}}</h5>
-                    </div>
-                    <div class="card-body">
-                        <div class="form-group row">
-                            <div class="col-md-12">
-                                <div class="form-group row">
-                                    <label class="col-md-6 col-from-label">{{translate('Status')}}</label>
-                                    <div class="col-md-6">
-                                        <label class="aiz-switch aiz-switch-success mb-0">
-                                            <input type="checkbox" name="featured" value="1" @if($song->featured == 1) checked @endif>
-                                            <span></span>
-                                        </label>
-                                    </div>
-                                </div>
+                                <textarea class="aiz-text-editor" name="description">{{ $album->description }}</textarea>
                             </div>
                         </div>
                     </div>

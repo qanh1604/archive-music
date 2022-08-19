@@ -151,13 +151,13 @@
                     <li class="aiz-side-nav-item">
                         <a href="#" class="aiz-side-nav-link">
                             <i class="las la-user-friends aiz-side-nav-icon"></i>
-                            <span class="aiz-side-nav-text">{{ translate('Customers') }}</span>
+                            <span class="aiz-side-nav-text">{{ translate('Artist') }}</span>
                             <span class="aiz-side-nav-arrow"></span>
                         </a>
                         <ul class="aiz-side-nav-list level-2">
                             <li class="aiz-side-nav-item">
                                 <a href="{{ route('customers.index') }}" class="aiz-side-nav-link">
-                                    <span class="aiz-side-nav-text">{{ translate('Customer list') }}</span>
+                                    <span class="aiz-side-nav-text">{{ translate('Artist list') }}</span>
                                 </a>
                             </li>
                         </ul>
@@ -169,21 +169,21 @@
                     <li class="aiz-side-nav-item">
                         <a href="#" class="aiz-side-nav-link">
                             <i class="las la-user aiz-side-nav-icon"></i>
-                            <span class="aiz-side-nav-text">{{ translate('Sellers') }}</span>
+                            <span class="aiz-side-nav-text">{{ translate('Customer') }}</span>
                             <span class="aiz-side-nav-arrow"></span>
                         </a>
                         <ul class="aiz-side-nav-list level-2">
-                            <li class="aiz-side-nav-item">
+                            {{--<li class="aiz-side-nav-item">
                                 <a href="{{ route('sellers.create') }}" class="aiz-side-nav-link">
                                     <span class="aiz-side-nav-text">{{ translate('Add New seller') }}</span>
                                 </a>
-                            </li>
+                            </li>--}}
                             <li class="aiz-side-nav-item">
                                 @php
                                     $sellers = \App\Models\Seller::where('verification_status', 0)->where('verification_info', '!=', null)->count();
                                 @endphp
                                 <a href="{{ route('sellers.index') }}" class="aiz-side-nav-link {{ areActiveRoutes(['sellers.index', 'sellers.create', 'sellers.edit', 'sellers.payment_history','sellers.approved','sellers.profile_modal','sellers.show_verification_request'])}}">
-                                    <span class="aiz-side-nav-text">{{ translate('All Seller') }}</span>
+                                    <span class="aiz-side-nav-text">{{ translate('All User') }}</span>
                                     @if($sellers > 0)<span class="badge badge-info">{{ $sellers }}</span> @endif
                                 </a>
                             </li>
@@ -191,18 +191,18 @@
                             @if (addon_is_activated('seller_subscription'))
                                 <li class="aiz-side-nav-item">
                                     <a href="{{ route('seller_packages.index') }}" class="aiz-side-nav-link {{ areActiveRoutes(['seller_packages.index', 'seller_packages.create', 'seller_packages.edit'])}}">
-                                        <span class="aiz-side-nav-text">{{ translate('Seller Packages') }}</span>
+                                        <span class="aiz-side-nav-text">{{ translate('Packages List') }}</span>
                                         @if (env("DEMO_MODE") == "On")
                                             <span class="badge badge-inline badge-danger">Addon</span>
                                         @endif
                                     </a>
                                 </li>
                             @endif
-                            <li class="aiz-side-nav-item">
+                            {{--<li class="aiz-side-nav-item">
                                 <a href="{{ route('charter_information') }}" class="aiz-side-nav-link {{ areActiveRoutes(['charter_information'])}}">
                                     <span class="aiz-side-nav-text">{{ translate('Thông tin điều lệ') }}</span>
                                 </a>
-                            </li>
+                            </li>--}}
                             {{-- 
                             <li class="aiz-side-nav-item">
                                 <a href="{{ route('seller_verification_form.index') }}" class="aiz-side-nav-link">

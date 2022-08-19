@@ -52,12 +52,10 @@
             <div class="col-md-2 ml-auto">
                 <select class="form-control form-control-sm aiz-selectpicker mb-2 mb-md-0" name="type" id="type" onchange="sort_products()">
                     <option value="">{{ translate('Sort By') }}</option>
-                    <option value="rating,desc" @isset($col_name , $query) @if($col_name == 'rating' && $query == 'desc') selected @endif @endisset>{{translate('Rating (High > Low)')}}</option>
-                    <option value="rating,asc" @isset($col_name , $query) @if($col_name == 'rating' && $query == 'asc') selected @endif @endisset>{{translate('Rating (Low > High)')}}</option>
-                    <option value="num_of_sale,desc"@isset($col_name , $query) @if($col_name == 'num_of_sale' && $query == 'desc') selected @endif @endisset>{{translate('Num of Sale (High > Low)')}}</option>
-                    <option value="num_of_sale,asc"@isset($col_name , $query) @if($col_name == 'num_of_sale' && $query == 'asc') selected @endif @endisset>{{translate('Num of Sale (Low > High)')}}</option>
-                    <option value="unit_price,desc"@isset($col_name , $query) @if($col_name == 'unit_price' && $query == 'desc') selected @endif @endisset>{{translate('Base Price (High > Low)')}}</option>
-                    <option value="unit_price,asc"@isset($col_name , $query) @if($col_name == 'unit_price' && $query == 'asc') selected @endif @endisset>{{translate('Base Price (Low > High)')}}</option>
+                    <option value="total_views,desc" @isset($col_name , $query) @if($col_name == 'total_views' && $query == 'desc') selected @endif @endisset>{{translate('Views (High > Low)')}}</option>
+                    <option value="total_views,asc" @isset($col_name , $query) @if($col_name == 'total_views' && $query == 'asc') selected @endif @endisset>{{translate('Views (Low > High)')}}</option>
+                    <option value="total_songs,desc"@isset($col_name , $query) @if($col_name == 'total_songs' && $query == 'desc') selected @endif @endisset>{{translate('Songs (High > Low)')}}</option>
+                    <option value="total_songs,asc"@isset($col_name , $query) @if($col_name == 'total_songs' && $query == 'asc') selected @endif @endisset>{{translate('Songs (Low > High)')}}</option>
                 </select>
             </div>
             <div class="col-md-2">

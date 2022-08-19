@@ -41,12 +41,13 @@ class ProductController extends Controller
         $sort_search = null;
         
         $songs = Song::with('user')->where('deleted_at', null);
-        // $products = Product::where('added_by', 'admin')->where('auction_product',0)->where('wholesale_product',0);
-
-        if ($request->col_name != null){
+        
+        if ($request->type){
+            $var = explode(",", $request->type);
             $col_name = $var[0];
             $query = $var[1];
             $songs = $songs->orderBy($col_name, $query);
+            $sort_type = $request->type;
         }
         if ($request->search != null){
             $songs = $songs->where('name', 'like', '%'.$request->search.'%');
@@ -98,14 +99,14 @@ class ProductController extends Controller
         $col_name = null;
         $query = null;
         $sort_search = null;
-        
         $songs = Song::with('user')->where('deleted_at', null);
-        // $products = Product::where('added_by', 'admin')->where('auction_product',0)->where('wholesale_product',0);
 
-        if ($request->col_name != null){
+        if ($request->type != null){
+            $var = explode(",", $request->type);
             $col_name = $var[0];
             $query = $var[1];
             $songs = $songs->orderBy($col_name, $query);
+            $sort_type = $request->type;
         }
         if ($request->search != null){
             $songs = $songs->where('name', 'like', '%'.$request->search.'%');
@@ -147,9 +148,7 @@ class ProductController extends Controller
     {
         CoreComponentRepository::initializeCache();
 
-        $categories = Category::where('parent_id', 0)
-            ->where('digital', 0)
-            ->get();
+        $categories = Category::all();
             
         $albums = Album::where('artist_id', Auth::user()->id)->get();
 

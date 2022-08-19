@@ -81,9 +81,6 @@
             
             <div class="col-12">
                 <div class="btn-toolbar float-right mb-3" role="toolbar" aria-label="Toolbar with button groups">
-                    <div class="btn-group mr-2" role="group" aria-label="First group">
-                        <button type="submit" name="button" value="draft" class="btn btn-warning">{{ translate('Save As Draft') }}</button>
-                    </div>
                     <div class="btn-group mr-2" role="group" aria-label="Third group">
                         <button type="submit" name="button" value="unpublish" class="btn btn-primary">{{ translate('Save & Unpublish') }}</button>
                     </div>

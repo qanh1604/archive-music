@@ -46,8 +46,8 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'admin']], function(
     Route::get('/albums/all', 'AlbumController@index')->name('album.index');
     Route::get('/albums/create', 'AlbumController@create')->name('album.create');
     Route::post('/albums/store', 'AlbumController@store')->name('album.store');
-    Route::get('/albums/update', 'AlbumController@update')->name('album.update');
-    Route::post('/albums/update-album', 'AlbumController@updateAlbum')->name('album.updateAlbum');
+    Route::get('/albums/update/{id}', 'AlbumController@edit')->name('album.update');
+    Route::post('/albums/update-album/{id}', 'AlbumController@updateAlbum')->name('album.updateAlbum');
     Route::post('/albums/delete', 'AlbumController@delete')->name('album.delete');
     Route::post('/albums/duplicate', 'AlbumController@delete')->name('album.duplicate');
 

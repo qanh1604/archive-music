@@ -30,13 +30,7 @@
                 <tr>
                     <th data-breakpoints="lg">#</th>
                     <th>{{translate('Name')}}</th>
-                    <th data-breakpoints="lg">{{ translate('Danh mục cha') }}</th>
-                    <th data-breakpoints="lg">{{ translate('Order Level') }}</th>
-                    <th data-breakpoints="lg">{{ translate('Level') }}</th>
-                    <th data-breakpoints="lg">{{translate('Banner')}}</th>
                     <th data-breakpoints="lg">{{translate('Icon')}}</th>
-                    <th data-breakpoints="lg">{{translate('Featured')}}</th>
-                    <th data-breakpoints="lg">{{translate('Commission')}}</th>
                     <th width="10%" class="text-right">{{translate('Options')}}</th>
                 </tr>
             </thead>
@@ -46,25 +40,6 @@
                         <td>{{ ($key+1) + ($categories->currentPage() - 1)*$categories->perPage() }}</td>
                         <td>{{ $category->name }}</td>
                         <td>
-                            @php
-                                $parent = \App\Models\Category::where('id', $category->parent_id)->first();
-                            @endphp
-                            @if ($parent != null)
-                                {{ $parent->getTranslation('name') }}
-                            @else
-                                —
-                            @endif
-                        </td>
-                        <td>{{ $category->order_level }}</td>
-                        <td>{{ $category->level }}</td>
-                        <td>
-                            @if($category->banner != null)
-                                <img src="{{ uploaded_asset($category->banner) }}" alt="{{translate('Banner')}}" class="h-50px">
-                            @else
-                                —
-                            @endif
-                        </td>
-                        <td>
                             @if($category->icon != null)
                                 <span class="avatar avatar-square avatar-xs">
                                     <img src="{{ uploaded_asset($category->icon) }}" alt="{{translate('icon')}}">
@@ -73,13 +48,6 @@
                                 —
                             @endif
                         </td>
-                        <td>
-                            <label class="aiz-switch aiz-switch-success mb-0">
-                                <input type="checkbox" onchange="update_featured(this)" value="{{ $category->id }}" <?php if($category->featured == 1) echo "checked";?>>
-                                <span></span>
-                            </label>
-                        </td>
-                        <td>{{ $category->commision_rate }} %</td>
                         <td class="text-right">
                             <a class="btn btn-soft-primary btn-icon btn-circle btn-sm" href="{{route('categories.edit', ['id'=>$category->id, 'lang'=>env('DEFAULT_LANGUAGE')] )}}" title="{{ translate('Edit') }}">
                                 <i class="las la-edit"></i>
@@ -102,26 +70,4 @@
 
 @section('modal')
     @include('modals.delete_modal')
-@endsection
-
-
-@section('script')
-    <script type="text/javascript">
-        function update_featured(el){
-            if(el.checked){
-                var status = 1;
-            }
-            else{
-                var status = 0;
-            }
-            $.post('{{ route('categories.featured') }}', {_token:'{{ csrf_token() }}', id:el.value, status:status}, function(data){
-                if(data == 1){
-                    AIZ.plugins.notify('success', '{{ translate('Featured categories updated successfully') }}');
-                }
-                else{
-                    AIZ.plugins.notify('danger', '{{ translate('Something went wrong') }}');
-                }
-            });
-        }
-    </script>
 @endsection
