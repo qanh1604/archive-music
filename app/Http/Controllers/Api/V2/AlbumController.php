@@ -33,12 +33,10 @@ class AlbumController extends Controller
         
         foreach($albums as &$album){
             $album->image = $album->image_url->file_name;
+            $album->artist = $album->user->artist ? $album->user->artist->name : $album->user->name;
         }
 
-        return response()->json([
-            'success' => true,
-            'data' => $albums
-        ]);
+        return response()->json($albums);
     }
 
     
