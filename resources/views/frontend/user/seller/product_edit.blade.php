@@ -40,7 +40,7 @@
                             <div class="col-lg-8">
                                 <select class="form-control aiz-selectpicker" name="category_id" id="category_id" data-selected="{{ $song->category_id }}" data-live-search="true" required>
                                     @foreach ($categories as $category)
-                                    <option value="{{ $category->id }}">{{ $category->getTranslation('name') }}</option>
+                                    <option value="{{ $category->id }}">{{ $category->name }}</option>
                                     @endforeach
                                 </select>
                             </div>

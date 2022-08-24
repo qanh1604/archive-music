@@ -44,7 +44,7 @@ class ProfileController extends Controller
         $user->save();
 
         return response()->json([
-            'result' => true,
+            'success' => true,
             'message' => translate("Profile information updated")
         ]);
     }
@@ -59,7 +59,7 @@ class ProfileController extends Controller
         $user->save();
 
         return response()->json([
-            'result' => true,
+            'success' => true,
             'message' => translate("device token updated")
         ]);
     }
@@ -91,7 +91,7 @@ class ProfileController extends Controller
 
             if ($file_put == false) {
                 return response()->json([
-                    'result' => false,
+                    'success' => false,
                     'message' => "File uploading error",
                     'path' => ""
                 ]);
@@ -105,7 +105,7 @@ class ProfileController extends Controller
             if (!isset($type[$extension])) {
                 unlink($full_path);
                 return response()->json([
-                    'result' => false,
+                    'success' => false,
                     'message' => "Only image can be uploaded",
                     'path' => ""
                 ]);
@@ -132,7 +132,7 @@ class ProfileController extends Controller
 
             if ($file_put == false) {
                 return response()->json([
-                    'result' => false,
+                    'success' => false,
                     'message' => "Uploading error"
                 ]);
             }
@@ -154,7 +154,7 @@ class ProfileController extends Controller
             $user  = User::where('id', $request->id)->first();
             if(!$user){
                 return response()->json([
-                    'result' => false,
+                    'success' => false,
                     'message' => translate("Không tìm thấy người dùng"),
                 ]);
             }
@@ -162,13 +162,13 @@ class ProfileController extends Controller
             $user->save();
 
             return response()->json([
-                'result' => true,
+                'success' => true,
                 'message' => translate("Image updated"),
                 'path' => api_asset($upload->id)
             ]);
         } catch (\Exception $e) {
             return response()->json([
-                'result' => false,
+                'success' => false,
                 'message' => $e->getMessage(),
             ]);
         }
@@ -241,7 +241,7 @@ class ProfileController extends Controller
 
             if ($file_put == false) {
                 return response()->json([
-                    'result' => false,
+                    'success' => false,
                     'message' => "Uploading error",
                     'path' => "",
                     'upload_id' => 0
@@ -263,14 +263,14 @@ class ProfileController extends Controller
             $upload->save();
 
             return response()->json([
-                'result' => true,
+                'success' => true,
                 'message' => translate("Image updated"),
                 'path' => api_asset($upload->id),
                 'upload_id' => $upload->id
             ]);
         } catch (\Exception $e) {
             return response()->json([
-                'result' => false,
+                'success' => false,
                 'message' => $e->getMessage(),
                 'upload_id' => 0
             ]);

@@ -26,7 +26,7 @@ class AuthController extends Controller
     {
         if (User::where('email', $request->email)->first() != null) {
             return response()->json([
-                'result' => false,
+                'success' => false,
                 'message' => translate('Người dùng đã tồn tại')
             ], 201);
         }
@@ -59,7 +59,7 @@ class AuthController extends Controller
         $user->createToken('tokens')->plainTextToken;
 
         return response()->json([
-            'result' => true,
+            'success' => true,
             'message' => translate('Registration Successful. Please verify and log in to your account.'),
             'user_id' => $user->id
         ], 201);
@@ -70,7 +70,7 @@ class AuthController extends Controller
         $user_check = User::where('phone', $request->email_or_phone)->first();
         if ($user_check != null) {
             return response()->json([
-                'result' => false,
+                'success' => false,
                 'message' => translate('User already exists.'),
                 'user_id' => 0
             ], 201);
@@ -112,7 +112,7 @@ class AuthController extends Controller
         $user->createToken('tokens')->plainTextToken;
 
         return response()->json([
-            'result' => true,
+            'success' => true,
             'message' => translate('Registration Successful. Please verify and log in to your account.'),
             'user_id' => $user->id
         ], 201);
@@ -128,7 +128,7 @@ class AuthController extends Controller
             return $this->loginSuccess($user);
         } else {
             return response()->json([
-                'result' => false,
+                'success' => false,
                 'message' => translate('Code does not match, you can request for resending the code'),
             ], 200);
         }
@@ -155,7 +155,7 @@ class AuthController extends Controller
         $user->save();
 
         return response()->json([
-            'result' => true,
+            'success' => true,
             'message' => translate('Verification code is sent again'),
         ], 200);
     }
@@ -170,12 +170,12 @@ class AuthController extends Controller
             $user->status = 1;
             $user->save();
             return response()->json([
-                'result' => true,
+                'success' => true,
                 'message' => translate('Your account is now verified.Please login'),
             ], 200);
         } else {
             return response()->json([
-                'result' => false,
+                'success' => false,
                 'message' => translate('Code does not match, you can request for resending the code'),
             ], 200);
         }
@@ -241,12 +241,12 @@ class AuthController extends Controller
 
         if ($user != null) {
             return response()->json([
-                'result' => true,
+                'success' => true,
                 'message' => translate('Login success'),
                 'user_id' => $user->id
             ], 201);
         } else {
-            return response()->json(['result' => false, 'message' => translate('User not found'), 'user' => null], 401);
+            return response()->json(['success' => false, 'message' => translate('User not found'), 'user' => null], 401);
         }
     }
 
@@ -260,7 +260,7 @@ class AuthController extends Controller
         $request->user()->tokens()->delete();
 
         return response()->json([
-            'result' => true,
+            'success' => true,
             'message' => translate('Successfully logged out')
         ]);
     }
