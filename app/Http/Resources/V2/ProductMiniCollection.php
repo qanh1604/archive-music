@@ -30,7 +30,7 @@ class ProductMiniCollection extends ResourceCollection
                     'view' => $data->view,
                     'like' => $data->like,
                     'album' => $album?$album->name:'',
-                    'lyric' => $data->lyric
+                    // 'lyric' => $data->lyric
                 ];
             })
         ];
