@@ -136,7 +136,7 @@ class AuthController extends Controller
 
     public function resendCode(Request $request)
     {
-        $user = User::where('id', $request->user_id)->first();
+        $user = User::where('id', $request->email)->first();
         $random = str_shuffle('ABCDEFGHJKLMNOPQRSTUVWXYZ234567890');
         $code = substr($random, 0, 6);
         $user->verification_code = $code;
@@ -162,7 +162,7 @@ class AuthController extends Controller
 
     public function confirmCode(Request $request)
     {
-        $user = User::where('id', $request->user_id)->first();
+        $user = User::where('id', $request->email)->first();
 
         if ($user->verification_code == $request->verification_code) {
             $user->email_verified_at = date('Y-m-d H:i:s');

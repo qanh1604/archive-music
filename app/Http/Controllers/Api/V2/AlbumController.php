@@ -29,7 +29,7 @@ class AlbumController extends Controller
 {
     public function newest()
     {
-        $albums = Album::latest()->limit(5)->get();
+        $albums = Album::latest()->paginate(20);
         
         foreach($albums as &$album){
             $album->image = $album->image_url->file_name;
