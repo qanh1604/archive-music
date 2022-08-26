@@ -77,7 +77,7 @@ Route::group(['middleware' => ['app_language']], function() {
     Route::get('products', 'Api\V2\ProductController@index');
     Route::get('products/admin', 'Api\V2\ProductController@admin');
     Route::get('products/artist/{id}', 'Api\V2\ProductController@artist');
-    Route::get('products/recommendations', 'Api\V2\ProductController@recommendations');
+    Route::get('products/recommendations', 'Api\V2\ProductController@recommendations')->middleware('auth:sanctum');;
     Route::get('products/seller/{id}', 'Api\V2\ProductController@seller');
     Route::get('products/category/{id}', 'Api\V2\ProductController@category')->name('api.products.category');
     Route::get('products/sub-category/{id}', 'Api\V2\ProductController@subCategory')->name('products.subCategory');
