@@ -296,14 +296,14 @@ class ProductController extends Controller
     {
         $recommendations = Recommendation::paginate(10);
         foreach($recommendations as $item){
-            $icon = Upload::where('id', $item->song->icon)->first();
-            $imageList = explode(",", $item->song->image);
+            $icon = Upload::where('id', $item->song?$item->song->icon:'')->first();
+            $imageList = explode(",", $item->song?$item->song->image:'');
             $image = Upload::select('file_name')->whereIn('id', $imageList)->get();
-            $album = Album::where('id', $item->song->album_id)->first();
+            $album = Album::where('id', $item->song?$item->song->album_id:'')->first();
 
             $item->song->icon = $icon?$icon->file_name:'';
             $item->song->image = $image;
-            $item->song->category_name = $item->song->category->name;
+            $item->song->category_name = $item->song?$item->song->category->name:'';
             $item->song->album = $album;
         }
         return response()->json([
