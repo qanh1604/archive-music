@@ -301,10 +301,12 @@ class ProductController extends Controller
             $image = Upload::select('file_name')->whereIn('id', $imageList)->get();
             $album = Album::where('id', $item->song?$item->song->album_id:'')->first();
 
-            $item->song->icon = $icon?$icon->file_name:'';
-            $item->song->image = $image;
-            $item->song->category_name = $item->song?$item->song->category->name:'';
-            $item->song->album = $album;
+            if($item->song){
+                $item->song->icon = $icon?$icon->file_name:'';
+                $item->song->image = $image;
+                $item->song->category_name = $item->song->category->name;
+                $item->song->album = $album;
+            }
         }
         return response()->json([
             'success' => true,
