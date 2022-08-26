@@ -304,8 +304,7 @@ class ProductController extends Controller
             if($item->song){
                 $item->song->icon = $icon?$icon->file_name:'';
                 $item->song->image = $image;
-                $item->song->category_name = $item->song->category->name;
-                $item->song->album = $album;
+                $item->song->artist = $item->song->user->artist?$item->song->user->artist->name:$item->song->user->name;
             }
         }
         return response()->json([
