@@ -341,7 +341,7 @@ class ProductController extends Controller
     public function listenedSong(){
         $listened_song = ListenedSong::where('user_id', Auth::user()->id)->latest()->limit(5)->get();
         if($listened_song){
-            $songs = Song::whereIn('id', $listened_song->pluck('song_id')->toArray())->where('is_publish', 1)->paginate(15);
+            $songs = Song::whereIn('id', $listened_song->pluck('song_id')->toArray())->where('is_publish', 1)->get();
         }
         return new ProductMiniCollection($songs);
     }
