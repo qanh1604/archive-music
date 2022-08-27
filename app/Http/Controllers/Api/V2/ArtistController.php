@@ -35,6 +35,13 @@ class ArtistController extends Controller
             $artist->total_songs = Song::where('artist_id', $user->id)->count();
             $artist->total_albums = Album::where('artist_id', $user->id)->count();
 
+            $followed = Follower::where('user_id', Auth::user()->id)->where('artist_id', $id)->exists();
+            if($followed){
+                $artist->followed = 1;
+            }else{
+                $artist->followed = 1;
+            }
+
             return response()->json([
                 'succes' => true,
                 'data' => $artist
@@ -45,6 +52,13 @@ class ArtistController extends Controller
             $artist->total_songs = Song::where('artist_id', $user->id)->count();
             $artist->total_albums = Album::where('artist_id', $user->id)->count();
             $artist->description = "";
+
+            $followed = Follower::where('user_id', Auth::user()->id)->where('artist_id', $id)->exists();
+            if($followed){
+                $artist->followed = 1;
+            }else{
+                $artist->followed = 1;
+            }
 
             return response()->json([
                 'succes' => true,
