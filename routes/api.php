@@ -168,7 +168,7 @@ Route::group(['middleware' => ['app_language']], function() {
     Route::post('user/shipping/update-location', 'Api\V2\AddressController@updateShippingAddressLocation')->middleware('auth:sanctum');
     Route::post('user/shipping/make_default', 'Api\V2\AddressController@makeShippingAddressDefault')->middleware('auth:sanctum');
     Route::get('user/shipping/delete/{id}', 'Api\V2\AddressController@deleteShippingAddress')->middleware('auth:sanctum');
-    Route::post('user/follow', 'Api\V2\UserController@follow')->middleware('auth:sanctum');
+    Route::post('user/follow/{id}', 'Api\V2\UserController@follow')->middleware('auth:sanctum');
     Route::post('user/following-artist', 'Api\V2\UserController@followingArtist')->middleware('auth:sanctum');
 
     Route::get('clubpoint/get-list/{id}', 'Api\V2\ClubpointController@get_list')->middleware('auth:sanctum');
