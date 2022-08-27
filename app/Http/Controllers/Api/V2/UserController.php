@@ -61,9 +61,9 @@ class UserController extends Controller
         ]);
     }
 
-    public function follow(Request $request)
+    public function follow($id)
     {
-        $artist = Artist::findOrFail($request->artist_id);
+        $artist = Artist::findOrFail($id);
 
         if(!$artist){
             return response()->json([
@@ -72,7 +72,7 @@ class UserController extends Controller
             ]);
         }
 
-        $check = Follower::where('user_id', Auth::user()->id)->where('artist_id', $request->artist_id)->first();
+        $check = Follower::where('user_id', Auth::user()->id)->where('artist_id', $id)->first();
         if($check){
             $check->delete();
             $artist->follower--;
@@ -86,7 +86,7 @@ class UserController extends Controller
 
         $follower = new Follower;
         $follower->user_id = Auth::user()->id;
-        $follower->artist_id = $request->artist_id;
+        $follower->artist_id = $id;
         $follower->save();
         $artist->follower++;
         $artist->save();

@@ -184,14 +184,14 @@ class HomeController extends Controller
         $user->city = $request->city;
         $user->postal_code = $request->postal_code;
         $user->phone = $request->phone;
-
+        
         if($request->new_password != null && ($request->new_password == $request->confirm_password)){
             $user->password = Hash::make($request->new_password);
         }
 
         $avatar = Upload::where('id', $request->photo)->first();
         $user->avatar = $avatar->file_name;
-
+        $user->save();
         $artist = $user->artist;
 
         if($artist){
