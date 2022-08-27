@@ -295,6 +295,13 @@ class SellerPackageController extends Controller
         return response()->json($seller_packages);
     }
 
+    public function get_package_detail($id){
+        $seller_package = SellerPackage::find($id);
+        $logo = Upload::where('id', $seller_package->logo)->first();
+        $seller_package->logo = $logo?$logo->file_name:'';
+        return response()->json($seller_package);
+    }
+
     public function purchase_package_api(Request $request)
     {
         $validator = Validator::make($request->all(), [
