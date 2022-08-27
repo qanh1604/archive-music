@@ -287,7 +287,7 @@ class SellerPackageController extends Controller
     //@index
     public function seller_packages_list_api()
     {
-        $seller_packages = SellerPackage::paginate(15);
+        $seller_packages = SellerPackage::get();
         foreach($seller_packages as &$package){
             $logo = Upload::where('id', $package->logo)->first();
             $package->logo = $logo?$logo->file_name:'';
