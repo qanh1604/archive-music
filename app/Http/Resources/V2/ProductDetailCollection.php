@@ -23,7 +23,7 @@ class ProductDetailCollection extends ResourceCollection
                 
                 return [
                     'id' => $data->id,
-                    'artist_id' => $data->user?$data->user->name:'',
+                    'artist_id' => $data->artist_id,
                     'name' => $data->name,
                     'category' => $category?$category->name:'',
                     'icon' => $icon?$icon->file_name:'',
@@ -32,7 +32,8 @@ class ProductDetailCollection extends ResourceCollection
                     'view' => $data->view,
                     'like' => $data->like,
                     'album' => $album?$album->name:'',
-                    'lyric' => $data->lyric
+                    'lyric' => $data->lyric,
+                    'artist' => $data->user->artist?$data->user->artist->name:$data->user->name
                 ];
                 
             })
