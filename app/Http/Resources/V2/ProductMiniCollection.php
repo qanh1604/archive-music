@@ -7,6 +7,7 @@ use App\Models\Category;
 use App\Models\Album;
 use App\Models\Favourite;
 use App\Models\Upload;
+use Auth;
 
 class ProductMiniCollection extends ResourceCollection
 {
