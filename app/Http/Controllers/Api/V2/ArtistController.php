@@ -40,7 +40,7 @@ class ArtistController extends Controller
             if($followed){
                 $artist->followed = 1;
             }else{
-                $artist->followed = 1;
+                $artist->followed = 0;
             }
 
             return response()->json([
@@ -58,7 +58,7 @@ class ArtistController extends Controller
             if($followed){
                 $artist->followed = 1;
             }else{
-                $artist->followed = 1;
+                $artist->followed = 0;
             }
 
             return response()->json([
