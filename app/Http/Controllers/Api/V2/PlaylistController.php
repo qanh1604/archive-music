@@ -20,7 +20,7 @@ class PlaylistController extends Controller
 {
     public function index()
     {
-        $playlists = Playlist::where('user_id', Auth::user()->id)->latest()->paginate(10);
+        $playlists = Playlist::where('user_id', Auth::user()->id)->latest()->get();
 
         return response()->json([
             'success' => true,
