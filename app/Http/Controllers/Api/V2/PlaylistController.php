@@ -22,6 +22,13 @@ class PlaylistController extends Controller
     {
         $playlists = Playlist::where('user_id', Auth::user()->id)->latest()->get();
 
+        foreach($playlists as &$playlist){
+            $playlist_song = PlaylistSong::where('playlist_id', $playlist->id)->first();
+
+            $playlists->total_song = PlaylistSong::where('playlist_id', $playlist->id)->count();
+            $playlist->image = $playlist_song?$playlist_song->song->url->file_name:'';
+        }
+
         return response()->json([
             'success' => true,
             'data' => $playlists
@@ -106,6 +113,9 @@ class PlaylistController extends Controller
             $playlist_song->song_id = $data['song_id'];
             $playlist_song->save();
 
+            $playlist->total_songs++;
+            $playlist->save();
+
             return response()->json([
                 'success' => true,
                 'message' => 'Đã thêm vô playlist thành công'
@@ -119,10 +129,14 @@ class PlaylistController extends Controller
     }
 
     public function removeSong(Request $request){
-        $playlist = PlaylistSong::find($request->id);
+        $playlist_song = PlaylistSong::find($request->id);
+        $playlist = Playlist::where('id', $playlist_song->playlist_id)->first();
 
-        if($playlist){
-            $playlist->delete();
+        if($playlist_song){
+            $playlist_song->delete();
+
+            $playlist->total_songs--;
+            $playlist->save();
        
             return response()->json([
                 'success' => true,
