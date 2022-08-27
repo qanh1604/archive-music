@@ -8,6 +8,7 @@ use App\Models\Song;
 use App\Models\Upload;
 use App\Models\Artist;
 use App\Models\Favourite;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Auth;
@@ -27,15 +28,31 @@ class ArtistController extends Controller
 
     public function detail(Request $request)
     {
-        $artist = Artist::find($request->artist_id);
+        $user = User::find($request->artist_id);
 
-        $artist->total_songs = Song::where('artist_id', $artist->user->id)->count();
-        $artist->total_albums = Album::where('artist_id', $artist->user->id)->count();
+        if($user->user_type == "artist"){
+            $artist = Artist::where('user_id', $user->id)->first();
+            $artist->total_songs = Song::where('artist_id', $user->id)->count();
+            $artist->total_albums = Album::where('artist_id', $user->id)->count();
 
-        return response()->json([
-            'succes' => true,
-            'data' => $artist
-        ]);
+            return response()->json([
+                'succes' => true,
+                'data' => $artist
+            ]);
+        }else {
+            $artist = Artist::where('user_id', $user->id)->first();
+            
+            $artist->total_songs = Song::where('artist_id', $user->id)->count();
+            $artist->total_albums = Album::where('artist_id', $user->id)->count();
+            $artist->description = "";
+
+            return response()->json([
+                'succes' => true,
+                'data' => $artist
+            ]);
+        }
+
+        
     }
 
     public function albums(Request $request)
