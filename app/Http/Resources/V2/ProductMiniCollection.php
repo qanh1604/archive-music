@@ -5,6 +5,7 @@ namespace App\Http\Resources\V2;
 use Illuminate\Http\Resources\Json\ResourceCollection;
 use App\Models\Category;
 use App\Models\Album;
+use App\Models\Favourite;
 use App\Models\Upload;
 
 class ProductMiniCollection extends ResourceCollection
@@ -30,6 +31,7 @@ class ProductMiniCollection extends ResourceCollection
                     'view' => $data->view,
                     'like' => $data->like,
                     'album_name' => $album?$album->name:'',
+                    'is_like' => Favourite::where('user_id', Auth::user()->id)->where('song_id', $data->id)->exists() ? 1 : 0
                     // 'lyric' => $data->lyric
                 ];
             })
