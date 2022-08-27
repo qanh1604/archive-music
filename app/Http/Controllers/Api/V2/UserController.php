@@ -63,15 +63,15 @@ class UserController extends Controller
 
     public function follow($id)
     {
-        $artist = Artist::findOrFail($id);
-
+        $artist = Artist::where('user_id', $id)->first();
+        
         if(!$artist){
             return response()->json([
                 'success' => false,
                 'message' => "Không tìm thấy nghệ sĩ"
             ]);
         }
-
+        
         $check = Follower::where('user_id', Auth::user()->id)->where('artist_id', $id)->first();
         if($check){
             $check->delete();
