@@ -31,7 +31,9 @@ class ProductDetailCollection extends ResourceCollection
                     'song_url' => $data->song_url,
                     'view' => $data->view,
                     'like' => $data->like,
-                    'album' => $album?$album->name:'',
+                    'album' => $data->album,
+                    'album_id' => $data->album_id,
+                    'album_name' => $album?$album->name:'',
                     'lyric' => $data->lyric,
                     'artist' => $data->user->artist?$data->user->artist->name:$data->user->name
                 ];
