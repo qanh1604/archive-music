@@ -7,6 +7,7 @@ use App\Models\Album;
 use App\Models\Song;
 use App\Models\Upload;
 use App\Models\Artist;
+use App\Models\Follower;
 use App\Models\Favourite;
 use App\Models\User;
 use Illuminate\Http\Request;
