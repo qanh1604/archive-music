@@ -103,6 +103,7 @@ Route::group(['middleware' => ['app_language']], function() {
     Route::apiResource('products', 'Api\V2\ProductController')->except(['store', 'update', 'destroy']);
 
     Route::get('albums/newest', 'Api\V2\AlbumController@newest');
+    Route::get('albums/{id}', 'Api\V2\AlbumController@detail');
     Route::get('playlists', 'Api\V2\PlaylistController@index')->middleware('auth:sanctum');
     Route::post('playlists/create', 'Api\V2\PlaylistController@create')->middleware('auth:sanctum');
     Route::post('playlists/delete', 'Api\V2\PlaylistController@delete')->middleware('auth:sanctum');
