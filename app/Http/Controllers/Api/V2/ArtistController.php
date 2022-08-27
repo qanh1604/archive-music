@@ -26,9 +26,9 @@ class ArtistController extends Controller
         ]);
     }
 
-    public function detail(Request $request)
+    public function detail($id)
     {
-        $user = User::find($request->artist_id);
+        $user = User::find($id);
 
         if($user->user_type == "artist"){
             $artist = Artist::where('user_id', $user->id)->first();
@@ -55,9 +55,9 @@ class ArtistController extends Controller
         
     }
 
-    public function albums(Request $request)
+    public function albums($id)
     {
-        $albums = Album::where('artist_id', $request->artist_id)->get();
+        $albums = Album::where('artist_id', $id)->get();
 
         foreach($albums as &$album){
             $total_views = DB::table('songs')
