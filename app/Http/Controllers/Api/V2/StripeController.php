@@ -88,4 +88,34 @@ class StripeController extends Controller
     {
         return response()->json(['result' => false, 'message' => translate("Payment is cancelled")]);
     }
+
+    public function testStripe(Request $request){
+        \Stripe\Stripe::setApiKey(env('STRIPE_SECRET'));
+        // Use an existing Customer ID if this is a returning customer.
+        $customer = \Stripe\Customer::create();
+        $ephemeralKey = \Stripe\EphemeralKey::create(
+            [
+                'customer' => $customer->id,
+            ],
+            [
+                'stripe_version' => '2020-08-27',
+            ]
+        );   
+
+        $paymentIntent = \Stripe\PaymentIntent::create([
+            'amount' => 1099,
+            'currency' => 'usd',
+            'customer' => $customer->id,
+            'automatic_payment_methods' => [
+                'enabled' => 'true',
+            ],
+        ]);
+
+        return response()->json([
+            'paymentIntent' => $paymentIntent->client_secret,
+            'ephemeralKey' => $ephemeralKey->secret,
+            'customer' => $customer->id,
+            'publishableKey' => env('STRIPE_KEY')
+        ]);
+    }
 }
