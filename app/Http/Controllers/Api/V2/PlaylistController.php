@@ -26,7 +26,7 @@ class PlaylistController extends Controller
             $playlist_song = PlaylistSong::where('playlist_id', $playlist->id)->first();
 
             $playlists->total_song = PlaylistSong::where('playlist_id', $playlist->id)->count();
-            $playlist->image = $playlist_song?$playlist_song->song->url->file_name:'';
+            $playlist->image = $playlist_song?$playlist_song->song->url->file_name:'uploads/all/default-image.png';
         }
 
         return response()->json([
