@@ -49,8 +49,8 @@ class PlaylistController extends Controller
         ]);
     }
 
-    public function delete(Request $request){
-        $playlist = Playlist::find($request->playlist_id);
+    public function delete($id){
+        $playlist = Playlist::find($id);
 
         if($playlist){
             $playlist->delete();
@@ -67,8 +67,8 @@ class PlaylistController extends Controller
         }
     }
 
-    public function detail(Request $request){
-        $playlist = Playlist::find($request->playlist_id);
+    public function detail($id){
+        $playlist = Playlist::find($id);
 
         if($playlist){
             $playlist_songs = PlaylistSong::where('playlist_id', $playlist->id)->latest()->get();

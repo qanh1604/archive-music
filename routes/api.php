@@ -106,8 +106,8 @@ Route::group(['middleware' => ['app_language']], function() {
     Route::get('albums/{id}', 'Api\V2\AlbumController@detail');
     Route::get('playlists', 'Api\V2\PlaylistController@index')->middleware('auth:sanctum');
     Route::post('playlists/create', 'Api\V2\PlaylistController@create')->middleware('auth:sanctum');
-    Route::post('playlists/delete', 'Api\V2\PlaylistController@delete')->middleware('auth:sanctum');
-    Route::post('playlists/detail', 'Api\V2\PlaylistController@detail')->middleware('auth:sanctum');
+    Route::post('playlists/delete/{id}', 'Api\V2\PlaylistController@delete')->middleware('auth:sanctum');
+    Route::post('playlists/detail/{id}', 'Api\V2\PlaylistController@detail')->middleware('auth:sanctum');
     Route::post('playlists/add', 'Api\V2\PlaylistController@add')->middleware('auth:sanctum');
     Route::post('playlists/remove-song', 'Api\V2\PlaylistController@removeSong')->middleware('auth:sanctum');
     
