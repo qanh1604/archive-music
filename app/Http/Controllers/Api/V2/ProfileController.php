@@ -146,12 +146,12 @@ class ProfileController extends Controller
 
             $upload->extension = $extension;
             $upload->file_name = $newPath;
-            $upload->user_id = $request->id;
+            $upload->user_id = Auth::user()->id;
             $upload->type = $type[$upload->extension];
             $upload->file_size = $size;
             $upload->save();
 
-            $user  = User::where('id', $request->id)->first();
+            $user  = User::where('id', Auth::user()->id)->first();
             if(!$user){
                 return response()->json([
                     'success' => false,
