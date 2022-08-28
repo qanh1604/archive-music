@@ -305,7 +305,6 @@ class SellerPackageController extends Controller
     public function purchase_package_api(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'email' => 'required',
             'package_id' => 'required',
         ]);
 
