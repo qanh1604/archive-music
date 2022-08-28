@@ -11,6 +11,10 @@ use App\Models\Country;
 use App\Models\City;
 use App\Models\State;
 use App\Models\Address;
+use App\Models\Playlist;
+use App\Models\Follower;
+use App\Models\SellerPackage;
+use App\Models\Member;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use App\Models\User;
@@ -290,6 +294,7 @@ class AuthController extends Controller
     protected function loginSuccess($user)
     {
         $token = $user->createToken('API Token')->plainTextToken;
+        $member = Member::where('user_id', $user->id)->first();
         return response()->json([
             'result' => true,
             'message' => translate('Successfully logged in'),
@@ -304,7 +309,12 @@ class AuthController extends Controller
                 'role' => 4,
                 'avatar' => $user->avatar,
                 'avatar_original' => api_asset($user->avatar_original),
-                'phone' => $user->phone
+                'phone' => $user->phone,
+                'is_member' => Member::where('user_id', $user->id)->exists() ? 1 : 0,
+                'total_playlist' => Playlist::where('user_id', $user->id)->count(),
+                'following' => Follower::where('user_id', $user->id)->count(),
+                'follower' => Follower::where('artist_id', $user->id)->count(),
+                'current_package' => $member ? $member->package->name : "Free"
             ]
         ]);
     }
