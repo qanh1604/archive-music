@@ -21,7 +21,7 @@ class PasswordResetController extends Controller
 
         if (!$user) {
             return response()->json([
-                'result' => false,
+                'success' => false,
                 'message' => translate('User is not found')], 404);
         }
 
@@ -44,7 +44,7 @@ class PasswordResetController extends Controller
         }
 
         return response()->json([
-            'result' => true,
+            'success' => true,
             'message' => translate('A code is sent')
         ], 200);
     }
@@ -58,12 +58,12 @@ class PasswordResetController extends Controller
             $user->password = Hash::make($request->password);
             $user->save();
             return response()->json([
-                'result' => true,
+                'success' => true,
                 'message' => translate('Your password is reset.Please login'),
             ], 200);
         } else {
             return response()->json([
-                'result' => false,
+                'success' => false,
                 'message' => translate('No user is found'),
             ], 200);
         }
@@ -80,7 +80,7 @@ class PasswordResetController extends Controller
 
         if (!$user) {
             return response()->json([
-                'result' => false,
+                'success' => false,
                 'message' => translate('User is not found')], 404);
         }
 
@@ -97,7 +97,7 @@ class PasswordResetController extends Controller
 
 
         return response()->json([
-            'result' => true,
+            'success' => true,
             'message' => translate('A code is sent again'),
         ], 200);
     }
