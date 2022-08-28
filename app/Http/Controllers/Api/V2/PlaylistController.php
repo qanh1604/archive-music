@@ -99,9 +99,14 @@ class PlaylistController extends Controller
         if(isset($data['song_id'])){
             $checkSongExist = PlaylistSong::where('song_id', $data['song_id'])->exists();
             if($checkSongExist){
+                PlaylistSong::where('song_id', $data['song_id'])->delete();
+
+                $playlist->total_songs--;
+                $playlist->save();
+
                 return response()->json([
                     'success' => false,
-                    'message' => 'Bài hát đã nằm trong playlist rồi'
+                    'message' => 'Đã xóa khỏi playlist'
                 ]);
             }
         }
