@@ -92,6 +92,7 @@ Route::group(['middleware' => ['app_language']], function() {
     Route::get('products/listen/{id}', 'Api\V2\ProductController@listen')->middleware('auth:sanctum', 'throttle:customer_limit');
     Route::get('products/listened-songs', 'Api\V2\ProductController@listenedSong')->middleware('auth:sanctum');
     Route::get('products/like-song/{id}', 'Api\V2\ProductController@likeSong')->middleware('auth:sanctum');
+    Route::get('products/liked', 'Api\V2\ProductController@likedSong')->middleware('auth:sanctum');
     Route::post('products/test_payment', 'Api\V2\ProductController@stripeTest')->middleware('auth:sanctum');
 
     Route::get('products/featured-from-seller/{id}', 'Api\V2\ProductController@newFromSeller')->name('products.featuredromSeller');

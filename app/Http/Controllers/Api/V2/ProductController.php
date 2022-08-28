@@ -380,9 +380,18 @@ class ProductController extends Controller
         ]);
     }
 
+    public function likedSong(Request $request){
+
+        $favourites = Favourite::where('user_id', Auth::user()->id)->get()->pluck('song_id')->toArray();
+
+        $songs = Song::whereIn('id', $favourites)->get();
+
+        return new ProductMiniCollection($songs);
+    }
+
     public function stripeTest(Request $request){
         // \Stripe\Stripe::setApiKey(env('STRIPE_SECRET'));
-        $stripe = new \Stripe\StripeClient(env('STRIPE_SECRET'));dd($stripe);
+        $stripe = new \Stripe\StripeClient(env('STRIPE_SECRET'));
         $stripe->customers->all(['limit' => 3]);
     }
     
