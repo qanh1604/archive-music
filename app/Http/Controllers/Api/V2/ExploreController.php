@@ -52,7 +52,7 @@ class ExploreController extends Controller
             $trending[] = $song;
         }
         
-        return new ProductMiniCollection($trending);
+        return new ProductMiniCollection(array_filter($trending));
     }
 
     public function albums(Request $request)
