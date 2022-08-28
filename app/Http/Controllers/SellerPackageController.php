@@ -375,7 +375,7 @@ class SellerPackageController extends Controller
         $user->save();
 
         return response()->json([
-            'result' => true,
+            'success' => true,
             'message' => translate($message)
         ]);
     }
