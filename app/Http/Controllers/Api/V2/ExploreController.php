@@ -51,8 +51,8 @@ class ExploreController extends Controller
             })->first();
             $trending[] = $song;
         }
-        
-        return new ProductMiniCollection(array_filter($trending));
+        $trending = array_filter($trending);
+        return new ProductMiniCollection($trending);
     }
 
     public function albums(Request $request)
