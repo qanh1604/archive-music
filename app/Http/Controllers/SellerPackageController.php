@@ -316,7 +316,7 @@ class SellerPackageController extends Controller
             ]);
         }
 
-        $data['email'] = $request->email;
+        $data['email'] = Auth::user()->email;
         $data['package_id'] = $request->package_id;
 
         $member = Member::where('user_id', Auth::user()->id)->first();
