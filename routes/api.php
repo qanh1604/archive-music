@@ -51,6 +51,7 @@ Route::group(['middleware' => ['app_language']], function() {
     Route::get('categories/featured', 'Api\V2\CategoryController@featured');
     Route::get('categories/home', 'Api\V2\CategoryController@home');
     Route::get('categories/top', 'Api\V2\CategoryController@top');
+    Route::get('categories/{id}', 'Api\V2\CategoryController@detail')->middleware('auth:sanctum');
     Route::apiResource('categories', 'Api\V2\CategoryController')->only('index');
     Route::get('sub-categories/{id}', 'Api\V2\SubCategoryController@index')->name('subCategories.index');
 
