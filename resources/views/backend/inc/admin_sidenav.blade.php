@@ -549,11 +549,11 @@
                                     <span class="aiz-side-nav-text">{{translate('Languages')}}</span>
                                 </a>
                             </li>
-                            <li class="aiz-side-nav-item">
+                            {{--<li class="aiz-side-nav-item">
                                 <a href="{{ route('payment_method.index') }}" class="aiz-side-nav-link">
                                     <span class="aiz-side-nav-text">{{translate('Payment Methods')}}</span>
                                 </a>
-                            </li>
+                            </li>--}}
 
                             <li class="aiz-side-nav-item">
                                 <a href="{{ route('smtp_settings.index') }}" class="aiz-side-nav-link">

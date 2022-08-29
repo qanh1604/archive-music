@@ -50,7 +50,7 @@
                         <th data-breakpoints="lg">{{translate('Email Address')}}</th>
                         <th data-breakpoints="lg">{{translate('Phone')}}</th>
                         <th data-breakpoints="lg">{{translate('Artist')}}</th>
-                        <th data-breakpoints="lg">{{translate('Wallet balance')}}</th>
+                        {{--<th data-breakpoints="lg">{{translate('Wallet balance')}}</th>--}}
                         <th>{{translate('Options')}}</th>
                     </tr>
                 </thead>
@@ -78,7 +78,7 @@
                                         <span class="slider round"></span>
                                     </label>
                                 </td>
-                                <td>{{single_price($user->balance)}}</td>
+                                {{--<td>{{single_price($user->balance)}}</td>--}}
                                 <td class="text-right">
                                     <a href="{{route('customers.login', encrypt($user->id))}}" class="btn btn-soft-primary btn-icon btn-circle btn-sm" title="{{ translate('Log in as this Customer') }}">
                                         <i class="las la-edit"></i>

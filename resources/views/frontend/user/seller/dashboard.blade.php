@@ -41,17 +41,8 @@
         {{--<div class="col-md-3">
             <div class="bg-grad-2 text-white rounded-lg mb-4 overflow-hidden">
                 <div class="px-3 pt-3">
-                    @php
-                        $orderDetails = \App\Models\OrderDetail::where('seller_id', Auth::user()->id)->get();
-                        $total = 0;
-                        foreach ($orderDetails as $key => $orderDetail) {
-                            if($orderDetail->order != null && $orderDetail->order->payment_status == 'paid'){
-                                $total += $orderDetail->price;
-                            }
-                        }
-                    @endphp
-                    <div class="h3 fw-700">{{ single_price($total) }}</div>
-                    <div class="opacity-50">{{ translate('Total earnings') }}</div>
+                    <div class="h3 fw-700">{{ $total }}</div>
+                    <div class="opacity-50">{{ translate('Total view') }}</div>
                   </div>
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320">
                       <path fill="rgba(255,255,255,0.3)" fill-opacity="1" d="M0,128L34.3,112C68.6,96,137,64,206,96C274.3,128,343,224,411,250.7C480,277,549,235,617,213.3C685.7,192,754,192,823,181.3C891.4,171,960,149,1029,117.3C1097.1,85,1166,43,1234,58.7C1302.9,75,1371,149,1406,186.7L1440,224L1440,320L1405.7,320C1371.4,320,1303,320,1234,320C1165.7,320,1097,320,1029,320C960,320,891,320,823,320C754.3,320,686,320,617,320C548.6,320,480,320,411,320C342.9,320,274,320,206,320C137.1,320,69,320,34,320L0,320Z"></path>
@@ -80,7 +71,95 @@
             </div>
         </div>--}}
     </div>
-
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header row">
+                    <div class="col">
+                        <h6 class="mb-0">Bài hát được ưu thích</h6>
+                    </div>
+                </div>
+                <div class="card-body">
+                    @foreach($topSongs as $topSong)
+                        <div class="row align-items-center">
+                            <div class="col-md-2">
+                                @if($topSong->icon)
+                                    <img style="width: 35px" class="statistic-image" src="/public/{{ $topSong->url->file_name }}" onerror="this.onerror=null;this.src='{{ static_asset('assets/img/san-pham-2.svg') }}';">
+                                @else
+                                    <img class="statistic-image" src="{{ static_asset('assets/img/san-pham-2.svg') }}">
+                                @endif     
+                            </div>
+                            <div class="col d-flex flex-column">
+                                <strong>{{ $topSong->name }}</strong>
+                            </div>
+                            <div class="col-md-3 statistic-number">
+                                {{ $topSong->like }}
+                            </div>
+                        </div>
+                        <br>
+                    @endforeach
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header row">
+                    <div class="col">
+                        <h6 class="mb-0">Bài hát được nghe nhiều nhất</h6>
+                    </div>
+                </div>
+                <div class="card-body">
+                    @foreach($topViewSong as $top)
+                        <div class="row align-items-center">
+                            <div class="col-md-2">
+                                @if($top->icon)
+                                    <img style="width: 35px" class="statistic-image" src="/public/{{ $top->url->file_name }}" onerror="this.onerror=null;this.src='{{ static_asset('assets/img/san-pham-2.svg') }}';">
+                                @else
+                                    <img class="statistic-image" src="{{ static_asset('assets/img/san-pham-2.svg') }}">
+                                @endif     
+                            </div>
+                            <div class="col d-flex flex-column">
+                                <strong>{{ $top->name }}</strong>
+                            </div>
+                            <div class="col-md-3 statistic-number">
+                                {{ $top->view }}
+                            </div>
+                        </div>
+                        <br>
+                    @endforeach
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header row">
+                    <div class="col">
+                        <h6 class="mb-0">Album được nghe nhiều nhất</h6>
+                    </div>
+                </div>
+                <div class="card-body">
+                    @foreach($topAlbum as $album)
+                        <div class="row align-items-center">
+                            <div class="col-md-2">
+                                @if($album->image)
+                                    <img style="width: 35px" class="statistic-image" src="/public/{{ $album->image_url->file_name }}" onerror="this.onerror=null;this.src='{{ static_asset('assets/img/san-pham-2.svg') }}';">
+                                @else
+                                    <img class="statistic-image" src="{{ static_asset('assets/img/san-pham-2.svg') }}">
+                                @endif     
+                            </div>
+                            <div class="col d-flex flex-column">
+                                <strong>{{ $album->name }}</strong>
+                            </div>
+                            <div class="col-md-3 statistic-number">
+                                {{ $album->total_views }}
+                            </div>
+                        </div>
+                        <br>
+                    @endforeach
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="row">
       <div class="col-md-8">
           <div class="card">

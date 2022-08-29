@@ -39,7 +39,7 @@
         <div class="col-md-3 d-flex align-items-center justify-content-center">
             <img src="{{ static_asset('assets/img/doanh-thu.svg') }}">
             <div class="d-flex flex-column ml-3">
-                <span class="title">{{numberWithSymbol($totalRevenue)}}</span>
+                <span class="title">{{numberWithSymbol($arr)}}</span>
                 <span class="sub_title">Doanh thu</span>
             </div>
         </div>
@@ -61,7 +61,7 @@
                     <div class="card">
                         <div class="card-header row">
                             <div class="col-md-6">
-                                <h6 class="mb-0">Biểu đồ Đơn hàng mua gói</h6>
+                                <h6 class="mb-0">Biểu đồ đơn hàng mua gói</h6>
                             </div>
                             <div class="col-md-6">
                                 <input 
@@ -203,210 +203,6 @@
     </div>
 </div>
 
-<div id="statistic_seller">
-    <div class="card card-with-background">
-        <div class="card-header mb-3 card-header-with-background" id="headingOne">
-            <h5 class="mb-0">
-                <button class="btn btn-link card-collapse-button" data-toggle="collapse" data-target="#collapseSeller" aria-expanded="true" aria-controls="collapseSeller">
-                    <span class="accicon mr-1"><i class="las la-chevron-down rotate-icon"></i></span>Thống kê Quầy hàng
-                </button>
-            </h5>
-        </div>
-
-        <div id="collapseSeller" class="collapse show" aria-labelledby="headingOne" data-parent="#statistic_seller">
-            <div class="row gutters-5">
-                <div class="col-md-12">
-                    <div class="aiz-titlebar text-left mt-2 mb-3">
-                        <div class="col-md-12 mb-2">
-                            <h5 class="mb-0 h6">Quầy hàng</h5>
-                        </div>
-                        <div class="col-md-4">
-                            <select class="form-control aiz-selectpicker" data-name="select_value" data-group="seller" data-chart="chart" name="select_seller" id="select_seller" data-live-search="true">
-                                <option value=""></option>
-                                @foreach($sellers as $seller)
-                                    <option value="{{ $seller->user_id }}">{{ $seller->name }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="card">
-                        <div class="card-header row">
-                            <div class="col-md-6">
-                                <h6 class="mb-0">Biểu đồ Đơn hàng</h6>
-                            </div>
-                            <div class="col-md-6">
-                                <input 
-                                    type="text" 
-                                    class="form-control aiz-date-range input-border-none" 
-                                    style="color: #7367F0" 
-                                    id="date_range_seller_package" 
-                                    data-format="DD/MM/Y" 
-                                    data-separator=" - " 
-                                    autocomplete="off"
-                                    data-group="seller"
-                                    data-chart="chart"
-                                    data-name="date_package"
-                                    value=" {{ date('01/m/Y') }} - {{ date('t/m/Y') }} "
-                                >
-                            </div>
-                        </div>
-                        <div class="card-body" style="min-height: 240px; height: auto">
-                            <canvas id="chart-seller-package" class="w-100" height="200"></canvas>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="card">
-                        <div class="card-header row">
-                            <div class="col-md-6">
-                                <h6 class="mb-0">Biểu đồ Doanh thu</h6>
-                            </div>
-                            <div class="col-md-6">
-                                <input 
-                                    type="text" 
-                                    class="form-control aiz-date-range input-border-none" 
-                                    style="color: #7367F0" 
-                                    id="date_range_seller_revenue" 
-                                    data-format="DD/MM/Y" 
-                                    data-separator=" - " 
-                                    autocomplete="off"
-                                    data-group="seller"
-                                    data-chart="chart"
-                                    data-name="date_revenue"
-                                    value=" {{ date('01/m/Y') }} - {{ date('t/m/Y') }} "
-                                >
-                            </div>
-                        </div>
-                        <div class="card-body" style="min-height: 240px; height: auto">
-                            <canvas id="chart-seller-revenue" class="w-100" height="200"></canvas>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="row gutters-5">
-                <div class="col-md-12">
-                    <div class="card">
-                        <div class="card-header row">
-                            <div class="col">
-                                <h6 class="mb-0">Sản phẩm bán chạy</h6>
-                            </div>
-                        </div>
-                        <div class="card-body" id="top_product">
-                            
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div id="statistic_market">
-    <div class="card card-with-background">
-        <div class="card-header mb-3 card-header-with-background" id="headingOne">
-            <h5 class="mb-0">
-                <button class="btn btn-link card-collapse-button" data-toggle="collapse" data-target="#collapseMarket" aria-expanded="true" aria-controls="collapseMarket">
-                    <span class="accicon mr-1"><i class="las la-chevron-down rotate-icon"></i></span>Thống kê Phiên giao dịch
-                </button>
-            </h5>
-        </div>
-
-        <div id="collapseMarket" class="collapse show" aria-labelledby="headingOne" data-parent="#statistic_market">
-            <div class="row gutters-5">
-                <div class="col-md-12">
-                    <div class="aiz-titlebar text-left mt-2 mb-3">
-                        <div class="col-md-12 mb-2">
-                            <h5 class="mb-0 h6">Phiên giao dịch</h5>
-                        </div>
-                        <div class="col-md-4">
-                            <select class="form-control aiz-selectpicker" data-name="select_value" data-group="market" data-chart="chart" name="select_market" id="select_market" data-live-search="true">
-                                <option value=""></option>
-                                @foreach($marketSessions as $session)
-                                    @php 
-                                        $arrayOfWeekDays = [
-                                            'Thứ 2', 'Thứ 3', 'Thứ 4', 
-                                            'Thứ 5', 'Thứ 6', 'Thứ 6', 'Chủ Nhật'
-                                        ];
-                                        $weekDay = $arrayOfWeekDays[date('N', strtotime($session->start_time))-1];
-                                        $day = date('d', strtotime($session->start_time));
-                                        $month = date('m', strtotime($session->start_time));
-                                        $year = date('Y', strtotime($session->start_time));
-                                        $hour = date('H:i:s', strtotime($session->start_time));
-                                    @endphp    
-                                    <option value="{{ $session->id }}">
-                                        {{
-                                            $weekDay . ' - ' . 
-                                            'ngày ' . $day . 
-                                            ' tháng ' . $month . 
-                                            ' năm ' . $year .
-                                            ' - ' . $hour
-                                        }}
-                                    </option>
-                                @endforeach
-                            </select>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="card">
-                        <div class="card-header row">
-                            <div class="col-md-6">
-                                <h6 class="mb-0">Biểu đồ Đơn hàng</h6>
-                            </div>
-                            <div class="col-md-6">
-                                <input 
-                                    type="text" 
-                                    class="form-control aiz-date-range input-border-none" 
-                                    style="color: #7367F0" 
-                                    id="date_range_market_package" 
-                                    data-group="market"
-                                    data-chart="chart"
-                                    data-format="DD/MM/Y" 
-                                    data-separator=" - " 
-                                    autocomplete="off"
-                                    data-name="date_package"
-                                    value=" {{ date('01/m/Y') }} - {{ date('t/m/Y') }} "
-                                >
-                            </div>
-                        </div>
-                        <div class="card-body" style="min-height: 240px; height: auto">
-                            <canvas id="chart-market-package" class="w-100" height="200"></canvas>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="card">
-                        <div class="card-header row">
-                            <div class="col-md-6">
-                                <h6 class="mb-0">Biểu đồ Doanh thu</h6>
-                            </div>
-                            <div class="col-md-6">
-                                <input 
-                                    type="text" 
-                                    class="form-control aiz-date-range input-border-none" 
-                                    style="color: #7367F0" 
-                                    id="date_range_market_revenue" 
-                                    data-group="market"
-                                    data-chart="chart"
-                                    data-format="DD/MM/Y" 
-                                    data-separator=" - " 
-                                    autocomplete="off"
-                                    data-name="date_revenue"
-                                    value=" {{ date('01/m/Y') }} - {{ date('t/m/Y') }} "
-                                >
-                            </div>
-                        </div>
-                        <div class="card-body" style="min-height: 240px; height: auto">
-                            <canvas id="chart-market-revenue" class="w-100" height="200"></canvas>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
 
 @endsection
 @section('script')
