@@ -20,6 +20,7 @@ use App\Models\Album;
 use App\Models\Upload;
 use App\Models\BusinessSetting;
 use App\Models\Coupon;
+use DB;
 use Cookie;
 use Illuminate\Support\Str;
 use App\Mail\SecondEmailVerifyMailManager;
@@ -147,7 +148,11 @@ class HomeController extends Controller
     public function dashboard()
     {
         if(Auth::user()->user_type == 'artist'){
-            return view('frontend.user.seller.dashboard');
+            $topSongs = Song::where('artist_id', Auth::user()->id)->orderBy('like', 'DESC')->limit(6)->get();
+            $topViewSong = Song::where('artist_id', Auth::user()->id)->orderBy('view', 'DESC')->limit(6)->get();
+            $topAlbum = Album::where('artist_id', Auth::user()->id)->orderBy('total_views', 'DESC')->limit(6)->get();
+            $albums = Album::get();
+            return view('frontend.user.seller.dashboard', compact('topSongs', 'topViewSong', 'topAlbum'));
         }
         elseif(Auth::user()->user_type == 'customer'){
             return view('frontend.user.customer.dashboard');

@@ -42,7 +42,24 @@ class AdminController extends Controller
 
         $revenueOrder = Order::where('payment_status', 'paid')->sum('grand_total');
         $revenueHotOrder = HotOrder::where('payment_status', 'paid')->sum('grand_total');
-        $totalRevenue = $revenueOrder + $revenueHotOrder;
+        // $totalRevenue = $revenueOrder + $revenueHotOrder;
+        // $payment_history = SellerPackagePayment::select('seller_package_id')->get()
+        $totalRevenue = DB::SELECT("
+            SELECT
+                COUNT(*) AS total, seller_package_id, price
+            FROM
+                seller_package_payments
+            LEFT JOIN seller_packages ON seller_packages.id = seller_package_payments.seller_package_id
+            WHERE
+                approval = 1
+            GROUP BY seller_package_id
+            ORDER BY total DESC
+        ");
+
+        $arr = 0;
+        foreach($totalRevenue as $total){
+            $arr += $total->total * $total->price;
+        }
 
         $sellers = Shop::select('user_id', 'name')->get();
 
@@ -125,7 +142,7 @@ class AdminController extends Controller
             'totalSession', 
             'totalCustomer', 
             'totalProduct',
-            'totalRevenue',
+            'arr',
             'sellers',
             'marketSessions',
             'chartData',
